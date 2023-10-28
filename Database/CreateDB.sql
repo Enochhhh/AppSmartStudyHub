@@ -66,8 +66,8 @@ create table add_friend_users(
 create table report(
 	id int,
     user_id int,
-    email varchar(50) unique, 
-    phonenumber varchar(11) unique,
+    email varchar(50), 
+    phonenumber varchar(11),
     title nvarchar(100),
     content nvarchar(300),
     status nvarchar(20),
