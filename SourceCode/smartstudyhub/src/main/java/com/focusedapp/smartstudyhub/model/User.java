@@ -1,54 +1,70 @@
 package com.focusedapp.smartstudyhub.model;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @Entity
-public class User {
+@Table(name = "users")
+public class User implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "email")
-	private String name;
+	@Column(name = "email", length = 50)
+	private String email;
 	
-	@Column(name = "passwords")
+	@Column(name = "passwords", length = 50)
 	private String password;
 	
-	@Column(name = "phone_number")
+	@Column(name = "phone_number", length = 11)
 	private String phoneNumber;
 	
-	@Column(name = "first_name")
+	@Column(name = "first_name", length = 50)
 	private String firstName;
 	
-	@Column(name = "last_name")
+	@Column(name = "last_name", length = 50)
 	private String lastName;
 	
-	@Column(name = "address")
+	@Column(name = "address", length = 100)
 	private String address;
 	
 	@Column(name = "date_of_birth")
-	private String dateOfBirth;
+	@Temporal(TemporalType.DATE)
+	private Date dateOfBirth;
 	
-	@Column(name = "country")
+	@Column(name = "country", length = 50)
 	private String country;
 	
 	@Column(name = "created_at")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
 	
-	@Column(name = "roles")
+	@Column(name = "roles", length = 20)
 	private String role;
 	
 	@Column(name = "image_url")
@@ -66,133 +82,58 @@ public class User {
 	
 	@Column(name = "status")
 	private String status;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(String dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	public String getOtpCode() {
-		return otpCode;
-	}
-
-	public void setOtpCode(String otpCode) {
-		this.otpCode = otpCode;
-	}
-
-	public Date getOtpTimeExpiration() {
-		return otpTimeExpiration;
-	}
-
-	public void setOtpTimeExpiration(Date otpTimeExpiration) {
-		this.otpTimeExpiration = otpTimeExpiration;
-	}
-
-	public Integer getTotalTimeFocus() {
-		return totalTimeFocus;
-	}
-
-	public void setTotalTimeFocus(Integer totalTimeFocus) {
-		this.totalTimeFocus = totalTimeFocus;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-		
+	
+	@OneToMany(mappedBy = "userManager", fetch = FetchType.LAZY)
+	private List<ManageUser> userManagers;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<ManageUser> usersManaged;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<FriendUser> usersOwnedListFriend;
+	
+	@OneToMany(mappedBy = "userFriend", fetch = FetchType.LAZY)
+	private List<FriendUser> usersFriend;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Report> reports;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Vote> votes;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<UsersJoiningStudyGroup> groupsUserJoining;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Theme> themes;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Folder> folders;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Project> projects;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Work> works;
+	
+	@OneToMany(mappedBy = "assignee", fetch = FetchType.LAZY)
+	private List<Work> worksAssigned;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Tag> tags;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<PostForum> postsForum;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<LikePost> postsLiked;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<CommentPost> postsCommented;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<LikeComment> commentsLiked;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<ReportPost> postsReported;
 }

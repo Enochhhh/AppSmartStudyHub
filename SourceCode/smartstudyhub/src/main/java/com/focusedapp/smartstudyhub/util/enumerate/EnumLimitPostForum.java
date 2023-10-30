@@ -1,14 +1,15 @@
 package com.focusedapp.smartstudyhub.util.enumerate;
 
-public enum EnumStatusCustomContent {
-	
-	DEFAULT("DEFAULT"),
-	PREMIUM("PREMIUM"),
-	OWNED("OWNED");	
+public enum EnumLimitPostForum {
+
+	PUBLIC("PUBLIC"),
+	PRIVATE("PRIVATE"),
+	FRIEND("FRIEND"),
+	CUSTOM("CUSTOM");
 	
 	private final String value;
 	
-	EnumStatusCustomContent(String value) {	
+	EnumLimitPostForum(String value) {	
 		this.value = value;
 	}
 	
