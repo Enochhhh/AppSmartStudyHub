@@ -1,6 +1,6 @@
 package com.focusedapp.smartstudyhub.util.enumerate;
 
-public enum EnumStatusUser {
+public enum EnumStatus {
 	
 	ACTIVE("ACTIVE"),
 	DELETED("DELETED"),
@@ -8,7 +8,7 @@ public enum EnumStatusUser {
 	
 	private final String value;
 	
-	EnumStatusUser(String value) {	
+	EnumStatus(String value) {	
 		this.value = value;
 	}
 	

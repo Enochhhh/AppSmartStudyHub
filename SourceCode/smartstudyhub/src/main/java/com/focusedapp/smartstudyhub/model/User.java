@@ -18,10 +18,12 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
@@ -38,7 +40,7 @@ public class User implements Serializable {
 	@Column(name = "email", length = 50)
 	private String email;
 	
-	@Column(name = "passwords", length = 50)
+	@Column(name = "passwords")
 	private String password;
 	
 	@Column(name = "phone_number", length = 11)

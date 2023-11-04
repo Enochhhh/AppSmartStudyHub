@@ -26,10 +26,10 @@ drop table if exists report_post;
 drop table if exists like_comment;
 
 create table users(
-	id int,
+	id int auto_increment,
     email varchar(50), 
-    passwords varchar(50),
-    phonenumber varchar(11),
+    passwords text,
+    phone_number varchar(11),
     first_name nvarchar(50),
     last_name nvarchar(50),
     address nvarchar(100),
@@ -46,26 +46,26 @@ create table users(
 );
 
 create table manage_users(
-	user_manager_id int,
-    user_id int,
+	user_manager_id int not null,
+    user_id int not null,
     created_date datetime,
     constraint ManageUserPrimaryKey primary key(user_manager_id, user_id),
 	constraint ManageUsersUserManagerIdForeignKey foreign key(user_manager_id) references users(id),
 	constraint ManageUsersUserIdForeignKey foreign key(user_id) references users(id)
 );
 
-create table add_friend_users(
-	user_id int,
-    user_id_friend int,
+create table friend_users(
+	user_id int not null,
+    user_id_friend int not null,
     created_date datetime,
-    constraint AddFriendUserPrimaryKey primary key(user_id, user_id_friend),
-    constraint AddFriendUsersUserIdForeignKey foreign key(user_id) references users(id),
-	constraint AddFriendUsersUserIdFriendForeignKey foreign key(user_id_friend) references users(id)
+    constraint FriendUserPrimaryKey primary key(user_id, user_id_friend),
+    constraint FriendUsersUserIdForeignKey foreign key(user_id) references users(id),
+	constraint FriendUsersUserIdFriendForeignKey foreign key(user_id_friend) references users(id)
 );
 
 create table report(
-	id int,
-    user_id int,
+	id int auto_increment,
+    user_id int not null,
     email varchar(50), 
     phonenumber varchar(11),
     title nvarchar(100),
@@ -78,7 +78,7 @@ create table report(
 );
 
 create table vote(
-	id int,
+	id int auto_increment,
     user_id int,
     title nvarchar(100),
     content nvarchar(300),
@@ -89,7 +89,7 @@ create table vote(
 );
 
 create table study_group(
-	id int,
+	id int auto_increment,
     codes text,
     name_group nvarchar(50),
     descriptions nvarchar(300),
@@ -102,8 +102,8 @@ create table study_group(
 );
 
 create table users_join_study_group(
-	user_id int,
-    study_group_id int,
+	user_id int not null,
+    study_group_id int not null,
     created_date datetime,
     constraint UserJoinStudyGroupPrimaryKey primary key(user_id, study_group_id),
     constraint UserJoinStudyGroupUserIdForeignKey foreign key(user_id) references users(id),
@@ -111,7 +111,7 @@ create table users_join_study_group(
 );
 
 create table theme(
-	id int,
+	id int auto_increment,
     user_id int,
     name_sound nvarchar(50),
     url text,
@@ -121,8 +121,8 @@ create table theme(
 );
 
 create table folder(
-	id int,
-    user_id int,
+	id int auto_increment,
+    user_id int not null,
     folder_name nvarchar(50),
     color_code text,
     icon_url text,
@@ -131,8 +131,8 @@ create table folder(
 );
 
 create table project(
-	id int,
-	user_id int,
+	id int auto_increment,
+	user_id int not null,
     folder_id int,
     project_name nvarchar(50),
     color_code text,
@@ -143,8 +143,8 @@ create table project(
 );
 
 create table works(
-	id int,
-    user_id int,
+	id int auto_increment,
+    user_id int not null,
     project_id int,
     status nvarchar(20),
     due_date datetime,
@@ -154,8 +154,8 @@ create table works(
     time_of_pomodoro int,
     start_time datetime,
     end_time datetime,
-    is_reminder boolean,
-    is_repeat boolean,
+    is_remindered boolean,
+    is_repeated boolean,
     note nvarchar(300),
     assignee_id int,
     constraint WorksPrimaryKey primary key(id),
@@ -165,8 +165,8 @@ create table works(
 );
 
 create table extra_work(
-	id int,
-    work_id int,
+	id int auto_increment,
+    work_id int not null,
     status nvarchar(20),
     start_time datetime,
     end_time datetime,
@@ -175,8 +175,8 @@ create table extra_work(
 );
 
 create table tag(
-	id int,
-    user_id int,
+	id int auto_increment,
+    user_id int not null,
     tag_name nvarchar(50),
     color_code text,
     constraint TagPrimaryKey primary key(id),
@@ -184,25 +184,25 @@ create table tag(
 );
 
 create table work_tag(
-	work_id int,
-    tag_id int,
+	work_id int not null,
+    tag_id int not null,
     constraint WorkTagPrimaryKey primary key(work_id, tag_id),
     constraint WorkTagWorkIdForeignKey foreign key(work_id) references works(id),
     constraint WorkTagTagIdForeignKey foreign key(tag_id) references tag(id)
 );
 
 create table sound_concentration(
-	id int,
+	id int auto_increment,
     user_id int,
     name_sound nvarchar(50),
     url text,
-    status text, -- It have 2 value: DEFAULT, OWNED
+    status text, -- It have 3 value: DEFAULT, PREMIUM, OWNED
     constraint SoundConcentrationPrimaryKey primary key(id),
     constraint SoundConcentrationUserIdForeignKey foreign key(user_id) references users(id)
 );
 
 create table category_forum(
-	id int,
+	id int auto_increment,
     name_category nvarchar(50),
     total_post int,
     total_comment int,
@@ -210,9 +210,9 @@ create table category_forum(
 );
 
 create table post_forum(
-	id int,
-    user_id int,
-    category_forum_id int,
+	id int auto_increment,
+    user_id int not null,
+    category_forum_id int not null,
     title nvarchar(50),
     content nvarchar(3000),
     tag text,
@@ -222,6 +222,7 @@ create table post_forum(
     created_date datetime,
     url_post text,
     total_type_react text,
+    limits text,
     status text, -- It have 2 value: ACTIVE, DELETED, BANNED
     constraint PostForumPrimaryKey primary key(id),
     constraint PostForumUserIdForeignKey foreign key(user_id) references users(id),
@@ -229,8 +230,8 @@ create table post_forum(
 );
 
 create table like_post(
-	post_id int,
-    user_id int,
+	post_id int not null,
+    user_id int not null,
     created_date datetime,
     type_react text,
     constraint LikePostPrimaryKey primary key(post_id, user_id),
@@ -239,10 +240,10 @@ create table like_post(
 );
 
 create table comment_post(
-	id int,
-	post_id int,
-    user_id int,
-    content text,
+	id int auto_increment,
+	post_id int not null,
+    user_id int not null,
+    content nvarchar(3000),
     created_date datetime,
     total_like int,
     total_type_react text,
@@ -252,8 +253,8 @@ create table comment_post(
 );
 
 create table like_comment(
-	comment_id int,
-    user_id int,
+	comment_id int not null,
+    user_id int not null,
     created_date datetime,
     type_react text,
     constraint LikeCommentPrimaryKey primary key(comment_id, user_id),
@@ -262,11 +263,12 @@ create table like_comment(
 );
 
 create table report_post(
-	user_id int,
-    post_id int,
-    content text,
+	id int auto_increment,
+	user_id int not null,
+    post_id int not null,
+    content nvarchar(3000),
     created_date datetime,
-    constraint ReportPostPrimaryKey primary key(user_id, post_id),
+    constraint ReportPostPrimaryKey primary key(id),
     constraint ReportPostUserIdForeignKey foreign key(user_id) references users(id),
     constraint ReportPostPostIdForeignKey foreign key(post_id) references post_forum(id)
 );
