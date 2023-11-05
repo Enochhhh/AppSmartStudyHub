@@ -25,6 +25,8 @@ public class SecurityConfiguration {
 			.csrf(cs -> cs.disable())
 			.authorizeHttpRequests(authorize -> authorize.requestMatchers("/mobile/v1/auth/**")
 					.permitAll()
+					.requestMatchers("/mobile/v1/user/guest/**")
+					.permitAll()
 					.anyRequest()
 					.authenticated())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))	
