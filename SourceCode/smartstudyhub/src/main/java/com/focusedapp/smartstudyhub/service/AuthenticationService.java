@@ -65,7 +65,7 @@ public class AuthenticationService {
 	public AuthenticationDTO authenticate(AuthenticationDTO request) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-		User user = userService.findByEmail(request.getEmail());
+		User user = userService.findByEmailAndStatus(request.getEmail(), EnumStatus.ACTIVE.getValue());
 		
 		return AuthenticationDTO.builder()
 				.email(user.getEmail())

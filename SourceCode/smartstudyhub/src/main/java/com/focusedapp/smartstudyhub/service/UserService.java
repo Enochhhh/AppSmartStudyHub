@@ -43,17 +43,38 @@ public class UserService {
 	
 	/**
 	 * 
-	 * Find User by email
+	 * Find User by email and status ACTIVE
 	 * 
 	 * @param email
 	 * @return
 	 */
-	public User findByEmail(String email) {
-		User user = userDAO.findByEmailAndStatus(email, EnumStatus.ACTIVE.getValue())
-				.orElseThrow(() -> new NotFoundValueException("Not Found User By Email: " + email, "UserService->findByEmail"));
+	public User findByEmailAndStatus(String email, String status) {
+		User user = userDAO.findByEmailAndStatus(email, status)
+				.orElseThrow(() -> new NotFoundValueException("Not Found User By Email: " + email, "UserService->findByEmailAndStatus"));
 		return user;
 	}
 	
+	/**
+	 * 
+	 * Find User by email
+	 * 
+	 * @param email
+	 * @param statusFirst
+	 * @param statusSecond
+	 * @return
+	 */
+	public User findByEmail(String email) {
+		User user = userDAO.findByEmail(email)
+				.orElseThrow(() -> new NotFoundValueException("Not Found User By Email: " + email, "UserService->findByEmailAndStatus"));
+		return user;
+	}
+	
+	/**
+	 * 
+	 * Create Guest User
+	 * 
+	 * @return
+	 */
 	public UserDTO createGuestUser() {
 		
 		User userTop = userDAO.findTopByOrderByIdDesc()

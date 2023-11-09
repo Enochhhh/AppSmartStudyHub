@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -14,7 +16,7 @@ import net.minidev.json.JSONObject;
 
 @ControllerAdvice
 public class ExceptionControllerAdvice {
-
+	
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<Result<JSONObject>> exceptionSystem(Exception exception) {
 		
@@ -31,7 +33,43 @@ public class ExceptionControllerAdvice {
 		result.setLogInfo(exception.getMessage());
 		
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+	} 
+	
+	@ExceptionHandler(value = InternalAuthenticationServiceException.class)
+	public ResponseEntity<Result<JSONObject>> internalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
+		
+		Logger logger = LoggerFactory.getLogger(ExceptionControllerAdvice.class);
+		logger.error(exception.getMessage());
+		
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.AUTHENTICATED_FAILURE.getCode());
+		result.getMeta().setMessage(StatusCode.AUTHENTICATED_FAILURE.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Authenticated Failure, please try again");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
+	} 
+	
+	@ExceptionHandler(value = BadCredentialsException.class)
+	public ResponseEntity<Result<JSONObject>> badCredentialsException(BadCredentialsException exception) {
+		
+		Logger logger = LoggerFactory.getLogger(ExceptionControllerAdvice.class);
+		logger.error(exception.getMessage());
+		
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.AUTHENTICATED_FAILURE.getCode());
+		result.getMeta().setMessage(StatusCode.AUTHENTICATED_FAILURE.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Authenticated Failure, please try again");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
+	} 
 	
 	@ExceptionHandler(value = NotFoundValueException.class)
 	public ResponseEntity<Result<JSONObject>> notFoundValueException(NotFoundValueException exception) {

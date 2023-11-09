@@ -11,6 +11,11 @@ import com.focusedapp.smartstudyhub.model.User;
 public interface UserDAO extends JpaRepository<User, Integer> {
 
 	Optional<User> findByEmailAndStatus(String email, String status);
+	
 	Boolean existsByEmail(String email);
+	
 	Optional<User> findTopByOrderByIdDesc();
+	
+	Optional<User> findByEmail(String email);
+	
 }
