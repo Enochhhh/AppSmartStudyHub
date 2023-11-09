@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.focusedapp.smartstudyhub.model.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,16 @@ import lombok.NoArgsConstructor;
 public class AuthenticationDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public AuthenticationDTO(User user) {
+		this.id = user.getId();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.email = user.getEmail();
+		this.password = user.getPassword();
+		this.role = user.getRole();
+		this.createdAt = user.getCreatedAt().getTime();
+	}
 	
 	private Integer id;
 	private String firstName;

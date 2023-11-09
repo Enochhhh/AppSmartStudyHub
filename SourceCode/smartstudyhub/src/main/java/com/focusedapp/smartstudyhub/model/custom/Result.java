@@ -89,11 +89,13 @@ public class Result<T> implements Serializable {
 	}
 	
 
+	@JsonInclude(value = Include.NON_NULL)
 	public class MetaInfo implements Serializable {
 		
 		private static final long serialVersionUID = 1L;
 		private String statusCode;
 		private String message;
+		private String details;
 		
 		public MetaInfo() {
 			this.statusCode = StatusCode.SUCCESS.getCode();
@@ -122,6 +124,14 @@ public class Result<T> implements Serializable {
 		public void setMessage(String message) {
 			this.message = message;
 		}
+
+		public String getDetails() {
+			return details;
+		}
+
+		public void setDetails(String details) {
+			this.details = details;
+		}	
 
 	}
 

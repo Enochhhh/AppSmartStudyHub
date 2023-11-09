@@ -16,6 +16,7 @@ import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.exception.ValueExistedException;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
+import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -115,6 +116,15 @@ public class AuthenticationService {
 	 */
 	public AuthenticationDTO resendOtpCode(Integer id) {
 		return userService.resendOtpCode(id);
+	}
+	
+	/**
+	 * Delete user registered
+	 * 
+	 * @return
+	 */
+	public UserDTO deleteUserRegistered(Integer id) {
+		return userService.deleteById(id);
 	}
 
 }

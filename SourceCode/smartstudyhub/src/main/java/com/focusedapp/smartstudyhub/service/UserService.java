@@ -163,5 +163,20 @@ public class UserService {
 				.otpTimeExpiration(user.getOtpTimeExpiration().getTime())
 				.build();
 	}
+	
+	/**
+	 * Delete user by id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public UserDTO deleteById(Integer id) {
+		
+		User user = userDAO.findById(id).orElseThrow(() -> new NotFoundValueException(
+				"Not Found the user to delete", "UserService->deleteById"));
+		userDAO.delete(user);
+		
+		return new UserDTO(user);
+	}
 
 }
