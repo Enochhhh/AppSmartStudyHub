@@ -1,4 +1,4 @@
-package com.focusedapp.smartstudyhub.controller.authentication;
+package com.focusedapp.smartstudyhub.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
 @RestController
 @RequestMapping("/mobile/v1/user")
-public class UserController {
+public class UserController extends BaseController {
 	
 	@Autowired
 	UserService userService;
@@ -37,7 +37,8 @@ public class UserController {
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		result.setData(userResponse);
 		
-		return ResponseEntity.ok(result);
+		return createResponseEntity(result);
 		
 	}
+
 }

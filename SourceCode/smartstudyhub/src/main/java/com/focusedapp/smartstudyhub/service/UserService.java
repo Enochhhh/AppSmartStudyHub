@@ -1,7 +1,7 @@
 package com.focusedapp.smartstudyhub.service;
 
-import java.util.Base64;
 import java.util.Date;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.dao.UserDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -18,6 +19,8 @@ public class UserService {
 	
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	MailSenderService mailSenderService;
 	
 	/**
 	 * 
@@ -39,6 +42,19 @@ public class UserService {
 	 */
 	public User persistent(User user) {
 		return userDAO.save(user);
+	}
+	
+	/**
+	 * Find User By Id And Status
+	 * 
+	 * @param id
+	 * @param status
+	 * @return
+	 */
+	public User findByIdAndStatus(Integer id, String status) {
+		return userDAO.findByIdAndStatus(id, status)
+				.orElseThrow(() -> new NotFoundValueException("Not Found User By id: " + id.toString(), 
+						"UserService->findByIdAndStatus"));
 	}
 	
 	/**
@@ -89,14 +105,62 @@ public class UserService {
 				.build();
 		
 		user = persistent(user);
-		
-		String idEncode = Base64.getEncoder().encodeToString(user.getId().toString().getBytes());		
+			
 		return UserDTO.builder()
 				.firstName(user.getFirstName())
 				.lastName(user.getLastName())
-				.idEncode(idEncode)
+				.id(user.getId())
 				.role(user.getRole())
 				.createdAt(user.getCreatedAt().getTime())
+				.build();
+	}
+	
+	/**
+	 * Generate OTP Code
+	 * 
+	 * @return
+	 */
+	public String generateOtpCode() {
+		Integer number = new Random().nextInt(900000) + 100000;
+		return number.toString();
+	}
+	
+	/**
+	 * Send OTP Code to Email
+	 * 
+	 * @param request
+	 */
+	public void sendOtpEmailToUser(String email) {
+		
+		User user = findByEmailAndStatus(email, EnumStatus.ACTIVE.getValue());
+		
+		String subject = "Smart Study Hub send OTP Code";
+		String body = "<b>OTP Code is expired after 3 minutes</b> <br>"			
+				+ "<p> Here is the OTP Code: " + user.getOtpCode() + "</p><br>";
+		mailSenderService.sendEmail(email, subject, body);
+	}
+	
+	/**
+	 * Resend OTP Code
+	 * 
+	 * @param authenticationDTO
+	 * @return
+	 */
+	public AuthenticationDTO resendOtpCode(Integer id) {
+		User user = findByIdAndStatus(id, EnumStatus.ACTIVE.getValue());
+		
+		if (user.getEmail() == null) {
+			return null;
+		}
+		
+		String otpCode = generateOtpCode();
+		user.setOtpCode(otpCode);
+		user.setOtpTimeExpiration(new Date(new Date().getTime() + 180 * 1000));
+		persistent(user);
+		
+		return AuthenticationDTO.builder()
+				.otpCode(otpCode)
+				.otpTimeExpiration(user.getOtpTimeExpiration().getTime())
 				.build();
 	}
 

@@ -1,10 +1,12 @@
-package com.focusedapp.smartstudyhub.controller.authentication;
+package com.focusedapp.smartstudyhub.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
@@ -16,7 +18,7 @@ import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
 @RestController
 @RequestMapping("/mobile/v1/auth")
-public class AuthenticationController {
+public class AuthenticationController extends BaseController {
 	
 	@Autowired
 	AuthenticationService authenticationService; 
@@ -24,7 +26,6 @@ public class AuthenticationController {
 	UserService userService;
 
 	/**
-	 * 
 	 * Controller Register User
 	 * 
 	 * @param request
@@ -44,11 +45,10 @@ public class AuthenticationController {
 			result.getMeta().setMessage(StatusCode.REGISTER_SUCCESS.getMessage());
 		}
 		
-		return ResponseEntity.ok(result);
+		return createResponseEntity(result);
 	}
 	
 	/**
-	 * 
 	 * Controller Login User
 	 * 
 	 * @param request
@@ -68,6 +68,22 @@ public class AuthenticationController {
 			result.getMeta().setMessage(StatusCode.LOGIN_SUCCESS.getMessage());
 		}
 		
-		return ResponseEntity.ok(result);
+		return createResponseEntity(result);
+	}
+	
+	@GetMapping("/resendotp")
+	public ResponseEntity<Result<AuthenticationDTO>> resendOtpCode(@RequestParam Integer userId) {
+		Result<AuthenticationDTO> result = new Result<>();
+		AuthenticationDTO data = authenticationService.resendOtpCode(userId);
+		
+		if (data == null) {
+			result.getMeta().setStatusCode(StatusCode.RESEND_OTP_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.RESEND_OTP_FAILURE.getMessage());
+		} else {
+			result.setData(data);
+			result.getMeta().setStatusCode(StatusCode.RESEND_OTP_SUCCESS.getCode());
+			result.getMeta().setMessage(StatusCode.RESEND_OTP_SUCCESS.getMessage());
+		}
+		return createResponseEntity(result);
 	}
 }

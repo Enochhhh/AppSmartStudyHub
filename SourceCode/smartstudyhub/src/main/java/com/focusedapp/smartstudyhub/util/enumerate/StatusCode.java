@@ -16,6 +16,8 @@ public enum StatusCode {
 	/* Register */
 	REGISTER_SUCCESS("1_1_s", "Register Successfully"),
 	REGISTER_FAILURE("1_1_f", "Register Failure"),
+	RESEND_OTP_FAILURE("1_2_f", "Resend OTP Code Failure"),
+	RESEND_OTP_SUCCESS("1_2_s", "Resend OTP Code Success"),
 	/* Login */
 	LOGIN_SUCCESS("2_1_s", "Login Successfully"),
 	LOGIN_FAILURE("2_1_f", "Login Failure");

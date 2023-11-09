@@ -19,11 +19,14 @@ public class AuthenticationDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private Integer id;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String password;
 	private String role;
 	private Long createdAt;
+	private String otpCode;
 	private String token;
+	private Long otpTimeExpiration;
 }
