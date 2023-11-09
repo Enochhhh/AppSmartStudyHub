@@ -54,7 +54,9 @@ public class StudyGroup implements Serializable {
 	@Column(name = "created_date")
 	private Date createdDate;
 	
-	@Column(name = "status")
+	@Column(name = "status_group")
+	private String statusGroup;
+	
 	private String status;
 	
 	@OneToMany(mappedBy = "studyGroup", fetch = FetchType.LAZY)

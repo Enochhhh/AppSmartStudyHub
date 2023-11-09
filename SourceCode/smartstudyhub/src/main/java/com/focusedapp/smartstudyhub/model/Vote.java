@@ -50,5 +50,7 @@ public class Vote implements Serializable {
 	
 	@Column(name = "number_star")
 	private Integer numberStar;
+
+	private String status;
 	
 }

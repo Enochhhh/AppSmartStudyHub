@@ -41,4 +41,6 @@ public class FriendUser implements Serializable {
 	@Column(name = "created_date")
 	private Date createdDate;
 	
+	private String status;
+	
 }

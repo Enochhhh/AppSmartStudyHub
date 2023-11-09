@@ -47,6 +47,8 @@ public class Folder implements Serializable {
 	@Column(name = "icon_url")
 	private String iconUrl;
 	
+	private String status;
+	
 	@OneToMany(mappedBy = "folder", fetch = FetchType.LAZY)
 	List<Project> projects; 
 	

@@ -58,6 +58,8 @@ public class CommentPost implements Serializable {
 	@Column(name = "total_type_react")
 	private Integer totalTypeReact;
 	
+	private String status;
+	
 	@OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
 	private List<LikeComment> usersLiked;
 

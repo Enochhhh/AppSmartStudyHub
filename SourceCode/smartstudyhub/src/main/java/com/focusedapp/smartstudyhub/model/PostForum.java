@@ -70,11 +70,14 @@ public class PostForum implements Serializable {
 	private String urlPost;
 	
 	@Column(name = "total_type_react")
-	private String totalTypeReact;
-	
-	private String status;
+	private String totalTypeReact;	
 	
 	private String limits;
+	
+	@Column(name = "status_post")
+	private String statusPost;
+	
+	private String status;
 	
 	@OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
 	private List<LikePost> usersLiked;

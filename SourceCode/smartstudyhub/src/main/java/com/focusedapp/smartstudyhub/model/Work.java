@@ -47,8 +47,8 @@ public class Work implements Serializable {
 	@JoinColumn(name = "project_id")
 	private Project project;
 	
-	@Column(name = "status", length = 20)
-	private String status;
+	@Column(name = "status_work")
+	private String statusWork;
 	
 	@Column(name = "due_date")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -86,6 +86,8 @@ public class Work implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "assignee_id")
 	private User assignee;
+	
+	private String status;
 	
 	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY)
 	private List<ExtraWork> extraWorks;

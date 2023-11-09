@@ -47,4 +47,6 @@ public class UsersJoiningStudyGroup implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 	
+	private String status;
+	
 }

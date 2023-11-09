@@ -58,6 +58,7 @@ create table friend_users(
 	user_id int not null,
     user_id_friend int not null,
     created_date datetime,
+    status text, -- BLOCK, FRIEND, UNFRIEND
     constraint FriendUserPrimaryKey primary key(user_id, user_id_friend),
     constraint FriendUsersUserIdForeignKey foreign key(user_id) references users(id),
 	constraint FriendUsersUserIdFriendForeignKey foreign key(user_id_friend) references users(id)
@@ -70,9 +71,10 @@ create table report(
     phonenumber varchar(11),
     title nvarchar(100),
     content nvarchar(300),
-    status nvarchar(20),
+    status_report text,
     created_date datetime,
     type_report nvarchar(50),
+    status text,
 	constraint ReportPrimaryKey primary key(id),
     constraint ReportUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -84,6 +86,7 @@ create table vote(
     content nvarchar(300),
     created_date datetime,
     number_star int,
+    status text,
 	constraint VotePrimaryKey primary key(id),
     constraint VoteUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -97,7 +100,8 @@ create table study_group(
     total_time_focus int,
     image_url text,
     created_date datetime,
-    status text, -- It have 2 value: PRIVATE, PUBLIC
+    status_group text, -- It have 2 value: PRIVATE, PUBLIC
+    status text,
 	constraint StudyGroupPrimaryKey primary key(id)
 );
 
@@ -105,6 +109,7 @@ create table users_join_study_group(
 	user_id int not null,
     study_group_id int not null,
     created_date datetime,
+    status text, -- JOINED, UNJOIN, BANNED
     constraint UserJoinStudyGroupPrimaryKey primary key(user_id, study_group_id),
     constraint UserJoinStudyGroupUserIdForeignKey foreign key(user_id) references users(id),
     constraint UserJoinStudyGroupStudyGroupIdForeignKey foreign key(study_group_id) references study_group(id)
@@ -115,7 +120,8 @@ create table theme(
     user_id int,
     name_sound nvarchar(50),
     url text,
-    status text, -- It have 2 value: DEFAULT, OWNED
+    status_theme text, -- It have 2 value: DEFAULT, OWNED
+    status text,
     constraint ThemePrimaryKey primary key(id),
     constraint ThemeUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -126,6 +132,7 @@ create table folder(
     folder_name nvarchar(50),
     color_code text,
     icon_url text,
+    status text,
     constraint FolderPrimaryKey primary key(id),
     constraint FolderUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -137,6 +144,7 @@ create table project(
     project_name nvarchar(50),
     color_code text,
     icon_url text,
+    status text,
     constraint ProjectPrimaryKey primary key(id),
     constraint ProjectFolderId foreign key(folder_id) references folder(id),
     constraint ProjectUserIdForeignKey foreign key(user_id) references users(id)
@@ -146,7 +154,7 @@ create table works(
 	id int auto_increment,
     user_id int not null,
     project_id int,
-    status nvarchar(20),
+    status_work text,
     due_date datetime,
     work_name nvarchar(100),
     priority nvarchar(20),
@@ -158,6 +166,7 @@ create table works(
     is_repeated boolean,
     note nvarchar(300),
     assignee_id int,
+    status text,
     constraint WorksPrimaryKey primary key(id),
     constraint WorksUserIdForeignKey foreign key(user_id) references users(id),
     constraint WorksProjectIdForeignKey foreign key(project_id) references project(id),
@@ -179,6 +188,7 @@ create table tag(
     user_id int not null,
     tag_name nvarchar(50),
     color_code text,
+    status text,
     constraint TagPrimaryKey primary key(id),
     constraint TagUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -196,7 +206,8 @@ create table sound_concentration(
     user_id int,
     name_sound nvarchar(50),
     url text,
-    status text, -- It have 3 value: DEFAULT, PREMIUM, OWNED
+    status_sound text, -- It have 3 value: DEFAULT, PREMIUM, OWNED
+    status text,
     constraint SoundConcentrationPrimaryKey primary key(id),
     constraint SoundConcentrationUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -223,7 +234,8 @@ create table post_forum(
     url_post text,
     total_type_react text,
     limits text,
-    status text, -- It have 2 value: ACTIVE, DELETED, BANNED
+    status_post text, -- It have 2 value: ACTIVE, DELETED, BANNED
+    status text,
     constraint PostForumPrimaryKey primary key(id),
     constraint PostForumUserIdForeignKey foreign key(user_id) references users(id),
     constraint PostForumCategoryForumIdForeignKey foreign key(category_forum_id) references category_forum(id)
@@ -247,6 +259,7 @@ create table comment_post(
     created_date datetime,
     total_like int,
     total_type_react text,
+    status text,
     constraint CommentPostPrimaryKey primary key(id),
 	constraint CommentPostPostIdForeignKey foreign key(post_id) references post_forum(id),
     constraint CommentPostUserIdForeignKey foreign key(user_id) references users(id)
@@ -268,6 +281,8 @@ create table report_post(
     post_id int not null,
     content nvarchar(3000),
     created_date datetime,
+    status_report text,
+    status text,
     constraint ReportPostPrimaryKey primary key(id),
     constraint ReportPostUserIdForeignKey foreign key(user_id) references users(id),
     constraint ReportPostPostIdForeignKey foreign key(post_id) references post_forum(id)

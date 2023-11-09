@@ -40,6 +40,9 @@ public class SoundConcentration implements Serializable {
 	
 	private String url;
 	
+	@Column(name = "status_sound")
+	private String statusSound;
+	
 	private String status;
 	
 }

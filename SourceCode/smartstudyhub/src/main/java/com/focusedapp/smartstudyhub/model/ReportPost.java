@@ -48,5 +48,10 @@ public class ReportPost implements Serializable {
 	@Column(name = "created_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
+	
+	@Column(name = "status_report")
+	private String statusReport;
+	
+	private String status;
 
 }

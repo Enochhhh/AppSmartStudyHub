@@ -51,6 +51,8 @@ public class Project implements Serializable {
 	@Column(name = "icon_url")
 	private String iconUrl;
 	
+	private String status;
+	
 	@OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
 	private List<Work> works;
 	

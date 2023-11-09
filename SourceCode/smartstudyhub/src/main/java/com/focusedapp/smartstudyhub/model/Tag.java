@@ -43,6 +43,8 @@ public class Tag implements Serializable {
 	@Column(name = "color_code")
 	private String colorCode;
 	
+	private String status;
+	
 	@ManyToMany(mappedBy = "tags")
 	List<Work> works;
 	

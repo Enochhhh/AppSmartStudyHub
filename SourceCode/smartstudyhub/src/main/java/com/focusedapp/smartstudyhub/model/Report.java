@@ -46,8 +46,8 @@ public class Report implements Serializable {
 	@Column(name = "content", length = 300)
 	private String content;
 	
-	@Column(name = "status", length = 20)
-	private String status;
+	@Column(name = "status_report")
+	private String statusReport;
 	
 	@Column(name = "created_date")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -59,5 +59,7 @@ public class Report implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	
+	private String status;
 	
 }

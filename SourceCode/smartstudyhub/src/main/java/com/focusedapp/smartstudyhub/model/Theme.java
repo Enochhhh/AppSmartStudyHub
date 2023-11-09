@@ -40,6 +40,9 @@ public class Theme implements Serializable {
 	
 	private String url;
 	
+	@Column(name = "status_theme")
+	private String statusTheme;
+	
 	private String status;
 
 }
