@@ -114,8 +114,8 @@ public class AuthenticationService {
 	 * @param id
 	 * @return
 	 */
-	public AuthenticationDTO resendOtpCode(Integer id) {
-		return userService.resendOtpCode(id);
+	public AuthenticationDTO resendOtpCode(String email) {
+		return userService.resendOtpCode(email);
 	}
 	
 	/**

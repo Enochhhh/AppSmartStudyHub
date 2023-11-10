@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.focusedapp.smartstudyhub.dao.UserDAO;
@@ -21,6 +22,8 @@ public class UserService {
 	UserDAO userDAO;
 	@Autowired
 	MailSenderService mailSenderService;
+	@Autowired
+	PasswordEncoder passwordEncoder;
 	
 	/**
 	 * 
@@ -146,8 +149,8 @@ public class UserService {
 	 * @param authenticationDTO
 	 * @return
 	 */
-	public AuthenticationDTO resendOtpCode(Integer id) {
-		User user = findByIdAndStatus(id, EnumStatus.ACTIVE.getValue());
+	public AuthenticationDTO resendOtpCode(String email) {
+		User user = findByEmailAndStatus(email, EnumStatus.ACTIVE.getValue());
 		
 		if (user.getEmail() == null) {
 			return null;
@@ -166,6 +169,20 @@ public class UserService {
 	}
 	
 	/**
+	 * Send OTP Code to change password of user account
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public AuthenticationDTO sendOtpCodeToChangePass(String email, User user) {
+		
+		if (!email.equals(user.getEmail())) {
+			return null;
+		}
+		return resendOtpCode(email);
+	}
+	
+	/**
 	 * Delete user by id
 	 * 
 	 * @param id
@@ -178,6 +195,29 @@ public class UserService {
 		userDAO.delete(user);
 		
 		return new UserDTO(user);
+	}
+	
+	/**
+	 * Change Password with User Logged in
+	 * 
+	 * @param authenticationDTO
+	 * @return
+	 */
+	public void changePassword(AuthenticationDTO authenticationDTO, User user) {	
+		user.setPassword(passwordEncoder.encode(authenticationDTO.getPassword()));
+		persistent(user);
+	}
+	
+	/**
+	 * Change Password when User forgot password
+	 * 
+	 * @param authenticationDTO
+	 * @return
+	 */
+	public void changePassword(AuthenticationDTO authenticationDTO) {	
+		User user = findByEmailAndStatus(authenticationDTO.getEmail(), EnumStatus.ACTIVE.getValue());
+		user.setPassword(passwordEncoder.encode(authenticationDTO.getPassword()));
+		persistent(user);
 	}
 
 }

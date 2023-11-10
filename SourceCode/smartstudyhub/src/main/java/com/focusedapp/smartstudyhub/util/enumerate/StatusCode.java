@@ -21,8 +21,10 @@ public enum StatusCode {
 	DELETE_USER_REGISTERED_SUCCESS("1_3_s", "Delete User Registered Success"),
 	DELETE_USER_REGISTERED_FAILURE("1_3_f", "Delete User Registered Failure"),
 	/* Login */
-	LOGIN_SUCCESS("2_1_s", "Login Successfully"),
-	LOGIN_FAILURE("2_1_f", "Login Failure");
+	LOGIN_SUCCESS("2_1_s", "Login Success"),
+	LOGIN_FAILURE("2_1_f", "Login Failure"),
+	CHANGE_PASSWORD_SUCCESS("2_2_s", "Change Password Success"),
+	CHANGE_PASSWORD_FAILURE("2_2_f", "Change Password Failure");
 	
 
 	private final String code;
