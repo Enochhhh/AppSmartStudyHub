@@ -74,6 +74,12 @@ public class AuthenticationController extends BaseController {
 		return createResponseEntity(result);
 	}
 
+	/**
+	 * Resend OTP Code
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	@GetMapping("/resendotp")
 	public ResponseEntity<Result<AuthenticationDTO>> resendOtpCode(@RequestParam Integer userId) {
 		Result<AuthenticationDTO> result = new Result<>();
@@ -91,6 +97,12 @@ public class AuthenticationController extends BaseController {
 		return createResponseEntity(result);
 	}
 
+	/**
+	 * Delete User By Id
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	@DeleteMapping("/deleteuser/{userId}")
 	public ResponseEntity<Result<UserDTO>> deleteUserRegistered(@PathVariable Integer userId) {
 		Result<UserDTO> result = new Result<>();

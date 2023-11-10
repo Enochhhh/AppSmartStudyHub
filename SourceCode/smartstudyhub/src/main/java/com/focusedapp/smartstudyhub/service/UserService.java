@@ -157,6 +157,7 @@ public class UserService {
 		user.setOtpCode(otpCode);
 		user.setOtpTimeExpiration(new Date(new Date().getTime() + 180 * 1000));
 		persistent(user);
+		sendOtpEmailToUser(user.getEmail());
 		
 		return AuthenticationDTO.builder()
 				.otpCode(otpCode)
