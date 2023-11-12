@@ -46,7 +46,7 @@ public class UserController extends BaseController {
 	}
 	
 	
-	@PostMapping("/registered/otp-change-pass")
+	@PostMapping("/customer/otp-change-pass")
 	public ResponseEntity<Result<AuthenticationDTO>> sendOtpToChangePassword(@RequestBody AuthenticationDTO request) {
 		Result<AuthenticationDTO> result = new Result<>();
 		if (request == null || StringUtils.isBlank(request.getEmail())) {
@@ -72,7 +72,7 @@ public class UserController extends BaseController {
 		return createResponseEntity(result);
 	}
 
-	@PostMapping("/registered/change-password")
+	@PostMapping("/customer/change-password")
 	public ResponseEntity<Result<Object>> changePassword(@RequestBody AuthenticationDTO authenticationDTO) {
 
 		Result<Object> result = new Result<Object>();

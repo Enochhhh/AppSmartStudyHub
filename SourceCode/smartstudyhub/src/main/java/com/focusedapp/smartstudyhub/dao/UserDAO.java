@@ -20,4 +20,6 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 	
 	Optional<User> findByIdAndStatus(Integer id, String status);
 	
+	Optional<User> findByUserNameAndStatus(String userName, String status);
+	
 }

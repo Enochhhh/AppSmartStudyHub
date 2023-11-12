@@ -58,7 +58,7 @@ public class JwtService {
 				.claim("Authority", user.getAuthorities())
 				.claim("Role", user.getUser().getRole())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)))
+				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)))
 				.signWith(getSigningKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}

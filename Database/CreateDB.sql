@@ -27,6 +27,7 @@ drop table if exists like_comment;
 
 create table users(
 	id int auto_increment,
+    user_name varchar(50),
     email varchar(50), 
     passwords text,
     phone_number varchar(11),
@@ -41,6 +42,7 @@ create table users(
     otp_code text,
     otp_time_expiration datetime,
     total_time_focus int,
+    provider text,
     status text, -- It have 2 value: ACTIVE, BANNED and DELETED
     constraint UserPrimaryKey primary key(id)
 );

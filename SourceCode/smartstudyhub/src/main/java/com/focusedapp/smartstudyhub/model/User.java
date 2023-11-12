@@ -37,6 +37,9 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@Column(name = "user_name", length = 50)
+	private String userName;
+	
 	@Column(name = "email", length = 50)
 	private String email;
 	
@@ -84,6 +87,8 @@ public class User implements Serializable {
 	
 	@Column(name = "status")
 	private String status;
+	
+	private String provider;
 	
 	@OneToMany(mappedBy = "userManager", fetch = FetchType.LAZY)
 	private List<ManageUser> userManagers;

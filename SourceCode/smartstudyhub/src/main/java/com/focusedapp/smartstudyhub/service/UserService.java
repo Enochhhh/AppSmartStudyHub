@@ -219,5 +219,19 @@ public class UserService {
 		user.setPassword(passwordEncoder.encode(authenticationDTO.getPassword()));
 		persistent(user);
 	}
+	
+	/**
+	 * Get User by Username and status
+	 * 
+	 * @param userName
+	 * @param status
+	 * @return
+	 */
+	public User getUserByUsernameAndStatus(String userName, String status) {
+		User user = userDAO.findByUserNameAndStatus(userName, status)
+				.orElseThrow(() -> new NotFoundValueException("Not Found User By UserName: " + userName, 
+						"UserService->getUserByUsernameAndStatus"));
+		return user;
+	}
 
 }

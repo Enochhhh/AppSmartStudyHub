@@ -158,4 +158,34 @@ public class AuthenticationController extends BaseController {
 		result.getMeta().setMessage(StatusCode.CHANGE_PASSWORD_SUCCESS.getMessage());
 		return createResponseEntity(result);
 	}
+	
+	@PostMapping("/check-email-exist")
+	public ResponseEntity<Result<Boolean>> checkEmailExist(@RequestBody AuthenticationDTO authenticationDTO) {
+		
+		Result<Boolean> result = new Result<>();
+		HttpStatus httpStatus;
+		if (authenticationDTO == null || authenticationDTO.getEmail() == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Please provide the Email to check if exist");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		Boolean isExist = userService.existsByEmail(authenticationDTO.getEmail());
+		result.setData(isExist);
+		if (isExist) {
+			result.getMeta().setStatusCode(StatusCode.DATA_EXISTED.getCode());
+			result.getMeta().setMessage(StatusCode.DATA_EXISTED.getMessage());
+			result.getMeta().setDetails("Email existed");
+			httpStatus = HttpStatus.OK;
+			
+		} else {
+			result.getMeta().setStatusCode(StatusCode.DATA_NOT_FOUND.getCode());
+			result.getMeta().setMessage(StatusCode.DATA_NOT_FOUND.getMessage());
+			result.getMeta().setDetails("Email not existed");
+			httpStatus = HttpStatus.NOT_FOUND;
+		}
+		return createResponseEntity(result, httpStatus);
+	}
+	
 }

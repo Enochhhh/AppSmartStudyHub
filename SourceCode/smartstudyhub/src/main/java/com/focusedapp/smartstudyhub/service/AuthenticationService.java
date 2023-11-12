@@ -19,6 +19,7 @@ import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
+import com.focusedapp.smartstudyhub.util.enumerate.Provider;
 
 @Service
 public class AuthenticationService {
@@ -126,5 +127,18 @@ public class AuthenticationService {
 	public UserDTO deleteUserRegistered(Integer id) {
 		return userService.deleteById(id);
 	}
+	
+	public void processOAuthPostLogin(String username) {
+        User existUser = userService.getUserByUsernameAndStatus(username, EnumStatus.ACTIVE.getValue());
+         
+        if (existUser == null) {
+            User newUser = new User();
+            newUser.setUserName(username);
+            newUser.setProvider(Provider.GOOGLE.getValue());
+            newUser.setStatus(EnumStatus.ACTIVE.getValue());          
+            
+            newUser = userService.persistent(newUser);
+        }    
+    }
 
 }
