@@ -7,13 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.focusedapp.smartstudyhub.config.jwtconfig.JwtService;
+import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.dao.UserDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
+import com.focusedapp.smartstudyhub.model.custom.CustomOAuth2User;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
+import com.focusedapp.smartstudyhub.util.enumerate.Provider;
 
 @Service
 public class UserService {
@@ -24,6 +28,8 @@ public class UserService {
 	MailSenderService mailSenderService;
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	@Autowired
+	JwtService jwtService;
 	
 	/**
 	 * 
@@ -228,10 +234,50 @@ public class UserService {
 	 * @return
 	 */
 	public User getUserByUsernameAndStatus(String userName, String status) {
-		User user = userDAO.findByUserNameAndStatus(userName, status)
-				.orElseThrow(() -> new NotFoundValueException("Not Found User By UserName: " + userName, 
-						"UserService->getUserByUsernameAndStatus"));
+		User user = userDAO.findByUserNameAndStatus(userName, status);
 		return user;
 	}
+	
+	/**
+	 * Save data when login google in database
+	 * 
+	 * @param username
+	 */
+	public User processOAuthPostLogin(String username, CustomOAuth2User customOAuth2User) {
+        User existUser = getUserByUsernameAndStatus(username, EnumStatus.ACTIVE.getValue());
+        
+        User newUser = null;
+        if (existUser == null) {
+            newUser = new User();
+            newUser.setUserName(username);
+            newUser.setProvider(Provider.GOOGLE.getValue());
+            newUser.setStatus(EnumStatus.ACTIVE.getValue());          
+            newUser.setRole(EnumRole.CUSTOMER.getValue());
+            newUser.setEmail(username);
+            newUser.setCreatedAt(new Date());
+            
+            String[] arrStr = customOAuth2User.getName().split(" ");
+            newUser.setFirstName(arrStr[0]);
+            newUser.setEmail(customOAuth2User.getEmail());
+            
+            String lastName = "";
+            for (int i = 1; i < arrStr.length; i++) {
+            	lastName = lastName + arrStr[i] + " ";
+            }
+            newUser.setLastName(lastName.trim());
+            
+            newUser = persistent(newUser);
+        }    
+        return newUser;
+    }
 
+	/**
+	 * Generate token
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public String generateToken(User user) {
+		return jwtService.generateToken(new JwtUser(user));
+	}
 }

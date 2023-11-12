@@ -16,10 +16,10 @@ import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.exception.ValueExistedException;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
+import com.focusedapp.smartstudyhub.model.custom.CustomOAuth2User;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
-import com.focusedapp.smartstudyhub.util.enumerate.Provider;
 
 @Service
 public class AuthenticationService {
@@ -102,6 +102,9 @@ public class AuthenticationService {
 			if (principal instanceof JwtUser) {
 				JwtUser jwtUser = (JwtUser) principal;
 				return jwtUser.getUser();
+			} else if (principal instanceof CustomOAuth2User) {
+				CustomOAuth2User customOAuth2User = (CustomOAuth2User) principal;
+				return userService.findByEmail(customOAuth2User.getEmail());
 			}
 		} else {
 			throw new RuntimeException("Login is required");
@@ -128,17 +131,17 @@ public class AuthenticationService {
 		return userService.deleteById(id);
 	}
 	
-	public void processOAuthPostLogin(String username) {
-        User existUser = userService.getUserByUsernameAndStatus(username, EnumStatus.ACTIVE.getValue());
-         
-        if (existUser == null) {
-            User newUser = new User();
-            newUser.setUserName(username);
-            newUser.setProvider(Provider.GOOGLE.getValue());
-            newUser.setStatus(EnumStatus.ACTIVE.getValue());          
-            
-            newUser = userService.persistent(newUser);
-        }    
-    }
+	/**
+	 * Get User After Login By Google
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public AuthenticationDTO getUserAfterLoginByGoogle(String email) {
+		User userLoggedIn = userService.findByEmailAndStatus(email, EnumStatus.ACTIVE.getValue());
+		AuthenticationDTO data = new AuthenticationDTO(userLoggedIn);
+		data.setToken(userService.generateToken(userLoggedIn));
+		return data;
+	}
 
 }

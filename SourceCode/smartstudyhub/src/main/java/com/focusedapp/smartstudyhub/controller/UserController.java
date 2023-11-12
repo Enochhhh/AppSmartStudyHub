@@ -45,6 +45,13 @@ public class UserController extends BaseController {
 
 	}
 	
+	@GetMapping("/guest/hello")
+	public ResponseEntity<String> hello() {
+
+		return createResponseEntity("Hello");
+
+	}
+	
 	
 	@PostMapping("/customer/otp-change-pass")
 	public ResponseEntity<Result<AuthenticationDTO>> sendOtpToChangePassword(@RequestBody AuthenticationDTO request) {

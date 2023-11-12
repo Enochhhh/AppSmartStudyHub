@@ -188,4 +188,23 @@ public class AuthenticationController extends BaseController {
 		return createResponseEntity(result, httpStatus);
 	}
 	
+	@GetMapping("/get-user-google/{email}")
+	public ResponseEntity<Result<AuthenticationDTO>> getUserAfterLoginByGoogle(@PathVariable String email) {
+
+		Result<AuthenticationDTO> result = new Result<>();
+		if (StringUtils.isBlank(email)) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Please provide the Email to get user");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+
+		AuthenticationDTO data = authenticationService.getUserAfterLoginByGoogle(email);
+
+		result.setData(data);
+		result.getMeta().setStatusCode(StatusCode.CHANGE_PASSWORD_SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.CHANGE_PASSWORD_SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }
