@@ -244,10 +244,9 @@ public class UserService {
 	 * @param username
 	 */
 	public User processOAuthPostLogin(String username, CustomOAuth2User customOAuth2User) {
-        User existUser = getUserByUsernameAndStatus(username, EnumStatus.ACTIVE.getValue());
+        User newUser = getUserByUsernameAndStatus(username, EnumStatus.ACTIVE.getValue());
         
-        User newUser = null;
-        if (existUser == null) {
+        if (newUser == null) {
             newUser = new User();
             newUser.setUserName(username);
             newUser.setProvider(Provider.GOOGLE.getValue());

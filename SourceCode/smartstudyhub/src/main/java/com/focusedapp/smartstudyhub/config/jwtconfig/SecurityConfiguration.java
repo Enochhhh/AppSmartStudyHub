@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.CustomOAuth2User;
 import com.focusedapp.smartstudyhub.service.CustomOAuth2UserService;
 import com.focusedapp.smartstudyhub.service.UserService;
@@ -60,9 +61,9 @@ public class SecurityConfiguration {
 							// TODO Auto-generated method stub
 							CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
 							 
-							userService.processOAuthPostLogin(oauthUser.getEmail(), oauthUser);
+							User user = userService.processOAuthPostLogin(oauthUser.getEmail(), oauthUser);
 				 
-				            response.sendRedirect("/mobile/v1/auth/get-user-google/".concat(oauthUser.getEmail()));
+				            response.sendRedirect("http://localhost:19006?token=" + userService.generateToken(user));
 						}
 					}))
 			.logout(l -> l.permitAll())
