@@ -24,9 +24,10 @@ public enum StatusCode {
 	LOGIN_SUCCESS("2_1_s", "Login Success"),
 	LOGIN_FAILURE("2_1_f", "Login Failure"),
 	CHANGE_PASSWORD_SUCCESS("2_2_s", "Change Password Success"),
-	CHANGE_PASSWORD_FAILURE("2_2_f", "Change Password Failure");
+	CHANGE_PASSWORD_FAILURE("2_2_f", "Change Password Failure"),
+	ACCOUNT_BANNED("2_3_f", "Account was banned"),
+	ACCOUNT_DELETED("2_4_f", "Account was deleted");
 	
-
 	private final String code;
 	private final String message;
 	

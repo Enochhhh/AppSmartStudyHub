@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.focusedapp.smartstudyhub.dao.UserDAO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
+import com.focusedapp.smartstudyhub.util.enumerate.Provider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,7 @@ public class ApplicationConfig {
 			
 			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				return new JwtUser(userDAO.findByEmailAndStatus(username, EnumStatus.ACTIVE.getValue()).get()); 
+				return new JwtUser(userDAO.findByEmailAndProviderAndStatus(username, Provider.LOCAL.getValue(), EnumStatus.ACTIVE.getValue()).get()); 
 			}
 		}; 
 		

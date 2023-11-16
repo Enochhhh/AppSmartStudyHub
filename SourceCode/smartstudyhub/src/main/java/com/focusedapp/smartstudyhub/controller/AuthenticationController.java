@@ -1,25 +1,23 @@
 package com.focusedapp.smartstudyhub.controller;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.AuthenticationService;
 import com.focusedapp.smartstudyhub.service.UserService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
+
 
 @RestController
 @RequestMapping("/mobile/v1/auth")
@@ -171,7 +169,7 @@ public class AuthenticationController extends BaseController {
 			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 		
-		Boolean isExist = userService.existsByEmail(authenticationDTO.getEmail());
+		Boolean isExist = userService.existsByEmailAndProviderLocal(authenticationDTO.getEmail());
 		result.setData(isExist);
 		if (isExist) {
 			result.getMeta().setStatusCode(StatusCode.DATA_EXISTED.getCode());
@@ -186,25 +184,6 @@ public class AuthenticationController extends BaseController {
 			httpStatus = HttpStatus.NOT_FOUND;
 		}
 		return createResponseEntity(result, httpStatus);
-	}
-	
-	@GetMapping("/get-user-google/{email}")
-	public ResponseEntity<Result<AuthenticationDTO>> getUserAfterLoginByGoogle(@PathVariable String email) {
-
-		Result<AuthenticationDTO> result = new Result<>();
-		if (StringUtils.isBlank(email)) {
-			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
-			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-			result.getMeta().setDetails("Please provide the Email to get user");
-			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
-		}
-
-		AuthenticationDTO data = authenticationService.getUserAfterLoginByGoogle(email);
-
-		result.setData(data);
-		result.getMeta().setStatusCode(StatusCode.CHANGE_PASSWORD_SUCCESS.getCode());
-		result.getMeta().setMessage(StatusCode.CHANGE_PASSWORD_SUCCESS.getMessage());
-		return createResponseEntity(result);
 	}
 	
 }

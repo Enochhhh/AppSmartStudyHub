@@ -103,4 +103,36 @@ public class ExceptionControllerAdvice {
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FOUND);
 	}
 	
+	@ExceptionHandler(value = AccountBannedException.class)
+	public ResponseEntity<Result<JSONObject>> accountBannedException(AccountBannedException exception) {
+			
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.ACCOUNT_BANNED.getCode());
+		result.getMeta().setMessage(StatusCode.ACCOUNT_BANNED.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Account was banned");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		result.setUrl(exception.getPath());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
+	}
+	
+	@ExceptionHandler(value = AccountDeletedException.class)
+	public ResponseEntity<Result<JSONObject>> accountDeletedException(AccountDeletedException exception) {
+			
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.ACCOUNT_DELETED.getCode());
+		result.getMeta().setMessage(StatusCode.ACCOUNT_DELETED.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Account was deleted");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		result.setUrl(exception.getPath());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
+	}
+	
 }

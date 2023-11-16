@@ -1,8 +1,10 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,8 +40,8 @@ public class UserService {
 	 * @param email
 	 * @return
 	 */
-	public Boolean existsByEmail(String email) {
-		return userDAO.existsByEmail(email);
+	public Boolean existsByEmailAndProviderLocal(String email) {
+		return userDAO.existsByEmailAndProvider(email, Provider.LOCAL.getValue());
 	}
 	
 	/**
@@ -68,15 +70,29 @@ public class UserService {
 	
 	/**
 	 * 
-	 * Find User by email and status ACTIVE
+	 * Find User by email and status ACTIVE and Provider Local
 	 * 
 	 * @param email
 	 * @return
 	 */
-	public User findByEmailAndStatus(String email, String status) {
-		User user = userDAO.findByEmailAndStatus(email, status)
-				.orElseThrow(() -> new NotFoundValueException("Not Found User By Email: " + email, "UserService->findByEmailAndStatus"));
-		return user;
+	public User findByEmailAndProviderLocalAndStatus(String email, String status) {
+		Optional<User> user = userDAO.findByEmailAndProviderAndStatus(email, Provider.LOCAL.getValue(), status);				
+		return user.get();
+	}
+	
+	/**
+	 * 
+	 * Find User by email and Provider Local
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public User findByEmailAndProviderAndStatusNotActive(String email, String provider) {
+		Optional<User> user = userDAO.findByEmailAndProviderAndStatusNotActive(email, provider);
+		if (user.isEmpty()) {
+			return null;
+		}
+		return user.get();
 	}
 	
 	/**
@@ -139,11 +155,11 @@ public class UserService {
 	 * 
 	 * @param request
 	 */
-	public void sendOtpEmailToUser(String email) {
+	public void sendOtpEmailToUserLocal(String email) {
 		
-		User user = findByEmailAndStatus(email, EnumStatus.ACTIVE.getValue());
+		User user = findByEmailAndProviderLocalAndStatus(email, EnumStatus.ACTIVE.getValue());
 		
-		String subject = "Smart Study Hub send OTP Code";
+		String subject = "Smart Study Hub send OTP Code for " + user.getProvider().toUpperCase() + " account:";
 		String body = "<b>OTP Code is expired after 3 minutes</b> <br>"			
 				+ "<p> Here is the OTP Code: " + user.getOtpCode() + "</p><br>";
 		mailSenderService.sendEmail(email, subject, body);
@@ -155,8 +171,8 @@ public class UserService {
 	 * @param authenticationDTO
 	 * @return
 	 */
-	public AuthenticationDTO resendOtpCode(String email) {
-		User user = findByEmailAndStatus(email, EnumStatus.ACTIVE.getValue());
+	public AuthenticationDTO resendOtpCodeToUserLocal(String email) {
+		User user = findByEmailAndProviderLocalAndStatus(email, EnumStatus.ACTIVE.getValue());
 		
 		if (user.getEmail() == null) {
 			return null;
@@ -166,7 +182,7 @@ public class UserService {
 		user.setOtpCode(otpCode);
 		user.setOtpTimeExpiration(new Date(new Date().getTime() + 180 * 1000));
 		persistent(user);
-		sendOtpEmailToUser(user.getEmail());
+		sendOtpEmailToUserLocal(user.getEmail());
 		
 		return AuthenticationDTO.builder()
 				.otpCode(otpCode)
@@ -185,7 +201,7 @@ public class UserService {
 		if (!email.equals(user.getEmail())) {
 			return null;
 		}
-		return resendOtpCode(email);
+		return resendOtpCodeToUserLocal(email);
 	}
 	
 	/**
@@ -221,20 +237,20 @@ public class UserService {
 	 * @return
 	 */
 	public void changePassword(AuthenticationDTO authenticationDTO) {	
-		User user = findByEmailAndStatus(authenticationDTO.getEmail(), EnumStatus.ACTIVE.getValue());
+		User user = findByEmailAndProviderLocalAndStatus(authenticationDTO.getEmail(), EnumStatus.ACTIVE.getValue());
 		user.setPassword(passwordEncoder.encode(authenticationDTO.getPassword()));
 		persistent(user);
 	}
 	
 	/**
-	 * Get User by Username and status
+	 * Get User by Username and provider and status
 	 * 
 	 * @param userName
 	 * @param status
 	 * @return
 	 */
-	public User getUserByUsernameAndStatus(String userName, String status) {
-		User user = userDAO.findByUserNameAndStatus(userName, status);
+	public User getUserByUsernameAndProvider(String userName, String provider) {
+		User user = userDAO.findByUserNameAndProvider(userName, provider);
 		return user;
 	}
 	
@@ -243,30 +259,35 @@ public class UserService {
 	 * 
 	 * @param username
 	 */
-	public User processOAuthPostLogin(String username, CustomOAuth2User customOAuth2User) {
-        User newUser = getUserByUsernameAndStatus(username, EnumStatus.ACTIVE.getValue());
+	public User processOAuthPostLogin(CustomOAuth2User customOAuth2User) {
+		String username = customOAuth2User.getId();
+		String provider = customOAuth2User.getProvider();
+		String email = customOAuth2User.getEmail();
+		if (StringUtils.isBlank(email)) {
+			throw new NotFoundValueException("Not Found the Email of OAuth2", "UserService->processOAuthPostLogin");
+		}
+        User newUser = getUserByUsernameAndProvider(username, provider);
         
         if (newUser == null) {
             newUser = new User();
-            newUser.setUserName(username);
-            newUser.setProvider(Provider.GOOGLE.getValue());
+            newUser.setUserName(customOAuth2User.getId());
+            newUser.setProvider(provider);
             newUser.setStatus(EnumStatus.ACTIVE.getValue());          
             newUser.setRole(EnumRole.CUSTOMER.getValue());
-            newUser.setEmail(username);
-            newUser.setCreatedAt(new Date());
-            
-            String[] arrStr = customOAuth2User.getName().split(" ");
-            newUser.setFirstName(arrStr[0]);
-            newUser.setEmail(customOAuth2User.getEmail());
-            
-            String lastName = "";
-            for (int i = 1; i < arrStr.length; i++) {
-            	lastName = lastName + arrStr[i] + " ";
-            }
-            newUser.setLastName(lastName.trim());
+            newUser.setEmail(email);
+            newUser.setImageUrl(customOAuth2User.getImageUrl());
+            newUser.setCreatedAt(new Date());        
+            newUser.setFirstName(customOAuth2User.getName());
+            newUser.setLastName("");
+            newUser.setEmail(customOAuth2User.getEmail());                  
             
             newUser = persistent(newUser);
-        }    
+        } else {
+        	newUser.setImageUrl(customOAuth2User.getImageUrl());
+        	newUser.setFirstName(customOAuth2User.getName());
+        	newUser.setLastName("");
+        }
+        
         return newUser;
     }
 
