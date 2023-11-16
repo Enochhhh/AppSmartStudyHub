@@ -18,7 +18,6 @@ import com.focusedapp.smartstudyhub.exception.AccountDeletedException;
 import com.focusedapp.smartstudyhub.exception.ValueExistedException;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
-import com.focusedapp.smartstudyhub.model.custom.CustomOAuth2User;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -115,10 +114,7 @@ public class AuthenticationService {
 			if (principal instanceof JwtUser) {
 				JwtUser jwtUser = (JwtUser) principal;
 				return jwtUser.getUser();
-			} else if (principal instanceof CustomOAuth2User) {
-				CustomOAuth2User customOAuth2User = (CustomOAuth2User) principal;
-				return userService.findByEmail(customOAuth2User.getEmail());
-			}
+			} 
 		} else {
 			throw new RuntimeException("Login is required");
 		}

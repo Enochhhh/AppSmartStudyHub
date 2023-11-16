@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import com.focusedapp.smartstudyhub.exception.AccessDeniedHandlerException;
 import com.focusedapp.smartstudyhub.exception.AuthenticationEntryPointException;
 import com.focusedapp.smartstudyhub.model.User;
-import com.focusedapp.smartstudyhub.model.custom.CustomOAuth2User;
+import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
 import com.focusedapp.smartstudyhub.service.CustomOAuth2UserService;
 import com.focusedapp.smartstudyhub.service.UserService;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
@@ -59,25 +59,22 @@ public class SecurityConfiguration {
 					.authenticated())
 			.formLogin(f -> f.disable())
 			.oauth2Login(o -> o.userInfoEndpoint(ui -> ui.userService(oauthUserService))
-					.authorizationEndpoint(au -> au.baseUri("/oauth2/authorize"))
+					//.authorizationEndpoint(au -> au.baseUri("/oauth2/authorize"))
 					.successHandler(new AuthenticationSuccessHandler() {
 						
 						@Override
 						public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 								Authentication authentication) throws IOException, ServletException {
 							// TODO Auto-generated method stub
-							CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
+							OAuth2UserInfo oauthUser = (OAuth2UserInfo) authentication.getPrincipal();
 							 
 							User user = userService.processOAuthPostLogin(oauthUser);
 							if (user.getStatus().equals(EnumStatus.DELETED.getValue())) {
-								System.out.println("DELETE");
 								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-deleted");
 							} else if (user.getStatus().equals(EnumStatus.BANNED.getValue())) {
-								System.out.println("BANNED");
 								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-banned");
 							}
 							else {
-								System.out.println("SUCCESS");
 								response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));
 							}				           
 						}
@@ -88,7 +85,6 @@ public class SecurityConfiguration {
 						public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 								AuthenticationException exception) throws IOException, ServletException {
 							// TODO Auto-generated method stub
-							System.out.println("ERR");
 				            response.sendRedirect(ConstantUrl.CLIENT_URL + "/error");
 						}
 					})) 

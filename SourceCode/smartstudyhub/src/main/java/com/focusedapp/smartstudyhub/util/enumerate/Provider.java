@@ -3,7 +3,9 @@ package com.focusedapp.smartstudyhub.util.enumerate;
 public enum Provider {
 	
 	LOCAL("local"),
-	GOOGLE("google");
+	GOOGLE("google"),
+	GITHUB("github"),
+	FACEBOOK("facebook");
 	
 	private final String value;
 	
