@@ -20,15 +20,15 @@ jobs:
           java-version: 17
           
       - name: Unit Tests
-        run: mvn -B test --file SourceCode/smartstudyhub/pom.xml
+        run: mvn -B test --file pom.xml
         
       - name: Clean the application
         run: 
-          mvn clean --file SourceCode/smartstudyhub/pom.xml
+          mvn clean --file pom.xml
           
       - name: Build the application
         run: 
-          mvn -B package --file SourceCode/smartstudyhub/pom.xml
+          mvn -B package --file pom.xml
 
       - name: Build Docker Image
         uses: docker/build-push-action@v2
