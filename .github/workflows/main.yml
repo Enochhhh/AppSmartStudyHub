@@ -24,7 +24,7 @@ jobs:
         
       - name: Clean the application
         run: 
-          mvn clean
+          mvn clean --file SourceCode/smartstudyhub/pom.xml
           
       - name: Build the application
         run: 
