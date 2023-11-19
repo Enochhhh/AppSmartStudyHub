@@ -24,5 +24,5 @@ jobs:
         
       - name: Build the application
         run: 
-          mvn clean install
+          clean install
           mvn -B package --file SourceCode/smartstudyhub/pom.xml 
