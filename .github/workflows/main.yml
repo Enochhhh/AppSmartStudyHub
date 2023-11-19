@@ -22,7 +22,10 @@ jobs:
       - name: Unit Tests
         run: mvn -B test --file SourceCode/smartstudyhub/pom.xml
         
+      - name: Clean the application
+        run: 
+          mvn clean 
+          
       - name: Build the application
         run: 
-          clean install
           mvn -B package --file SourceCode/smartstudyhub/pom.xml 
