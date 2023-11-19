@@ -1,7 +1,13 @@
 HELP.md
 # target/
 !.mvn/wrapper/maven-wrapper.jar
-#!**/src/main/**/target/
+!**/src/main/**/target/classes
+!**/src/main/**/target/generated-sources
+!**/src/main/**/target/generated-test-sources
+!**/src/main/**/target/maven-archiver
+!**/src/main/**/target/maven-status
+!**/src/main/**/target/surefire-reports
+!**/src/main/**/target/test-classes
 !**/src/test/**/target/
 
 ### STS ###
