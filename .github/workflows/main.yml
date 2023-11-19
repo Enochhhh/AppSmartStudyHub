@@ -20,9 +20,9 @@ jobs:
           java-version: 17
           
       - name: Unit Tests
-        run: mvn -B test --file /SourceCode/smartstudyhub/pom.xml
+        run: mvn -B test --file SourceCode/smartstudyhub/pom.xml
         
       - name: Build the application
         run: 
           mvn clean
-          mvn -B package --file /SourceCode/smartstudyhub/pom.xml 
+          mvn -B package --file SourceCode/smartstudyhub/pom.xml 
