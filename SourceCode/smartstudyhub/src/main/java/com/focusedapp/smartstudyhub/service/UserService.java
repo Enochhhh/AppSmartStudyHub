@@ -118,12 +118,16 @@ public class UserService {
 	 */
 	public UserDTO createGuestUser() {
 
-		User userTop = userDAO.findTopByOrderByIdDesc().orElseThrow(
-				() -> new NotFoundValueException("Not Found The Top User", "UserService->createGuestUser"));
-
-		User user = User.builder().firstName("#GUEST ").lastName(Integer.valueOf(userTop.getId() + 1).toString())
-				.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue()).build();
-
+		Optional<User> userTop = userDAO.findTopByOrderByIdDesc();
+		User user = null;
+		if (userTop.isEmpty()) {
+			user = User.builder().firstName("#GUEST ").lastName(Integer.valueOf(1).toString())
+					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue()).build();
+		} else {
+			user = User.builder().firstName("#GUEST ").lastName(Integer.valueOf(userTop.get().getId() + 1).toString())
+					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue()).build();
+		}
+		
 		user = persistent(user);
 
 		return UserDTO.builder().firstName(user.getFirstName()).lastName(user.getLastName()).id(user.getId())

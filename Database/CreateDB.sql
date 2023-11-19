@@ -1,7 +1,7 @@
-drop database if exists smart_study_hub;
-create database smart_study_hub;
+drop database if exists sql12663094; -- smartstudyhub
+create database sql12663094; -- smartstudyhub
 
-use smart_study_hub;
+use sql12663094;
 
 drop table if exists users;
 drop table if exists report;
