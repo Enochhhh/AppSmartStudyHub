@@ -76,7 +76,7 @@ public class SecurityConfiguration {
 							}
 							else {
 								// response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));		
-								response.sendRedirect(ConstantUrl.SERVER_URL);
+								response.sendRedirect(ConstantUrl.SERVER_URL + "/");
 							}				           
 						}
 					})
