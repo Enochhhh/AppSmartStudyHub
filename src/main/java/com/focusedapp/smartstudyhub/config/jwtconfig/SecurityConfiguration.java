@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -38,11 +39,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 	
-	private final JwtAuthenticationFilter jwtAuthFilter;
-	private final AuthenticationProvider authenticationProvider;
-	private final CustomOAuth2UserService oauthUserService;
-	private final UserService userService;
-	private final DataSource dataSource;
+	@Autowired
+	private JwtAuthenticationFilter jwtAuthFilter;
+	@Autowired
+	private AuthenticationProvider authenticationProvider;
+	@Autowired
+	private CustomOAuth2UserService oauthUserService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private DataSource dataSource;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

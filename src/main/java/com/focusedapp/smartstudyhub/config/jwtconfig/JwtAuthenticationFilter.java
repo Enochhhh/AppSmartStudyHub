@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.config.jwtconfig;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,8 +22,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
-	private final JwtService jwtService;
-	private final UserDetailsService userDetailsService;
+	@Autowired
+	private JwtService jwtService;
+	@Autowired
+	private UserDetailsService userDetailsService;
 
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, 
