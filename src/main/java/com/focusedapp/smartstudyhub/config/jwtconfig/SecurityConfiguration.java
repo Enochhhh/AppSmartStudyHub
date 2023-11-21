@@ -82,7 +82,8 @@ public class SecurityConfiguration {
 								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-banned");
 							}
 							else {
-								response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));								
+								// response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));				
+								response.sendRedirect("https://youtube.com/");	
 							}				           
 						}
 					})
