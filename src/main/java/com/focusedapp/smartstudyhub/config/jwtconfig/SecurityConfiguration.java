@@ -48,7 +48,7 @@ public class SecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(cs -> cs.disable())
-			.authorizeHttpRequests(authorize -> authorize.requestMatchers("/mobile/v1/auth/**")
+			.authorizeHttpRequests(authorize -> authorize.requestMatchers("/mobile/v1/auth/**", "/oauth2/**")
 					.permitAll()
 					.requestMatchers("/mobile/v1/user/guest/**")
 					.permitAll()
@@ -60,7 +60,7 @@ public class SecurityConfiguration {
 			.formLogin(f -> f.disable())
 			.oauth2Login(o -> o.userInfoEndpoint(ui -> ui.userService(oauthUserService))
 					//.authorizationEndpoint(au -> au.baseUri("/oauth2/authorize"))
-					.redirectionEndpoint(r -> r.baseUri("/oauth2/callback/*"))
+					//.redirectionEndpoint(r -> r.baseUri("/oauth2/callback/*"))
 					.successHandler(new AuthenticationSuccessHandler() {
 						
 						@Override
@@ -76,8 +76,7 @@ public class SecurityConfiguration {
 								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-banned");
 							}
 							else {
-								// response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));		
-								response.sendRedirect(ConstantUrl.SERVER_URL + "/");
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));		
 							}				           
 						}
 					})
