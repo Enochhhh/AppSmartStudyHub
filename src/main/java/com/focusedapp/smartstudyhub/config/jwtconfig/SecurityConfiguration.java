@@ -60,6 +60,7 @@ public class SecurityConfiguration {
 			.formLogin(f -> f.disable())
 			.oauth2Login(o -> o.userInfoEndpoint(ui -> ui.userService(oauthUserService))
 					//.authorizationEndpoint(au -> au.baseUri("/oauth2/authorize"))
+					.redirectionEndpoint(r -> r.baseUri("/oauth2/callback/*"))
 					.successHandler(new AuthenticationSuccessHandler() {
 						
 						@Override
