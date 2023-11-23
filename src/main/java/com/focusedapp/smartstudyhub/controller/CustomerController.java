@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +58,12 @@ public class CustomerController extends BaseController {
 		return createResponseEntity(result);
 	}
 
+	/**
+	 * Change account's password of User
+	 * 
+	 * @param authenticationDTO
+	 * @return
+	 */
 	@PostMapping("/change-password")
 	public ResponseEntity<Result<Object>> changePassword(@RequestBody AuthenticationDTO authenticationDTO) {
 
@@ -76,4 +83,20 @@ public class CustomerController extends BaseController {
 		result.getMeta().setMessage(StatusCode.CHANGE_PASSWORD_SUCCESS.getMessage());
 		return createResponseEntity(result);
 	}
+	
+	public ResponseEntity<Result<AuthenticationDTO>> recoverAccount() {
+		
+		Result<AuthenticationDTO> result = new Result<>();
+				
+		User userLoggedIn = getAuthenticatedUser();
+		
+		return null;
+	}
+	
+	@GetMapping("/hello")
+	public ResponseEntity<String> hello() {
+		
+		return createResponseEntity("Hello");
+	}
+	
 }

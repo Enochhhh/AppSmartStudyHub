@@ -40,4 +40,5 @@ public class AuthenticationDTO implements Serializable {
 	private String otpCode;
 	private String token;
 	private Long otpTimeExpiration;
+	
 }

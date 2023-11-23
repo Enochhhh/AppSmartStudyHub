@@ -33,7 +33,7 @@ public class ApplicationConfig {
 			
 			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				return new JwtUser(userDAO.findByEmailAndProviderAndStatus(username, Provider.LOCAL.getValue(), EnumStatus.ACTIVE.getValue()).get()); 
+				return new JwtUser(userDAO.findByUserNameAndStatus(username, EnumStatus.ACTIVE.getValue()).get()); 
 			}
 		}; 
 		

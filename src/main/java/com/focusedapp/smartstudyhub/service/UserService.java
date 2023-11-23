@@ -86,7 +86,7 @@ public class UserService {
 	 * @param email
 	 * @return
 	 */
-	public User findByEmailAndProviderAndStatusNotActive(String email, String provider) {
+	public User findByEmailAndProviderAndStatusNotActiveE(String email, String provider) {
 		Optional<User> user = userDAO.findByEmailAndProviderAndStatusNotActive(email, provider);
 		if (user.isEmpty()) {
 			return null;
@@ -106,7 +106,7 @@ public class UserService {
 	public User findByEmail(String email) {
 		User user = userDAO.findByEmail(email)
 				.orElseThrow(() -> new NotFoundValueException("Not Found User By Email: " + email,
-						"UserService->findByEmailAndStatus"));
+						"UserService->findByEmail"));
 		return user;
 	}
 
@@ -292,4 +292,42 @@ public class UserService {
 	public String generateToken(User user) {
 		return jwtService.generateToken(new JwtUser(user));
 	}
+	
+	/**
+	 * Find User by UserName and status
+	 * 
+	 * @param userName
+	 * @param status
+	 * @return
+	 */
+	public User findByUserNameAndStatus(String userName, String status) {
+		User user = userDAO.findByUserNameAndStatus(userName, status)
+				.orElseThrow(() -> new NotFoundValueException("Not Found the user by Username and status", "UserService->findByUserNameAndStatus"));
+		
+		return user;
+	}
+	
+	/**
+	 * 
+	 * Check user existed by UserName
+	 * 
+	 * @param userName
+	 * @return
+	 */
+	public Boolean existsByUserName(String userName) {
+		return userDAO.existsByUserName(userName);
+	}
+	
+	/**
+	 * 
+	 * @param userName
+	 * @return
+	 */
+	public User findByUserName(String userName) {
+		User user = userDAO.findByUserName(userName)
+				.orElseThrow(() -> new NotFoundValueException("Not Found the user by Username", "UserService->findByUserName"));
+		
+		return user;
+	}
+	
 }

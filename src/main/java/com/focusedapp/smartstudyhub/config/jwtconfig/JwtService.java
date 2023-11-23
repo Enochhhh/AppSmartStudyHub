@@ -47,6 +47,7 @@ public class JwtService {
 	public String generateToken(Map<String, Object> extraClaims, JwtUser user) {
 		StringBuilder subject = new StringBuilder();
 		subject.append(user.getUser().getId().toString().concat("-"));
+		subject.append(user.getUser().getUserName().concat("-"));
 		subject.append(user.getUser().getEmail().concat("-"));
 		subject.append(user.getUser().getLastName().concat(" "));
 		subject.append(user.getUser().getFirstName());
@@ -58,7 +59,7 @@ public class JwtService {
 				.claim("Authority", user.getAuthorities())
 				.claim("Role", user.getUser().getRole())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)))
+				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(8)))
 				.signWith(getSigningKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}

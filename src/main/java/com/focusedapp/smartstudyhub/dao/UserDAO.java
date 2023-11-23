@@ -32,4 +32,9 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 				"AND u.status != 'ACTIVE'", nativeQuery = true)
 	Optional<User> findByEmailAndProviderAndStatusNotActive(@Param("email") String email, @Param("provider") String prodiver);
 	
+	Optional<User> findByUserNameAndStatus(String userName, String status);
+	
+	Optional<User> findByUserName(String userName);
+	
+	Boolean existsByUserName(String userName);
 }
