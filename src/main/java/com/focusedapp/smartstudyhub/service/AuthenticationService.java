@@ -17,7 +17,9 @@ import com.focusedapp.smartstudyhub.config.jwtconfig.JwtService;
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.exception.AccountBannedException;
 import com.focusedapp.smartstudyhub.exception.AccountDeletedException;
+import com.focusedapp.smartstudyhub.exception.OTPCodeInvalidException;
 import com.focusedapp.smartstudyhub.exception.ValueExistedException;
+import com.focusedapp.smartstudyhub.model.OtpCode;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
@@ -37,6 +39,8 @@ public class AuthenticationService {
 	private JwtService jwtService;
 	@Autowired
 	AuthenticationManager authenticationManager;	
+	@Autowired
+	OtpCodeService otpCodeService;
 
 	/**
 	 * Service Register User
@@ -50,20 +54,21 @@ public class AuthenticationService {
 				|| userService.existsByEmailAndProviderLocal(request.getEmail())) {
 			throw new ValueExistedException("Email Invalid or Existed", "/mobile/v1/auth/register");
 		}
+		
+		OtpCode otpCode = otpCodeService.findByEmail(request.getEmail());
+		if (!otpCode.getOtpCode().equals(request.getOtpCode()) 
+				|| otpCode.getOtpTimeExpiration().before(new Date())) {
+			throw new OTPCodeInvalidException("OTP Code Invalid or Expired", "AuthenticationService -> register");
+		}
 
-		String otpCode = userService.generateOtpCode();
 		User user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
 				.userName(request.getEmail())
 				.email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).createdAt(new Date())
-				.role(EnumRole.CUSTOMER.getValue()).otpCode(otpCode)
-				.otpTimeExpiration(new Date(new Date().getTime() + 180 * 1000)).status(EnumStatus.ACTIVE.getValue())
+				.role(EnumRole.CUSTOMER.getValue())
 				.provider(Provider.LOCAL.getValue())
+				.status(EnumStatus.ACTIVE.getValue())
 				.build();
 		userService.persistent(user);
-		request.setOtpCode(otpCode);
-		request.setOtpTimeExpiration(user.getOtpTimeExpiration().getTime());
-		
-		userService.sendOtpEmailToUserLocal(request.getEmail());
 		
 		return request;
 

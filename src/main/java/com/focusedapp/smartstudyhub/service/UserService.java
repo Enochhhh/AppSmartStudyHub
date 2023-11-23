@@ -2,16 +2,15 @@ package com.focusedapp.smartstudyhub.service;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtService;
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.dao.UserDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
+import com.focusedapp.smartstudyhub.exception.OTPCodeInvalidException;
+import com.focusedapp.smartstudyhub.model.OtpCode;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
@@ -31,6 +30,8 @@ public class UserService {
 	PasswordEncoder passwordEncoder;
 	@Autowired
 	JwtService jwtService;
+	@Autowired
+	OtpCodeService otpCodeService;
 
 	/**
 	 * 
@@ -76,6 +77,9 @@ public class UserService {
 	 */
 	public User findByEmailAndProviderLocalAndStatus(String email, String status) {
 		Optional<User> user = userDAO.findByEmailAndProviderAndStatus(email, Provider.LOCAL.getValue(), status);
+		if (user.isEmpty()) {
+			return null;
+		}
 		return user.get();
 	}
 
@@ -135,27 +139,17 @@ public class UserService {
 	}
 
 	/**
-	 * Generate OTP Code
-	 * 
-	 * @return
-	 */
-	public String generateOtpCode() {
-		Integer number = new Random().nextInt(900000) + 100000;
-		return number.toString();
-	}
-
-	/**
 	 * Send OTP Code to Email
 	 * 
 	 * @param request
 	 */
 	public void sendOtpEmailToUserLocal(String email) {
 
-		User user = findByEmailAndProviderLocalAndStatus(email, EnumStatus.ACTIVE.getValue());
+		OtpCode otpCode = otpCodeService.findByEmail(email);
 
-		String subject = "Smart Study Hub send OTP Code for " + user.getProvider().toUpperCase() + " account:";
+		String subject = "Smart Study Hub send OTP Code for account " + email +":";
 		String body = "<b>OTP Code is expired after 3 minutes</b> <br>" + "<p> Here is the OTP Code: "
-				+ user.getOtpCode() + "</p><br>";
+				+ otpCode.getOtpCode() + "</p><br>";
 		mailSenderService.sendEmail(email, subject, body);
 	}
 
@@ -166,34 +160,21 @@ public class UserService {
 	 * @return
 	 */
 	public AuthenticationDTO resendOtpCodeToUserLocal(String email) {
-		User user = findByEmailAndProviderLocalAndStatus(email, EnumStatus.ACTIVE.getValue());
-
-		if (user.getEmail() == null) {
-			return null;
+		
+		OtpCode otpCode = otpCodeService.findByEmail(email);
+		if (otpCode == null) {
+			otpCode = new OtpCode();
+			otpCode.setEmail(email);
 		}
+		
+		String otpCodeStr = otpCodeService.generateOtpCode();
+		otpCode.setOtpCode(otpCodeStr);
+		otpCode.setOtpTimeExpiration(new Date(new Date().getTime() + 180 * 1000));
+		otpCodeService.persistent(otpCode);
+		sendOtpEmailToUserLocal(email);
 
-		String otpCode = generateOtpCode();
-		user.setOtpCode(otpCode);
-		user.setOtpTimeExpiration(new Date(new Date().getTime() + 180 * 1000));
-		persistent(user);
-		sendOtpEmailToUserLocal(user.getEmail());
-
-		return AuthenticationDTO.builder().otpCode(otpCode).otpTimeExpiration(user.getOtpTimeExpiration().getTime())
+		return AuthenticationDTO.builder().otpCode(otpCodeStr).otpTimeExpiration(otpCode.getOtpTimeExpiration().getTime())
 				.build();
-	}
-
-	/**
-	 * Send OTP Code to change password of user account
-	 * 
-	 * @param email
-	 * @return
-	 */
-	public AuthenticationDTO sendOtpCodeToChangePass(String email, User user) {
-
-		if (!email.equals(user.getEmail())) {
-			return null;
-		}
-		return resendOtpCodeToUserLocal(email);
 	}
 
 	/**
@@ -212,17 +193,6 @@ public class UserService {
 	}
 
 	/**
-	 * Change Password with User Logged in
-	 * 
-	 * @param authenticationDTO
-	 * @return
-	 */
-	public void changePassword(AuthenticationDTO authenticationDTO, User user) {
-		user.setPassword(passwordEncoder.encode(authenticationDTO.getPassword()));
-		persistent(user);
-	}
-
-	/**
 	 * Change Password when User forgot password
 	 * 
 	 * @param authenticationDTO
@@ -230,6 +200,13 @@ public class UserService {
 	 */
 	public void changePassword(AuthenticationDTO authenticationDTO) {
 		User user = findByEmailAndProviderLocalAndStatus(authenticationDTO.getEmail(), EnumStatus.ACTIVE.getValue());
+		
+		OtpCode otpCode = otpCodeService.findByEmail(authenticationDTO.getEmail());
+		if (!otpCode.getOtpCode().equals(authenticationDTO.getOtpCode()) 
+				|| otpCode.getOtpTimeExpiration().before(new Date())) {
+			throw new OTPCodeInvalidException("OTP Code Invalid or Expired", "AuthenticationService -> register");
+		}
+		
 		user.setPassword(passwordEncoder.encode(authenticationDTO.getPassword()));
 		persistent(user);
 	}

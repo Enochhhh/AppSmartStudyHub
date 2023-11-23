@@ -135,4 +135,20 @@ public class ExceptionControllerAdvice {
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
 	}
 	
+	@ExceptionHandler(value = OTPCodeInvalidException.class)
+	public ResponseEntity<Result<JSONObject>> otpCodeInvalidException(OTPCodeInvalidException exception) {
+			
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.OTP_CODE_INVALID.getCode());
+		result.getMeta().setMessage(StatusCode.OTP_CODE_INVALID.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "OTP Code Invalid Or Expired");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		result.setUrl(exception.getPath());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
 }

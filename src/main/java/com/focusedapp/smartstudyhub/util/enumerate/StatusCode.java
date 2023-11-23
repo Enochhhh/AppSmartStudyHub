@@ -26,7 +26,8 @@ public enum StatusCode {
 	CHANGE_PASSWORD_SUCCESS("2_2_s", "Change Password Success"),
 	CHANGE_PASSWORD_FAILURE("2_2_f", "Change Password Failure"),
 	ACCOUNT_BANNED("2_3_f", "Account was banned"),
-	ACCOUNT_DELETED("2_4_f", "Account was deleted");
+	ACCOUNT_DELETED("2_4_f", "Account was deleted"),
+	OTP_CODE_INVALID("2_5_f", "OTP Code Invalid");
 	
 	private final String code;
 	private final String message;

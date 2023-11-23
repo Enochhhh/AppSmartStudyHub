@@ -75,13 +75,6 @@ public class User implements Serializable {
 	@Column(name = "image_url")
 	private String imageUrl;
 	
-	@Column(name = "otp_code")
-	private String otpCode;
-	
-	@Column(name = "otp_time_expiration")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date otpTimeExpiration;
-	
 	@Column(name = "total_time_focus")
 	private Integer totalTimeFocus;
 	

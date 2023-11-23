@@ -42,8 +42,7 @@ public class CustomerController extends BaseController {
 			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 		
-		User user = getAuthenticatedUser();
-		AuthenticationDTO data = userService.sendOtpCodeToChangePass(request.getEmail(), user);
+		AuthenticationDTO data = userService.resendOtpCodeToUserLocal(request.getEmail());
 
 		if (data == null) {
 			result.getMeta().setStatusCode(StatusCode.RESEND_OTP_FAILURE.getCode());
@@ -75,9 +74,7 @@ public class CustomerController extends BaseController {
 			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 
-		User userLoggedIn = getAuthenticatedUser();
-
-		userService.changePassword(authenticationDTO, userLoggedIn);
+		userService.changePassword(authenticationDTO);
 
 		result.getMeta().setStatusCode(StatusCode.CHANGE_PASSWORD_SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.CHANGE_PASSWORD_SUCCESS.getMessage());
@@ -91,12 +88,6 @@ public class CustomerController extends BaseController {
 		User userLoggedIn = getAuthenticatedUser();
 		
 		return null;
-	}
-	
-	@GetMapping("/hello")
-	public ResponseEntity<String> hello() {
-		
-		return createResponseEntity("Hello");
 	}
 	
 }
