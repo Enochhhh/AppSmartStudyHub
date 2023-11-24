@@ -189,4 +189,37 @@ public class AuthenticationController extends BaseController {
 		return createResponseEntity(result, httpStatus);
 	}
 	
+	/**
+	 * Authenticate to recover account, it don't use Spring Security
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@PostMapping("/authenticate-to-recover")
+	public ResponseEntity<Result<AuthenticationDTO>> authenticateToRecoverAccount(@RequestBody AuthenticationDTO request) {
+		
+		Result<AuthenticationDTO> result = new Result<>();
+		
+		if (request == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		AuthenticationDTO data = authenticationService.authenticateToRecoverAccount(request);
+
+		if (data == null) {
+			result.getMeta().setStatusCode(StatusCode.LOGIN_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.LOGIN_FAILURE.getMessage());
+			result.getMeta().setDetails("Username and Password incorrect");
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
+		} else {
+			result.setData(data);
+			result.getMeta().setStatusCode(StatusCode.LOGIN_SUCCESS.getCode());
+			result.getMeta().setMessage(StatusCode.LOGIN_SUCCESS.getMessage());
+		}
+
+		return createResponseEntity(result);
+	}
+	
 }

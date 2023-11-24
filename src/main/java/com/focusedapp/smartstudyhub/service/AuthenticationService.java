@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtService;
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.exception.AccountBannedException;
@@ -158,6 +157,25 @@ public class AuthenticationService {
 	 */
 	public UserDTO deleteUserRegistered(Integer id) {
 		return userService.deleteById(id);
+	}
+	
+	/**
+	 * Authenticate to recover account
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public AuthenticationDTO authenticateToRecoverAccount(AuthenticationDTO request) {
+		User user = userService.findByUserName(request.getEmail());
+			
+		if (user.getUserName().equals(request.getEmail())
+				&& passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+			return AuthenticationDTO.builder().email(user.getEmail()).firstName(user.getFirstName())
+					.lastName(user.getLastName()).role(user.getRole()).createdAt(user.getCreatedAt().getTime())
+					.id(user.getId()).build();
+		}
+
+		return null;
 	}
 
 }

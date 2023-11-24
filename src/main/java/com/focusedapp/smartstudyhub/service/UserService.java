@@ -307,4 +307,27 @@ public class UserService {
 		return user;
 	}
 	
+	/**
+	 * Change status user's account
+	 * 
+	 * @param user
+	 * @param status
+	 * @return
+	 */
+	public AuthenticationDTO changeStatus(Integer id, String status) {
+		User user = userDAO.findById(id)
+				.orElseThrow(() -> new NotFoundValueException("Not found the user by id", "UserService -> changeStatus"));
+		
+		user.setStatus(status);
+		persistent(user);
+		
+		return AuthenticationDTO.builder()
+				.email(user.getEmail())
+				.firstName(user.getFirstName())
+				.lastName(user.getLastName())
+				.role(user.getRole())
+				.createdAt(user.getCreatedAt().getTime())
+				.build();
+		
+	}
 }
