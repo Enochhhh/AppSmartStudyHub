@@ -23,6 +23,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
+import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.Provider;
@@ -65,6 +66,7 @@ public class AuthenticationService {
 				.email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).createdAt(new Date())
 				.role(EnumRole.CUSTOMER.getValue())
 				.provider(Provider.LOCAL.getValue())
+				.imageUrl(ConstantUrl.DEFAULT_IMAGE)
 				.status(EnumStatus.ACTIVE.getValue())
 				.build();
 		userService.persistent(user);
@@ -95,6 +97,7 @@ public class AuthenticationService {
 
 		return AuthenticationDTO.builder().email(user.getEmail()).firstName(user.getFirstName())
 				.lastName(user.getLastName()).role(user.getRole()).createdAt(user.getCreatedAt().getTime())
+				.imageUrl(user.getImageUrl())
 				.token(jwtService.generateToken(new JwtUser(user))).build();
 	}
 	

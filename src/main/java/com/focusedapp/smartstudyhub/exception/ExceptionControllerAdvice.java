@@ -1,7 +1,12 @@
 package com.focusedapp.smartstudyhub.exception;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,16 +14,22 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.focusedapp.smartstudyhub.dao.ErrorLogDAO;
+import com.focusedapp.smartstudyhub.model.ErrorLog;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
+import jakarta.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
 
 @ControllerAdvice
 public class ExceptionControllerAdvice {
 	
+	@Autowired
+	ErrorLogDAO errorLogDAO;
+	
 	@ExceptionHandler(value = Exception.class)
-	public ResponseEntity<Result<JSONObject>> exceptionSystem(Exception exception) {
+	public ResponseEntity<Result<JSONObject>> exceptionSystem(Exception exception, HttpServletRequest req) {
 		
 		Logger logger = LoggerFactory.getLogger(ExceptionControllerAdvice.class);
 		logger.error(exception.getMessage());
@@ -27,10 +38,21 @@ public class ExceptionControllerAdvice {
 		result.getMeta().setStatusCode(StatusCode.SYSTEM_FAILURE.getCode());
 		result.getMeta().setMessage(StatusCode.SYSTEM_FAILURE.getMessage());
 		
+		ErrorLog errorLog = ErrorLog.builder()
+				.className(exception.getClass().getCanonicalName())
+				.error(exception.getClass().getSimpleName())
+				.message(exception.getMessage())
+				.path(req.getRequestURI())
+				.stackTrace(Arrays.stream(exception.getStackTrace())
+		                .map(s->s.toString())
+		                .collect(Collectors.joining("\n")))
+				.createdDate(new Date()).build();
+		errorLog = errorLogDAO.save(errorLog);
+		
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("message", "System Failure - Unknown Error");
+		jsonObject.put("logId", errorLog.getId());
 		result.setData(jsonObject);
-		result.setLogInfo(exception.getMessage());
 		
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 	} 

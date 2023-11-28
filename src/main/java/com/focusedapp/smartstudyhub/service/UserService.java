@@ -15,6 +15,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
+import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.Provider;
@@ -126,16 +127,19 @@ public class UserService {
 		User user = null;
 		if (userTop.isEmpty()) {
 			user = User.builder().firstName("#GUEST ").lastName(Integer.valueOf(1).toString())
-					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue()).build();
+					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue())
+					.imageUrl(ConstantUrl.DEFAULT_IMAGE).build();
 		} else {
 			user = User.builder().firstName("#GUEST ").lastName(Integer.valueOf(userTop.get().getId() + 1).toString())
-					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue()).build();
+					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue())
+					.imageUrl(ConstantUrl.DEFAULT_IMAGE).build();
 		}
 		
 		user = persistent(user);
 
 		return UserDTO.builder().firstName(user.getFirstName()).lastName(user.getLastName()).id(user.getId())
-				.role(user.getRole()).createdAt(user.getCreatedAt().getTime()).build();
+				.role(user.getRole()).createdAt(user.getCreatedAt().getTime())
+				.imageUrl(user.getImageUrl()).build();
 	}
 
 	/**

@@ -28,6 +28,7 @@ public class AuthenticationDTO implements Serializable {
 		this.password = user.getPassword();
 		this.role = user.getRole();
 		this.createdAt = user.getCreatedAt().getTime();
+		this.imageUrl = user.getImageUrl();
 	}
 	
 	private Integer id;
@@ -40,5 +41,6 @@ public class AuthenticationDTO implements Serializable {
 	private String otpCode;
 	private String token;
 	private Long otpTimeExpiration;
+	private String imageUrl;
 	
 }
