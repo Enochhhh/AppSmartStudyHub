@@ -33,6 +33,7 @@ public class ExceptionControllerAdvice {
 		
 		Logger logger = LoggerFactory.getLogger(ExceptionControllerAdvice.class);
 		logger.error(exception.getMessage());
+		exception.printStackTrace();
 		
 		Result<JSONObject> result = new Result<>();
 		result.getMeta().setStatusCode(StatusCode.SYSTEM_FAILURE.getCode());

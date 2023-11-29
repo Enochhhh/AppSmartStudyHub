@@ -56,7 +56,7 @@ public class AuthenticationService {
 		}
 		
 		OtpCode otpCode = otpCodeService.findByEmail(request.getEmail());
-		if (!otpCode.getOtpCode().equals(request.getOtpCode()) 
+		if (otpCode == null || !otpCode.getOtpCode().equals(request.getOtpCode()) 
 				|| otpCode.getOtpTimeExpiration().before(new Date())) {
 			throw new OTPCodeInvalidException("OTP Code Invalid or Expired", "AuthenticationService -> register");
 		}
