@@ -139,4 +139,17 @@ public class FolderService {
 		
 		return new FolderDTO(folderDAO.save(folder.get()));
 	}
+	
+	/**
+	 * Find folder by id and status
+	 * 
+	 * @param id
+	 * @param status
+	 * @return
+	 */
+	public Folder findByIdAndStatus(Integer id, String status) {
+		Folder folder = folderDAO.findByIdAndStatus(id, status)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Folder by id!", "FolderService -> findByIdAndStatus"));
+		return folder;
+	}
 }

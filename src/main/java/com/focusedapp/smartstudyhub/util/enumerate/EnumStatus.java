@@ -4,7 +4,8 @@ public enum EnumStatus {
 	
 	ACTIVE("ACTIVE"),
 	DELETED("DELETED"),
-	BANNED("BANNED");
+	BANNED("BANNED"),
+	COMPLETED("COMPLETED");
 	
 	private final String value;
 	

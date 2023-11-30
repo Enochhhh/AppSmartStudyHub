@@ -49,5 +49,6 @@ public class UserDTO implements Serializable {
 	private Integer totalTimeFocus;
 	private String role;
 	private Long createdAt;
+	private String token;
 
 }
