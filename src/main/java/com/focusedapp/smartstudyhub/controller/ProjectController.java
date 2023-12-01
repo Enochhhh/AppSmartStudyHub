@@ -91,4 +91,30 @@ public class ProjectController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Project for updating Folder
+	 * 
+	 * @param userId
+	 * @param folderId
+	 * @return
+	 */
+	@GetMapping("/get-for-updating-folder")
+	public ResponseEntity<Result<List<ProjectDTO>>> getProjectsForUpdatingFolder(@RequestParam Integer userId, @RequestParam Integer folderId) {
+		Result<List<ProjectDTO>> result = new Result<>();
+		
+		if (userId == null || userId < 1 || folderId == null || folderId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails(" UserId or FolderId Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<ProjectDTO> projectCreated = projectService.getProjectsForUpdatingFolder(userId, folderId);
+		
+		result.setData(projectCreated);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

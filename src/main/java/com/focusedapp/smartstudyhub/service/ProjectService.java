@@ -96,4 +96,13 @@ public class ProjectService {
 		return projectsDto;
 	}
 	
+	public List<ProjectDTO> getProjectsForUpdatingFolder(Integer userId, Integer folderId) {
+
+		List<Project> projects = projectDAO.findProjectsForUpdatingFolder(userId, folderId);
+		List<ProjectDTO> projectsDto = projects.stream()
+				.map(p -> new ProjectDTO(p))
+				.collect(Collectors.toList());
+		return projectsDto;
+	}
+	
 }

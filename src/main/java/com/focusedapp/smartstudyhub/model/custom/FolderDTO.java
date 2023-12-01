@@ -1,9 +1,12 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
+import java.beans.JavaBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,6 +15,9 @@ import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
+import com.focusedapp.smartstudyhub.service.ProjectService;
+import com.focusedapp.smartstudyhub.service.WorkService;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +29,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
+@JavaBean
 public class FolderDTO implements Serializable {
+	
+	@Autowired
+	ProjectService projectService;
+	@Autowired
+	WorkService workService;
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,8 +46,12 @@ public class FolderDTO implements Serializable {
 	private String iconUrl;
 	private String status;
 	private Integer totalTimeWork;
-	private Integer totalWork;
-	private List<ProjectDTO> listProject;
+	private Integer totalWorkActive;
+	private Integer totalWorkCompleted;
+	private Integer totalProjectActive;
+	private Integer totalProjectCompleted;
+	private Integer totalTimePassed;
+	private List<ProjectDTO> listProjectActive;
 
 	public FolderDTO(Folder folder) {
 		this.id = folder.getId();
@@ -46,20 +62,49 @@ public class FolderDTO implements Serializable {
 		this.iconUrl = folder.getIconUrl();
 		this.status = folder.getStatus();
 		this.totalTimeWork = 0;
-		this.totalWork = 0;
-		this.listProject = new ArrayList<>();
+		this.totalWorkActive = 0;
+		this.totalWorkCompleted = 0;
+		this.totalProjectActive = 0;
+		this.totalProjectCompleted = 0;
+		this.totalTimePassed = 0;
+		this.listProjectActive = new ArrayList<>();
 
-		List<Project> projects = folder.getProjects();
+		List<Project> projectsAllStatus = folder.getProjects();
+		List<Project> projects = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(projectsAllStatus)) {
+			projects = projectsAllStatus.stream()
+					.filter(p -> p.getStatus().equals(EnumStatus.ACTIVE.getValue()) 
+							||  p.getStatus().equals(EnumStatus.COMPLETED.getValue()))
+					.collect(Collectors.toList());
+		}
 		if (!CollectionUtils.isEmpty(projects)) {
 			projects.stream().forEach(p -> {
-				this.listProject.add(new ProjectDTO(p));
-				List<Work> works = p.getWorks();
-				this.totalWork += works.size();
-				works.stream().forEach(w -> {
-					Integer time = w.getNumberOfPomodoros() * w.getTimeOfPomodoro();
-					this.totalTimeWork += time;
-				});
+				if (p.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+					this.listProjectActive.add(new ProjectDTO(p));
+				}
+				List<Work> worksAllStatus = p.getWorks();
+				List<Work> works = new ArrayList<>();
+				if (!CollectionUtils.isEmpty(worksAllStatus)) {
+					works = worksAllStatus.stream()
+							.filter(w -> w.getStatus().equals(EnumStatus.ACTIVE.getValue()) 
+									||  w.getStatus().equals(EnumStatus.COMPLETED.getValue()))
+							.collect(Collectors.toList());
+				}
+				if (!CollectionUtils.isEmpty(works)) {
+					works.stream().forEach(w -> {
+						Integer time = w.getNumberOfPomodoros() * w.getTimeOfPomodoro();
+						this.totalTimeWork += time;
+						this.totalTimePassed += w.getTimePassed();
+						if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+							this.totalWorkActive++;
+						} else {
+							this.totalWorkCompleted++;
+						}
+					});
+				}
 			});
+			this.totalProjectActive = listProjectActive.size();
+			this.totalProjectCompleted = projects.size() - listProjectActive.size();
 		}
 	}
 

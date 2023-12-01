@@ -47,9 +47,6 @@ public class Work implements Serializable {
 	@JoinColumn(name = "project_id")
 	private Project project;
 	
-	@Column(name = "status_work")
-	private String statusWork;
-	
 	@Column(name = "due_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dueDate;
@@ -65,6 +62,9 @@ public class Work implements Serializable {
 	
 	@Column(name = "time_of_pomodoro")
 	private Integer timeOfPomodoro;
+	
+	@Column(name = "time_passed")
+	private Integer timePassed;
 	
 	@Column(name = "start_time")
 	@Temporal(TemporalType.TIMESTAMP)

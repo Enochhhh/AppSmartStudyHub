@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.focusedapp.smartstudyhub.dao.FolderDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.custom.FolderDTO;
+import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
 @Service
@@ -33,9 +35,13 @@ public class FolderService {
 	 */
 	public FolderDTO createFolder(FolderDTO dataCreate) {
 
-		List<Project> projects = dataCreate.getListProject().stream()
-				.map(p -> projectService.findByIdAndStatus(p.getId(), EnumStatus.ACTIVE.getValue()))
-				.collect(Collectors.toList());
+		List<ProjectDTO> projectsRquest = dataCreate.getListProjectActive();
+		List<Project> projects = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(projectsRquest)) {
+			projects = dataCreate.getListProjectActive().stream()
+					.map(p -> projectService.findByIdAndStatus(p.getId(), EnumStatus.ACTIVE.getValue()))
+					.collect(Collectors.toList());
+		}
 
 		Folder folder = Folder.builder()
 				.user(userService.findByIdAndStatus(dataCreate.getUserId(), EnumStatus.ACTIVE.getValue()))
@@ -88,7 +94,7 @@ public class FolderService {
 		
 		Folder folderDb = folderDAO.findById(dataCreate.getId())
 				.orElseThrow(() -> new NotFoundValueException("Not Found Folder to update!", "FolderService -> updateFolder"));
-		List<Integer> projectIds = dataCreate.getListProject().stream()
+		List<Integer> projectIds = dataCreate.getListProjectActive().stream()
 				.map(p -> p.getId())
 				.collect(Collectors.toList());
 
