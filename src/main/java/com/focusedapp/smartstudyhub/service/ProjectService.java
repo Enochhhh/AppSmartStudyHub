@@ -96,6 +96,13 @@ public class ProjectService {
 		return projectsDto;
 	}
 	
+	/**
+	 * Get Project for updating Folder
+	 * 
+	 * @param userId
+	 * @param folderId
+	 * @return
+	 */
 	public List<ProjectDTO> getProjectsForUpdatingFolder(Integer userId, Integer folderId) {
 
 		List<Project> projects = projectDAO.findProjectsForUpdatingFolder(userId, folderId);
@@ -103,6 +110,43 @@ public class ProjectService {
 				.map(p -> new ProjectDTO(p))
 				.collect(Collectors.toList());
 		return projectsDto;
+	}
+	
+	/**
+	 * Update Project Information
+	 * 
+	 * @param projectRequest
+	 * @return
+	 */
+	public Project updateProject(ProjectDTO projectRequest) {
+		Project projectDb = projectDAO.findById(projectRequest.getId())
+				.orElseThrow(() -> new NotFoundValueException("Not Fould the Project to update!", "ProjectService -> updateProject"));
+		Folder folder = folderService.findByIdAndStatus(projectRequest.getFolderId(), EnumStatus.ACTIVE.getValue());
+		
+		projectDb.setProjectName(projectRequest.getProjectName());
+		projectDb.setColorCode(projectRequest.getColorCode());
+		projectDb.setIconUrl(projectRequest.getIconUrl());
+		projectDb.setFolder(folder);
+		projectDb.setStatus(projectRequest.getStatus() == null ? EnumStatus.ACTIVE.getValue() : projectRequest.getStatus());
+		
+		projectDb = projectDAO.save(projectDb);
+		return projectDb;		
+	}
+	
+	/**
+	 * Delete Project
+	 * 
+	 * @param projectRequest
+	 * @return
+	 */
+	public Project deleteProject(Integer projectId) {
+		Project projectDb = projectDAO.findById(projectId)
+				.orElseThrow(() -> new NotFoundValueException("Not Fould the Project to delete!", "ProjectService -> deleteProject"));
+		
+		projectDb.setStatus(EnumStatus.DELETED.getValue());
+		
+		projectDb = projectDAO.save(projectDb);
+		return projectDb;		
 	}
 	
 }

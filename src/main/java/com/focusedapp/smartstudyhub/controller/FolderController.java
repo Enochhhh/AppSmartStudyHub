@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.custom.FolderDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.service.FolderService;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
 @RestController
@@ -108,6 +110,13 @@ public class FolderController extends BaseController {
 	public ResponseEntity<Result<FolderDTO>> updateFolder(@RequestBody FolderDTO folderDTO) {
 		Result<FolderDTO> result = new Result<>();
 		
+		if (folderDTO == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Folder Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
 		FolderDTO folderCreated = folderService.updateFolder(folderDTO);
 		
 		result.setData(folderCreated);
@@ -126,6 +135,13 @@ public class FolderController extends BaseController {
 	public ResponseEntity<Result<FolderDTO>> deleteFolder(@PathVariable Integer folderId) {
 		Result<FolderDTO> result = new Result<>();
 		
+		if (folderId == null || folderId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Folder Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
 		FolderDTO folderCreated = folderService.deleteFolder(folderId);
 		
 		if (folderCreated == null) {
@@ -135,6 +151,30 @@ public class FolderController extends BaseController {
 		}
 		
 		result.setData(folderCreated);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Get Detail Information of folder
+	 * 
+	 * @param folderId
+	 * @return
+	 */
+	@GetMapping("/get-detail")
+	public ResponseEntity<Result<FolderDTO>> getDetailFolder(@RequestParam Integer folderId) {
+		Result<FolderDTO> result = new Result<>();
+		
+		Folder folder = folderService.findByIdAndStatus(folderId, EnumStatus.ACTIVE.getValue());
+		
+		if (folder == null) {
+			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());
+			result.getMeta().setMessage(StatusCode.FAIL.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(new FolderDTO(folder));
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
