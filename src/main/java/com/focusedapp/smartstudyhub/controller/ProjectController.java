@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.model.Project;
+import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
+import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.ProjectService;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
@@ -214,6 +216,26 @@ public class ProjectController extends BaseController {
 		}
 		
 		result.setData(projects);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	@PostMapping("/check-maximum-project")
+	public ResponseEntity<Result<AllResponseTypeDTO>> checkMaximumFolder(@RequestBody UserDTO userRequest) {
+		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		if (userRequest == null || userRequest.getId() == null || userRequest.getId() < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Request Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		Boolean isMaximum = projectService.checkMaximumProject(userRequest.getId());
+		
+		result.setData(AllResponseTypeDTO.builder()
+				.booleanType(isMaximum).build());
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

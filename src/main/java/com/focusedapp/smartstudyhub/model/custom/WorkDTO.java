@@ -34,8 +34,8 @@ public class WorkDTO implements Serializable {
 	private Integer numberOfPomodoros;
 	private Integer timeOfPomodoro;
 	private Integer timePassed;
-	private Date startTime;
-	private Date endTime;
+	private Long startTime;
+	private Long endTime;
 	private Boolean isReminder;
 	private Boolean isRepeated;
 	private String note;
@@ -60,8 +60,8 @@ public class WorkDTO implements Serializable {
 		this.numberOfPomodoros = work.getNumberOfPomodoros();
 		this.timeOfPomodoro = work.getTimeOfPomodoro();
 		this.timePassed = work.getTimePassed();
-		this.startTime = work.getStartTime();
-		this.endTime = work.getEndTime();
+		this.startTime = work.getStartTime().getTime();
+		this.endTime = work.getEndTime().getTime();
 		this.isReminder = work.getIsRemindered();
 		this.isRepeated = work.getIsRepeated();
 		this.note = work.getNote();

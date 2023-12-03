@@ -13,8 +13,10 @@ import com.focusedapp.smartstudyhub.dao.FolderDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.Project;
+import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.FolderDTO;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
 @Service
@@ -157,6 +159,29 @@ public class FolderService {
 		Folder folder = folderDAO.findByIdAndStatus(id, status)
 				.orElseThrow(() -> new NotFoundValueException("Not Found Folder by id!", "FolderService -> findByIdAndStatus"));
 		return folder;
+	}
+	
+	/**
+	 * Check Maximum number of Projects
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Boolean checkMaximumFolder(Integer userId) {
+		
+		User user = userService.findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		if (user.getRole().equals(EnumRole.PREMIUM.getValue())) {
+			return false;
+		}
+		
+		List<Folder> folders = folderDAO.findByUserIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		Integer size = folders.size();
+		
+		if (size >= 3) {
+			return true;
+		}
+		return false;
+		
 	}
 	
 }

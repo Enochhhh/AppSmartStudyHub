@@ -13,7 +13,9 @@ import com.focusedapp.smartstudyhub.dao.ProjectDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.Project;
+import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
 @Service
@@ -162,4 +164,28 @@ public class ProjectService {
 				.map(proj -> new ProjectDTO(proj))
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Check Maxium number of projects
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Boolean checkMaximumProject(Integer userId) {
+		
+		User user = userService.findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		if (user.getRole().equals(EnumRole.PREMIUM.getValue())) {
+			return false;
+		}
+		
+		List<Project> projects = projectDAO.findByUserIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		Integer size = projects.size();
+		
+		if (size >= 7) {
+			return true;
+		}
+		return false;
+		
+	}
+
 }
