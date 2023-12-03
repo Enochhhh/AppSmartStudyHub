@@ -22,4 +22,6 @@ public interface ProjectDAO extends JpaRepository<Project, Integer> {
 			+ "AND (p.folder_id IS NULL OR p.folder_id = :folderId) AND p.status = 'ACTIVE'", nativeQuery = true)
 	List<Project> findProjectsForUpdatingFolder(Integer userId, Integer folderId);
 	
+	List<Project> findByFolderIdAndStatus(Integer folderId, String status);
+	
 }

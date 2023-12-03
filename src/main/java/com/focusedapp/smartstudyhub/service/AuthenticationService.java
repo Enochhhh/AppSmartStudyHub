@@ -55,21 +55,40 @@ public class AuthenticationService {
 			throw new ValueExistedException("Email Invalid or Existed", "/mobile/v1/auth/register");
 		}
 		
+		User guest = null;
+		if (request.getGuestId() != null) {
+			guest = userService.findByIdAndStatus(request.getGuestId(), EnumStatus.ACTIVE.getValue());
+		}
+		
 		OtpCode otpCode = otpCodeService.findByEmail(request.getEmail());
 		if (otpCode == null || !otpCode.getOtpCode().equals(request.getOtpCode()) 
 				|| otpCode.getOtpTimeExpiration().before(new Date())) {
 			throw new OTPCodeInvalidException("OTP Code Invalid or Expired", "AuthenticationService -> register");
 		}
 
-		User user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
-				.userName(request.getEmail())
-				.email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).createdAt(new Date())
-				.role(EnumRole.CUSTOMER.getValue())
-				.provider(Provider.LOCAL.getValue())
-				.imageUrl(ConstantUrl.DEFAULT_IMAGE)
-				.status(EnumStatus.ACTIVE.getValue())
-				.build();
-		userService.persistent(user);
+		if (guest != null) {
+			guest.setFirstName(request.getFirstName());
+			guest.setLastName(request.getLastName());
+			guest.setUserName(request.getEmail());
+			guest.setEmail(request.getEmail());
+			guest.setPassword(passwordEncoder.encode(request.getPassword()));
+			guest.setCreatedAt(new Date());
+			guest.setRole(EnumRole.CUSTOMER.getValue());
+			guest.setProvider(Provider.LOCAL.getValue());
+			guest.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
+			guest.setStatus(EnumStatus.ACTIVE.getValue());
+			userService.persistent(guest);
+		} else {
+			User user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
+					.userName(request.getEmail())
+					.email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).createdAt(new Date())
+					.role(EnumRole.CUSTOMER.getValue())
+					.provider(Provider.LOCAL.getValue())
+					.imageUrl(ConstantUrl.DEFAULT_IMAGE)
+					.status(EnumStatus.ACTIVE.getValue())
+					.build();
+			userService.persistent(user);
+		}
 		
 		return request;
 

@@ -42,5 +42,6 @@ public class AuthenticationDTO implements Serializable {
 	private String token;
 	private Long otpTimeExpiration;
 	private String imageUrl;
+	private Integer guestId;
 	
 }

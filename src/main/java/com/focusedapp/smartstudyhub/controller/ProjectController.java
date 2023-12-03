@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -190,6 +191,29 @@ public class ProjectController extends BaseController {
 		}
 		
 		result.setData(new ProjectDTO(project));
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Get Projects for adding folder
+	 * 
+	 * @return
+	 */
+	@GetMapping("/get-for-add-folder")
+	public ResponseEntity<Result<List<ProjectDTO>>> getProjectForAddingFolder() {
+		Result<List<ProjectDTO>> result = new Result<>();
+		
+		List<ProjectDTO> projects = projectService.getProjectsForAddingFolder();
+		
+		if (CollectionUtils.isEmpty(projects)) {
+			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());
+			result.getMeta().setMessage(StatusCode.FAIL.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(projects);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

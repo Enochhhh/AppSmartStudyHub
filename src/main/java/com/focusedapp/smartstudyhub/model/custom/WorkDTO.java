@@ -40,6 +40,7 @@ public class WorkDTO implements Serializable {
 	private Boolean isRepeated;
 	private String note;
 	private Integer assigneeId;
+	private String mode;
 	private String status;
 	
 	public WorkDTO(Work work) {
@@ -68,6 +69,7 @@ public class WorkDTO implements Serializable {
 		if (assignee != null) {
 			this.assigneeId = assignee.getId();
 		}
+		this.mode = work.getMode();
 		this.status = work.getStatus();
 	}
 

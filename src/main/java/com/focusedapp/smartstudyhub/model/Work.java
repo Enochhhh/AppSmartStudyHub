@@ -87,6 +87,8 @@ public class Work implements Serializable {
 	@JoinColumn(name = "assignee_id")
 	private User assignee;
 	
+	private String mode;
+	
 	private String status;
 	
 	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY)

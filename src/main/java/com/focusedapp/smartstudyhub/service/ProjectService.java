@@ -149,4 +149,17 @@ public class ProjectService {
 		return projectDb;		
 	}
 	
+	/**
+	 * Get Projects for adding folder
+	 * 
+	 * @return
+	 */
+	public List<ProjectDTO> getProjectsForAddingFolder() {
+		
+		List<Project> projects = projectDAO.findByFolderIdAndStatus(null, EnumStatus.ACTIVE.getValue());
+		
+		return projects.stream()
+				.map(proj -> new ProjectDTO(proj))
+				.collect(Collectors.toList());
+	}
 }
