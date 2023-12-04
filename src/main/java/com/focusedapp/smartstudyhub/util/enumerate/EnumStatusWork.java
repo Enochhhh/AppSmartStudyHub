@@ -2,9 +2,13 @@ package com.focusedapp.smartstudyhub.util.enumerate;
 
 public enum EnumStatusWork {
 	
-	FINISHED("FINISHED"),
-	UNFINISHED("UNFINISHED"),
-	DELETED("DELETED");
+	TODAY("TODAY"),
+	TOMORROW("TOMORROW"),
+	THISWEEK("THISWEEK"),
+	OVERDUE("OVERDUE"),
+	NEXT7DAY("NEXT7DAY"),
+	SOMEDAY("SOMEDAY"),
+	PARTICULARDAY("PARTICULARDAY");
 	
 	private final String value;
 	

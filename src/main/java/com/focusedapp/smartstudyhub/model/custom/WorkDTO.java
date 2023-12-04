@@ -1,13 +1,17 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +31,8 @@ public class WorkDTO implements Serializable {
 	private Integer userId;
 	private ProjectDTO projectDTO;
 	private Integer projectId;
-	private String statusWork;
-	private Date dueDate;
+	private Integer tagId;
+	private Long dueDate;
 	private String workName;
 	private String priority;
 	private Integer numberOfPomodoros;
@@ -42,6 +46,7 @@ public class WorkDTO implements Serializable {
 	private Integer assigneeId;
 	private String mode;
 	private String status;
+	private String statusWork;
 	
 	public WorkDTO(Work work) {
 		this.id = work.getId();
@@ -54,14 +59,21 @@ public class WorkDTO implements Serializable {
 		if (project != null) {
 			this.projectId = project.getId();
 		}
-		this.dueDate = work.getDueDate();
+		// this.tagId = tag.getId();
 		this.workName = work.getWorkName();
 		this.priority = work.getPriority();
 		this.numberOfPomodoros = work.getNumberOfPomodoros();
 		this.timeOfPomodoro = work.getTimeOfPomodoro();
 		this.timePassed = work.getTimePassed();
-		this.startTime = work.getStartTime().getTime();
-		this.endTime = work.getEndTime().getTime();
+		
+		if (work.getStartTime() != null) {
+			this.startTime = work.getStartTime().getTime();
+		}
+		
+		if (work.getEndTime() != null) {
+			this.endTime = work.getEndTime().getTime();
+		}
+		
 		this.isReminder = work.getIsRemindered();
 		this.isRepeated = work.getIsRepeated();
 		this.note = work.getNote();
@@ -71,6 +83,29 @@ public class WorkDTO implements Serializable {
 		}
 		this.mode = work.getMode();
 		this.status = work.getStatus();
+		
+		// Handle set status work
+		if (work.getDueDate() == null) {
+			this.statusWork = EnumStatusWork.SOMEDAY.getValue();
+		} else {
+			this.dueDate = work.getDueDate().getTime();
+			Long distanceOfTwoDate = MethodUtils.distanceBetweenTwoDate(new Date(), work.getDueDate(), TimeUnit.DAYS);
+			SimpleDateFormat dateFormat = new SimpleDateFormat("F");
+			Long dayOfWeek = Long.valueOf(dateFormat.format(work.getDueDate()));
+			if (distanceOfTwoDate < 0) {
+				this.statusWork = EnumStatusWork.OVERDUE.getValue();
+			} else if (distanceOfTwoDate == 0) {
+				this.statusWork = EnumStatusWork.TODAY.getValue();
+			} else if (distanceOfTwoDate == 1) {
+				this.statusWork = EnumStatusWork.TOMORROW.getValue();
+			}else if(dayOfWeek + distanceOfTwoDate <= 8) {
+				this.statusWork = EnumStatusWork.THISWEEK.getValue();
+			} else if (distanceOfTwoDate <= 7) {
+				this.statusWork = EnumStatusWork.NEXT7DAY.getValue();
+			} else {
+				this.statusWork = EnumStatusWork.PARTICULARDAY.getValue();
+			}
+		}
 	}
 
 }

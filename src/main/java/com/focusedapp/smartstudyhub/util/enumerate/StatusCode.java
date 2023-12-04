@@ -11,6 +11,7 @@ public enum StatusCode {
 	FAIL("0_6_f", "Failed"),
 	DATA_EXISTED("0_7_f", "Data Existed"),
 	AUTHENTICATED_FAILURE("0_8_f", "Authenticatted Failure"),
+	PARSE_ERROR("0_9_f", "Parse Error"),
 	
 	// User - featureCode: 1
 	/* Register */

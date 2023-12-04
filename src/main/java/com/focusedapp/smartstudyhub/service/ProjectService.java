@@ -156,9 +156,9 @@ public class ProjectService {
 	 * 
 	 * @return
 	 */
-	public List<ProjectDTO> getProjectsForAddingFolder() {
+	public List<ProjectDTO> getProjectsForAddingFolder(Integer userId) {
 		
-		List<Project> projects = projectDAO.findByFolderIdAndStatus(null, EnumStatus.ACTIVE.getValue());
+		List<Project> projects = projectDAO.findByUserIdAndFolderIdAndStatus(userId, null, EnumStatus.ACTIVE.getValue());
 		
 		return projects.stream()
 				.map(proj -> new ProjectDTO(proj))

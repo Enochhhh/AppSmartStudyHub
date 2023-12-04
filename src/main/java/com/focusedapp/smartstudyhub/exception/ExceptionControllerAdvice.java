@@ -174,4 +174,20 @@ public class ExceptionControllerAdvice {
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.NOT_ACCEPTABLE);
 	}
 	
+	@ExceptionHandler(value = ParseException.class)
+	public ResponseEntity<Result<JSONObject>> parseException(ParseException exception) {
+			
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.PARSE_ERROR.getCode());
+		result.getMeta().setMessage(StatusCode.PARSE_ERROR.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Parse Type Error!");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		result.setUrl(exception.getPath());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 }

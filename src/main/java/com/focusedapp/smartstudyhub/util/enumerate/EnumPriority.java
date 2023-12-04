@@ -4,7 +4,8 @@ public enum EnumPriority {
 
 	HIGH("HIGH"),
 	NORMAL("NORMAL"),
-	LOW("NORMAL");
+	LOW("LOW"),
+	NONE("NONE");
 	
 	private final String value;
 	

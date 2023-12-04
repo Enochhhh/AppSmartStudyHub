@@ -204,10 +204,10 @@ public class ProjectController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/get-for-add-folder")
-	public ResponseEntity<Result<List<ProjectDTO>>> getProjectForAddingFolder() {
+	public ResponseEntity<Result<List<ProjectDTO>>> getProjectForAddingFolder(@RequestParam Integer userId) {
 		Result<List<ProjectDTO>> result = new Result<>();
 		
-		List<ProjectDTO> projects = projectService.getProjectsForAddingFolder();
+		List<ProjectDTO> projects = projectService.getProjectsForAddingFolder(userId);
 		
 		if (CollectionUtils.isEmpty(projects)) {
 			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());
