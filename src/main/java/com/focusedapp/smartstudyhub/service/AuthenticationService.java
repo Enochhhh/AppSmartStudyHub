@@ -22,7 +22,6 @@ import com.focusedapp.smartstudyhub.model.OtpCode;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
-import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -170,15 +169,6 @@ public class AuthenticationService {
 	 */
 	public AuthenticationDTO resendOtpCode(String email) {
 		return userService.resendOtpCodeToUserLocal(email);
-	}
-	
-	/**
-	 * Delete user registered
-	 * 
-	 * @return
-	 */
-	public UserDTO deleteUserRegistered(Integer id) {
-		return userService.deleteById(id);
 	}
 	
 	/**

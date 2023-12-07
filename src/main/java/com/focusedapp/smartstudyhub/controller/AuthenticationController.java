@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
-import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.AuthenticationService;
 import com.focusedapp.smartstudyhub.service.UserService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
@@ -119,24 +116,6 @@ public class AuthenticationController extends BaseController {
 			result.getMeta().setStatusCode(StatusCode.RESEND_OTP_SUCCESS.getCode());
 			result.getMeta().setMessage(StatusCode.RESEND_OTP_SUCCESS.getMessage());
 		}
-		return createResponseEntity(result);
-	}
-
-	/**
-	 * Delete User By Id
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	@DeleteMapping("/deleteuser/{userId}")
-	public ResponseEntity<Result<UserDTO>> deleteUserRegistered(@PathVariable Integer userId) {
-		Result<UserDTO> result = new Result<>();
-		UserDTO data = authenticationService.deleteUserRegistered(userId);
-
-		result.setData(data);
-		result.getMeta().setStatusCode(StatusCode.DELETE_USER_REGISTERED_SUCCESS.getCode());
-		result.getMeta().setMessage(StatusCode.DELETE_USER_REGISTERED_SUCCESS.getMessage());
-
 		return createResponseEntity(result);
 	}
 	

@@ -19,8 +19,6 @@ public enum StatusCode {
 	REGISTER_FAILURE("1_1_f", "Register Failure"),
 	RESEND_OTP_FAILURE("1_2_f", "Resend OTP Code Failure"),
 	RESEND_OTP_SUCCESS("1_2_s", "Resend OTP Code Success"),
-	DELETE_USER_REGISTERED_SUCCESS("1_3_s", "Delete User Registered Success"),
-	DELETE_USER_REGISTERED_FAILURE("1_3_f", "Delete User Registered Failure"),
 	/* Login */
 	LOGIN_SUCCESS("2_1_s", "Login Success"),
 	LOGIN_FAILURE("2_1_f", "Login Failure"),
@@ -28,7 +26,9 @@ public enum StatusCode {
 	CHANGE_PASSWORD_FAILURE("2_2_f", "Change Password Failure"),
 	ACCOUNT_BANNED("2_3_f", "Account was banned"),
 	ACCOUNT_DELETED("2_4_f", "Account was deleted"),
-	OTP_CODE_INVALID("2_5_f", "OTP Code Invalid");
+	OTP_CODE_INVALID("2_5_f", "OTP Code Invalid"),
+	/* GUEST User */
+	AUTHENTICATION_REQUIRE("3_1_f", "Authentication is required!");
 	
 	private final String code;
 	private final String message;

@@ -187,5 +187,18 @@ public class ProjectService {
 		return false;
 		
 	}
+	
+	/**
+	 * Get Projects Active and Completed Of User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<Project> getProjectsActiveAndCompletedOfUser(Integer userId) {
+		
+		List<Project> projects = projectDAO.getProjectsActiveAndCompletedByUserId(userId);
+		
+		return projects;
+	}
 
 }

@@ -5,15 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
+import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.UserService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
+
 
 @RestController
 @RequestMapping("/mobile/v1/user/customer")
@@ -75,6 +80,24 @@ public class CustomerController extends BaseController {
 
 		result.getMeta().setStatusCode(StatusCode.CHANGE_PASSWORD_SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.CHANGE_PASSWORD_SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<Result<UserDTO>> deleteUserHaveAccount() {
+		Result<UserDTO> result = new Result<>();
+		User user = getAuthenticatedUser();
+		
+		User userDeleted = userService.markDeletedByUserId(user.getId());				
+		
+		try {
+			result.setData(new UserDTO(userDeleted));
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
 	}
 	

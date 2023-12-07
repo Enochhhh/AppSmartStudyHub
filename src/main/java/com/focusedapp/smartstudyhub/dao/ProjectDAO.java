@@ -24,4 +24,8 @@ public interface ProjectDAO extends JpaRepository<Project, Integer> {
 	
 	List<Project> findByFolderIdAndStatus(Integer folderId, String status);
 	
+	@Query(value = "SELECT * FROM project p WHERE p.user_id = :userId "
+			+ "AND (p.status = 'ACTIVE' OR p.status = 'COMPLETED')", nativeQuery = true)
+	List<Project> getProjectsActiveAndCompletedByUserId(Integer userId);
+	
 }

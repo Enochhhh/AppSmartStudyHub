@@ -25,7 +25,6 @@ public class UserDTO implements Serializable {
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
 		this.email = user.getEmail();
-		this.password = user.getPassword();
 		this.role = user.getRole();
 		this.createdAt = user.getCreatedAt().getTime();
 		this.phoneNumber = user.getPhoneNumber();
@@ -40,7 +39,6 @@ public class UserDTO implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String email;
-	private String password;
 	private String phoneNumber;
 	private String address;
 	private Long dateOfBirth;

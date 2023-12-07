@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -236,6 +237,39 @@ public class ProjectController extends BaseController {
 		
 		result.setData(AllResponseTypeDTO.builder()
 				.booleanType(isMaximum).build());
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Get projects of User by userId
+	 * 
+	 * @param userId
+	 * @param status
+	 * @return
+	 */
+	@GetMapping("/get-active-and-completed")
+	public ResponseEntity<Result<List<ProjectDTO>>> getProjectsActiveAndCompletedOfUser(@RequestParam Integer userId) {
+		Result<List<ProjectDTO>> result = new Result<>();
+		
+		if (userId == null || userId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("userId Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<Project> projects = projectService.getProjectsActiveAndCompletedOfUser(userId);
+		
+		try {
+			List<ProjectDTO> dtos = projects.stream()
+					.map(proj -> new ProjectDTO(proj))
+					.collect(Collectors.toList());
+			result.setData(dtos);
+		} catch (Exception e) {
+			throw e;
+		}
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

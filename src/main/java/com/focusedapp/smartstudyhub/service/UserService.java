@@ -189,13 +189,16 @@ public class UserService {
 	 * @param id
 	 * @return
 	 */
-	public UserDTO deleteById(Integer id) {
+	public User deleteById(Integer id) {
 
 		User user = userDAO.findById(id).orElseThrow(
 				() -> new NotFoundValueException("Not Found the user to delete", "UserService->deleteById"));
+		if (!user.getRole().equals(EnumRole.GUEST.getValue())) {
+			return null;
+		}
 		userDAO.delete(user);
 
-		return new UserDTO(user);
+		return user;
 	}
 
 	/**
@@ -335,5 +338,19 @@ public class UserService {
 				.createdAt(user.getCreatedAt().getTime())
 				.build();
 		
+	}
+	
+	/**
+	 * Mark Delete By UserId
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public User markDeletedByUserId(Integer userId) {
+		User user = findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		user.setStatus(EnumStatus.DELETED.getValue());		
+		user = persistent(user);
+		
+		return user;
 	}
 }

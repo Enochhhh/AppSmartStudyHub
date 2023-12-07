@@ -93,7 +93,7 @@ public class WorkDTO implements Serializable {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("F");
 			Long dayOfWeek = Long.valueOf(dateFormat.format(work.getDueDate()));
 			if (distanceOfTwoDate < 0) {
-				this.statusWork = EnumStatusWork.OVERDUE.getValue();
+				this.statusWork = EnumStatusWork.OUTOFDATE.getValue();
 			} else if (distanceOfTwoDate == 0) {
 				this.statusWork = EnumStatusWork.TODAY.getValue();
 			} else if (distanceOfTwoDate == 1) {
