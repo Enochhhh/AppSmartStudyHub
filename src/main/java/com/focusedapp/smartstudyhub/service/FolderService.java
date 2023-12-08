@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +49,7 @@ public class FolderService {
 		Folder folder = Folder.builder()
 				.user(userService.findByIdAndStatus(dataCreate.getUserId(), EnumStatus.ACTIVE.getValue()))
 				.folderName(dataCreate.getFolderName()).colorCode(dataCreate.getColorCode())
+				.createdDate(new Date())
 				.iconUrl(dataCreate.getIconUrl()).status(EnumStatus.ACTIVE.getValue()).build();
 		folder = folderDAO.save(folder);
 		for (Project project : projects) {

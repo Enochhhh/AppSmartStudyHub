@@ -37,6 +37,7 @@ public class ProjectDTO implements Serializable {
 	private Integer totalWorkCompleted;
 	private Integer totalTimePassed;
 	private List<WorkDTO> listWorkCompleted;
+	private Long createdDate;
 	
 	public ProjectDTO(Project project) {
 		this.id = project.getId();
@@ -78,5 +79,6 @@ public class ProjectDTO implements Serializable {
 			this.totalWorkActive = this.listWorkActive.size();
 			this.totalWorkCompleted = this.listWorkCompleted.size();
 		}
+		this.createdDate = project.getCreatedDate().getTime();
 	}
 }

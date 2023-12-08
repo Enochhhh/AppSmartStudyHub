@@ -3,7 +3,9 @@ package com.focusedapp.smartstudyhub.model.custom;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -36,17 +38,19 @@ public class WorkDTO implements Serializable {
 	private String workName;
 	private String priority;
 	private Integer numberOfPomodoros;
+	private Integer numberOfPomodorosDone;
 	private Integer timeOfPomodoro;
 	private Integer timePassed;
 	private Long startTime;
 	private Long endTime;
-	private Boolean isReminder;
+	private Boolean isRemindered;
 	private Boolean isRepeated;
 	private String note;
 	private Integer assigneeId;
-	private String mode;
 	private String status;
 	private String statusWork;
+	private Long createdDate;
+	private List<ExtraWorkDTO> extraWorks;
 	
 	public WorkDTO(Work work) {
 		this.id = work.getId();
@@ -54,7 +58,6 @@ public class WorkDTO implements Serializable {
 		if (user != null) {
 			this.userId = user.getId();
 		}
-		//this.projectDTO = new ProjectDTO(work.getProject());
 		Project project = work.getProject();
 		if (project != null) {
 			this.projectId = project.getId();
@@ -74,14 +77,13 @@ public class WorkDTO implements Serializable {
 			this.endTime = work.getEndTime().getTime();
 		}
 		
-		this.isReminder = work.getIsRemindered();
+		this.isRemindered = work.getIsRemindered();
 		this.isRepeated = work.getIsRepeated();
 		this.note = work.getNote();
 		User assignee = work.getAssignee();
 		if (assignee != null) {
 			this.assigneeId = assignee.getId();
 		}
-		this.mode = work.getMode();
 		this.status = work.getStatus();
 		
 		// Handle set status work
@@ -106,6 +108,14 @@ public class WorkDTO implements Serializable {
 				this.statusWork = EnumStatusWork.PARTICULARDAY.getValue();
 			}
 		}
+		this.numberOfPomodorosDone = work.getNumberOfPomodorosDone();
+		this.createdDate = work.getCreatedDate().getTime();
+		if (work.getExtraWorks() != null) {
+			this.extraWorks = work.getExtraWorks().stream()
+					.map(ew -> new ExtraWorkDTO(ew))
+					.collect(Collectors.toList());
+		}
+		
 	}
 
 }

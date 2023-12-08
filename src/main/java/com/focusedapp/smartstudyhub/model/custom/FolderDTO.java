@@ -53,6 +53,7 @@ public class FolderDTO implements Serializable {
 	private Integer totalTimePassed;
 	private List<ProjectDTO> listProjectActive;
 	private List<ProjectDTO> listProjectCompleted;
+	private Long createdDate;
 
 	public FolderDTO(Folder folder) {
 		this.id = folder.getId();
@@ -109,6 +110,7 @@ public class FolderDTO implements Serializable {
 			});
 			this.totalProjectActive = this.listProjectActive.size();
 			this.totalProjectCompleted = this.listProjectCompleted.size();
+			this.createdDate = folder.getCreatedDate().getTime();
 		}
 	}
 

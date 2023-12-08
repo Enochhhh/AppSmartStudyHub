@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,6 +23,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -30,6 +32,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @Entity
+@Builder
 @Table(name = "works")
 public class Work implements Serializable {
 
@@ -87,11 +90,16 @@ public class Work implements Serializable {
 	@JoinColumn(name = "assignee_id")
 	private User assignee;
 	
-	private String mode;
-	
 	private String status;
 	
-	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY)
+	@Column(name = "created_date")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
+	
+	@Column(name = "number_of_pomodoros_done")
+	private Integer numberOfPomodorosDone;
+	
+	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ExtraWork> extraWorks;
 	
 	@ManyToMany
@@ -100,5 +108,8 @@ public class Work implements Serializable {
 			joinColumns = @JoinColumn(name = "work_id", nullable = false),
 			inverseJoinColumns = @JoinColumn(name = "tag_id", nullable = false))
 	List<Tag> tags;
+	
+	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Pomodoro> pomorodos;
 	
 }

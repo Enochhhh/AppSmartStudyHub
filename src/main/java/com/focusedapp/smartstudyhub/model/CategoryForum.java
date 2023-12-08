@@ -1,11 +1,13 @@
 package com.focusedapp.smartstudyhub.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +16,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,7 +45,11 @@ public class CategoryForum implements Serializable {
 	@Column(name = "total_comment")
 	private Integer totalComment;
 	
-	@OneToMany(mappedBy = "categoryForum", fetch = FetchType.LAZY)
+	@Column(name = "created_date")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
+	
+	@OneToMany(mappedBy = "categoryForum", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	List<PostForum> posts;
 	
 }

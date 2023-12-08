@@ -18,7 +18,7 @@ import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.UserService;
-import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
 @RestController

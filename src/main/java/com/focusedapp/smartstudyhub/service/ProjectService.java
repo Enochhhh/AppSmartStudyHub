@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.service;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,6 +63,7 @@ public class ProjectService {
 				.projectName(dataCreate.getProjectName())
 				.colorCode(dataCreate.getColorCode())
 				.iconUrl(dataCreate.getIconUrl())
+				.createdDate(new Date())
 				.status(EnumStatus.ACTIVE.getValue()).build();
 		project = projectDAO.save(project);
 
