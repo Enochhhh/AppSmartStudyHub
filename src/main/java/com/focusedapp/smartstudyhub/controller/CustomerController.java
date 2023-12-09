@@ -1,6 +1,5 @@
 package com.focusedapp.smartstudyhub.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
@@ -35,16 +35,11 @@ public class CustomerController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/otp-change-pass")
-	public ResponseEntity<Result<AuthenticationDTO>> sendOtpToChangePassword(@RequestBody AuthenticationDTO request) {
-		Result<AuthenticationDTO> result = new Result<>();
-		if (request == null || StringUtils.isBlank(request.getEmail())) {
-			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
-			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-			result.getMeta().setDetails("Please provide the email to send OTP code");
-			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<Result<AuthenticationDTO>> sendOtpToChangePassword() {
+		Result<AuthenticationDTO> result = new Result<>();		
 		
-		AuthenticationDTO data = userService.resendOtpCodeToUserLocal(request.getEmail());
+		User user = getAuthenticatedUser();
+		AuthenticationDTO data = userService.resendOtpCodeToUserLocal(user.getEmail());
 
 		if (data == null) {
 			result.getMeta().setStatusCode(StatusCode.RESEND_OTP_FAILURE.getCode());
@@ -96,6 +91,23 @@ public class CustomerController extends BaseController {
 			throw e;
 		}
 		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	@PostMapping("/check-password-correct")
+	public ResponseEntity<Result<AllResponseTypeDTO>> checkPasswordCorrect(@RequestBody AuthenticationDTO authenRequest) {
+		Result<AllResponseTypeDTO> result = new Result<>();
+		User user = getAuthenticatedUser();
+		
+		Boolean isValid = userService.checkPasswordCorrect(authenRequest, user);				
+		
+		AllResponseTypeDTO data = AllResponseTypeDTO.builder()
+				.booleanType(isValid)
+				.stringType(isValid ? "Password Is Corect!" : "Password Is Incorrect!")
+				.build();
+		result.setData(data);		
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

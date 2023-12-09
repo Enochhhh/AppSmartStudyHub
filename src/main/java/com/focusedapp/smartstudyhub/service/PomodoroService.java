@@ -74,10 +74,13 @@ public class PomodoroService {
 				.isEndPomo(pomodoroRequest.getIsEndPomo() == null ? false : pomodoroRequest.getIsEndPomo())
 				.pomodoroName(namePomo)
 				.mode(work == null && extraWork == null ? EnumModePomo.NONSPECIFIED.getValue() : EnumModePomo.SPECIFIED.getValue())
+				.createdDate(new Date())
 				.build();
 		
 		if (work != null && pomodoroRequest.getIsEndPomo() != null && pomodoroRequest.getIsEndPomo()) {
 			pomodoro.setNumberPomoDoneOfWork(work.getNumberOfPomodorosDone());
+		} else if (extraWork != null && pomodoroRequest.getIsEndPomo() != null && pomodoroRequest.getIsEndPomo()) {
+			pomodoro.setNumberPomoDoneOfWork(extraWork.getNumberOfPomodoros());
 		}
 		pomodoro = pomodoroDAO.save(pomodoro);
 		

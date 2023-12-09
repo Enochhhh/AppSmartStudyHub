@@ -68,5 +68,8 @@ public class Pomodoro implements Serializable {
 	
 	@Column(name = "number_pomo_done_of_work")
 	private Integer numberPomoDoneOfWork;
+	
+	@Column(name = "created_date")
+	private Date createdDate;
 
 }

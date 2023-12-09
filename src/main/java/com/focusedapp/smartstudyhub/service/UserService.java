@@ -353,4 +353,19 @@ public class UserService {
 		
 		return user;
 	}
+	
+	/**
+	 * Check Password Correct
+	 * 
+	 * @param authenReq
+	 * @param user
+	 * @return
+	 */
+	public Boolean checkPasswordCorrect(AuthenticationDTO authenReq, User user) {
+		
+		if (passwordEncoder.matches(authenReq.getPassword(), user.getPassword())) {
+			return true;
+		}
+		return false;
+	}
 }
