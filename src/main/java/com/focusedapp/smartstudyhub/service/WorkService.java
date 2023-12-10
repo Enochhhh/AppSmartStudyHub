@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.dao.ProjectDAO;
 import com.focusedapp.smartstudyhub.dao.WorkDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
+import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
@@ -33,6 +34,9 @@ public class WorkService {
 	
 	@Autowired
 	PomodoroService pomodoroService;
+	
+	@Autowired
+	ExtraWorkService extraWorkService;
 	
 	/**
 	 * Find Work By Id and Status
@@ -123,6 +127,17 @@ public class WorkService {
 	}
 	
 	/**
+	 * Find Work by Id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Work findById(Integer id) {
+		return workDAO.findById(id)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Work by Id!", "WorkService -> findById"));
+	}
+	
+	/**
 	 * Mark Deleted Work
 	 * 
 	 * @param workId
@@ -130,7 +145,13 @@ public class WorkService {
 	 */
 	public WorkDTO markDeletedWork(Integer workId) {
 
-		Work workDb = findByIdAndStatus(workId, EnumStatus.ACTIVE.getValue());
+		Work workDb = findById(workId);
+		
+		List<ExtraWork> extraWorks = workDb.getExtraWorks();
+		if (extraWorks != null) {
+			extraWorks.stream()
+				.forEach(ew -> ew.setStatus(EnumStatus.DELETED.getValue()));
+		}
 		workDb.setStatus(EnumStatus.DELETED.getValue());
 				
 		workDb = workDAO.save(workDb);
@@ -146,7 +167,7 @@ public class WorkService {
 	 */
 	public WorkDTO deleteById(Integer workId) {
 		
-		Work workDb = findByIdAndStatus(workId, EnumStatus.ACTIVE.getValue());
+		Work workDb = findById(workId);
 		workDAO.delete(workDb);
 		
 		return new WorkDTO(workDb);
@@ -189,7 +210,16 @@ public class WorkService {
 	public WorkDTO markCompleted(Integer workId) {
 
 		Work workDb = findByIdAndStatus(workId, EnumStatus.ACTIVE.getValue());
-				
+		
+		List<ExtraWork> extraWorks = workDb.getExtraWorks();
+		if (extraWorks != null) {
+			extraWorks.stream()
+				.forEach(ew -> {
+					if (ew.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+						extraWorkService.markCompleted(ew.getId());
+					}
+				});
+		}
 		workDb.setStatus(EnumStatus.COMPLETED.getValue());
 		
 		PomodoroDTO pomodoroRequest = PomodoroDTO.builder()

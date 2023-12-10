@@ -48,7 +48,7 @@ public class PomodoroService {
 		if (!workOptional.isEmpty()) {
 			work = workOptional.get();
 			namePomo = work.getWorkName();
-			if (work.getStartTime() == null) {
+			if (work.getStartTime() == null && (pomodoroRequest.getIsEndPomo() == null || pomodoroRequest.getIsEndPomo() == false)) {
 				isStarting = true;
 			}
 		}
@@ -58,7 +58,7 @@ public class PomodoroService {
 		if (!extraWorkOptional.isEmpty()) {
 			extraWork = extraWorkOptional.get();
 			namePomo = extraWork.getExtraWorkName();
-			if (extraWork.getStartTime() == null) {
+			if (extraWork.getStartTime() == null && (pomodoroRequest.getIsEndPomo() == null || pomodoroRequest.getIsEndPomo() == false)) {
 				isStarting = true;
 			}
 		}
@@ -74,13 +74,14 @@ public class PomodoroService {
 				.isEndPomo(pomodoroRequest.getIsEndPomo() == null ? false : pomodoroRequest.getIsEndPomo())
 				.pomodoroName(namePomo)
 				.mode(work == null && extraWork == null ? EnumModePomo.NONSPECIFIED.getValue() : EnumModePomo.SPECIFIED.getValue())
+				.numberPomoDoneOfWork(0)
 				.createdDate(new Date())
 				.build();
 		
 		if (work != null && pomodoroRequest.getIsEndPomo() != null && pomodoroRequest.getIsEndPomo()) {
-			pomodoro.setNumberPomoDoneOfWork(work.getNumberOfPomodorosDone());
+			pomodoro.setNumberPomoDoneOfWork(work.getNumberOfPomodorosDone() == null ? 0 : work.getNumberOfPomodorosDone());
 		} else if (extraWork != null && pomodoroRequest.getIsEndPomo() != null && pomodoroRequest.getIsEndPomo()) {
-			pomodoro.setNumberPomoDoneOfWork(extraWork.getNumberOfPomodoros());
+			pomodoro.setNumberPomoDoneOfWork(extraWork.getNumberOfPomodoros() == null ? 0 : extraWork.getNumberOfPomodoros());
 		}
 		pomodoro = pomodoroDAO.save(pomodoro);
 		

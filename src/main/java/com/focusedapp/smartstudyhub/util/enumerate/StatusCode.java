@@ -30,8 +30,14 @@ public enum StatusCode {
 	/* GUEST User */
 	AUTHENTICATION_REQUIRE("3_1_f", "Authentication is required!"),
 	/* CUSTOMER User */
-	CHANGE_EMAIL_NOT_LOCAL("4_1_f", "Change Email of User that is not LOCAL"),
-	UPDATE_INFO_FAILURE("4_2_f", "Upate User's Information Unsuccessfully!");
+	CHANGE_EMAIL_NOT_LOCAL("4_1_f", "Change Email of User that is not LOCAL!"),
+	UPDATE_INFO_FAILURE("4_2_f", "Upate User's Information Unsuccessfully!"),
+	/* FOLDER */
+	DELETE_FOLDER_COMPLETELY_FAILURE("5_1_f", "Delete Folder Completely Failure!"),
+	MARK_COMPLETED_FOLDER_FAILURE("5_2_f", "Mark Completed Folder Failure!"),
+	/* PROJECT */
+	DELETE_PROJECT_COMPLETELY_FAILURE("6_1_f", "Delete Project Completely Failure!"),
+	MARK_COMPLETED_PROJECT_FAILURE("5_2_f", "Mark Completed Project Failure!");
 	
 	private final String code;
 	private final String message;

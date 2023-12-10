@@ -103,4 +103,29 @@ public class ExtraWorkService {
 		return new ExtraWorkDTO(extraWorkDb);
 	}
 	
+	/**
+	 * Find Extra Work By Id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public ExtraWork findById(Integer id) {
+		return extraWorkDAO.findById(id)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Extra Work by Id!", "ExtraWorkService -> findById"));
+	}
+	
+	/**
+	 * Delete Extra Work
+	 * 
+	 * @param workId
+	 * @return
+	 */
+	public ExtraWorkDTO delete(Integer extraWorkId) {
+
+		ExtraWork extraWorkDb = findById(extraWorkId);
+						
+		extraWorkDAO.delete(extraWorkDb);
+		return new ExtraWorkDTO(extraWorkDb);
+	}
+	
 }

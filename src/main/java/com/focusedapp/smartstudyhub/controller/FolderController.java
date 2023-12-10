@@ -208,4 +208,66 @@ public class FolderController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Delete Completyly Folder Controller
+	 * 
+	 * @param folderId
+	 * @return
+	 */
+	@DeleteMapping("/delete-completely/{folderId}")
+	public ResponseEntity<Result<FolderDTO>> deleteCompletelyFolder(@PathVariable Integer folderId) {
+		Result<FolderDTO> result = new Result<>();
+		
+		if (folderId == null || folderId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Request Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		FolderDTO data = folderService.deleteCompletelyFolder(folderId);
+		
+		if (data == null) {
+			result.getMeta().setStatusCode(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(data);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Mark Completed Folder Controller
+	 * 
+	 * @param folderId
+	 * @return
+	 */
+	@PutMapping("/mark-completed/{folderId}")
+	public ResponseEntity<Result<FolderDTO>> markCompleted(@PathVariable Integer folderId) {
+		Result<FolderDTO> result = new Result<>();
+		
+		if (folderId == null || folderId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Folder Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		FolderDTO folderMarked = folderService.markCompleted(folderId);
+		
+		if (folderMarked == null) {
+			result.getMeta().setStatusCode(StatusCode.MARK_COMPLETED_FOLDER_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.MARK_COMPLETED_FOLDER_FAILURE.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(folderMarked);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

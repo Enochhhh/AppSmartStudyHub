@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.dao.FolderDAO;
 import com.focusedapp.smartstudyhub.dao.ProjectDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
+import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -30,6 +32,10 @@ public class ProjectService {
 	UserService userService;
 	@Autowired 
 	FolderDAO folderDAO;
+	@Autowired
+	WorkService workService;
+	@Autowired
+	ExtraWorkService extraWorkService;
 	
 	/**
 	 * Find project by id
@@ -149,6 +155,19 @@ public class ProjectService {
 		
 		projectDb.setStatus(EnumStatus.DELETED.getValue());
 		
+		List<Work> works = projectDb.getWorks();
+		if (works != null) {
+			works.stream()
+				.forEach(w -> {
+					List<ExtraWork> extraWorks = w.getExtraWorks();
+					if (extraWorks != null) {
+						extraWorks.stream()
+							.forEach(ew -> ew.setStatus(EnumStatus.DELETED.getValue()));
+					}
+					w.setStatus(EnumStatus.DELETED.getValue());
+				});
+		}
+
 		projectDb = projectDAO.save(projectDb);
 		return projectDb;		
 	}
@@ -201,6 +220,58 @@ public class ProjectService {
 		List<Project> projects = projectDAO.getProjectsActiveAndCompletedByUserId(userId);
 		
 		return projects;
+	}
+	
+	/**
+	 * Delete Completely Project
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	public ProjectDTO deleteCompletelyProject(Integer projectId) {
+		
+		Optional<Project> project = projectDAO.findById(projectId);
+		if (project.isEmpty()) {
+			return null;
+		}
+		
+		projectDAO.delete(project.get());
+		
+		return new ProjectDTO(project.get());
+	}
+	
+	public ProjectDTO markCompleted(Integer projectId) {
+		
+		Optional<Project> projectOption = projectDAO.findByIdAndStatus(projectId, EnumStatus.ACTIVE.getValue());
+		if (projectOption.isEmpty()) {
+			return null;
+		}
+		Project project = projectOption.get();
+		List<Work> works = project.getWorks();
+		
+		if (works != null) {
+			works.stream()
+				.forEach(w -> {
+					if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+						List<ExtraWork> extraWorks = w.getExtraWorks();
+						if (extraWorks != null) {
+							extraWorks.stream()
+								.forEach(ew -> {
+									if (ew.getStatus().equals(EnumStatus.ACTIVE.getValue())) {									
+										extraWorkService.markCompleted(ew.getId());
+									}
+								});
+						}
+						workService.markCompleted(w.getId());
+					}
+				});
+		}
+		
+		project.setStatus(EnumStatus.COMPLETED.getValue());
+		
+		project = projectDAO.save(project);
+		
+		return new ProjectDTO(project);
 	}
 
 }

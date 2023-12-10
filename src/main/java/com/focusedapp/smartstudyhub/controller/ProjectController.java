@@ -275,4 +275,60 @@ public class ProjectController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Delete Completyly Project Controller
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	@DeleteMapping("/delete-completely/{projectId}")
+	public ResponseEntity<Result<ProjectDTO>> deleteCompletelyFolder(@PathVariable Integer projectId) {
+		Result<ProjectDTO> result = new Result<>();
+		
+		if (projectId == null || projectId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Request Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		ProjectDTO data = projectService.deleteCompletelyProject(projectId);
+		
+		if (data == null) {
+			result.getMeta().setStatusCode(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(data);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	@PutMapping("/mark-completed/{projectId}")
+	public ResponseEntity<Result<ProjectDTO>> markCompleted(@PathVariable Integer projectId) {
+		Result<ProjectDTO> result = new Result<>();
+		
+		if (projectId == null || projectId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Project Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		ProjectDTO projectMarked = projectService.markCompleted(projectId);
+		
+		if (projectMarked == null) {
+			result.getMeta().setStatusCode(StatusCode.MARK_COMPLETED_PROJECT_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.MARK_COMPLETED_PROJECT_FAILURE.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(projectMarked);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

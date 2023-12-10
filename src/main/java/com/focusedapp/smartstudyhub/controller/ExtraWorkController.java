@@ -103,9 +103,30 @@ public class ExtraWorkController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
-//	@DeleteMapping("/delete/{extraWorkId}")
-//	public ResponseEntity<Result<ExtraWorkDTO>> markDeletedExtraWork(@PathVariable Integer extraWorkId) {
-//		
-//	}
+	/**
+	 * Mark Deleted Extra Work Controller
+	 * 
+	 * @param extraWorkId
+	 * @return
+	 */
+	@DeleteMapping("/delete/{extraWorkId}")
+	public ResponseEntity<Result<ExtraWorkDTO>> deleteExtraWork(@PathVariable Integer extraWorkId) {
+		
+		Result<ExtraWorkDTO> result = new Result<>();
+		
+		if (extraWorkId == null || extraWorkId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("ExtraWorkId Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		ExtraWorkDTO extraWork = extraWorkService.delete(extraWorkId);
+		
+		result.setData(extraWork);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
 	
 }
