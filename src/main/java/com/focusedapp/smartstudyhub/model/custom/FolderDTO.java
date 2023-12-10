@@ -1,6 +1,5 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
-import java.beans.JavaBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
-@JavaBean
 public class FolderDTO implements Serializable {
 	
 	@Autowired

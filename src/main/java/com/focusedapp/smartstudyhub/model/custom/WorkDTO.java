@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.focusedapp.smartstudyhub.model.Project;
+import com.focusedapp.smartstudyhub.model.Tag;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +35,6 @@ public class WorkDTO implements Serializable {
 	private Integer userId;
 	private ProjectDTO projectDTO;
 	private Integer projectId;
-	private Integer tagId;
 	private Long dueDate;
 	private String workName;
 	private String priority;
@@ -51,6 +52,7 @@ public class WorkDTO implements Serializable {
 	private String statusWork;
 	private Long createdDate;
 	private List<ExtraWorkDTO> extraWorks;
+	private List<TagDTO> tags;
 	
 	public WorkDTO(Work work) {
 		this.id = work.getId();
@@ -62,7 +64,6 @@ public class WorkDTO implements Serializable {
 		if (project != null) {
 			this.projectId = project.getId();
 		}
-		// this.tagId = tag.getId();
 		this.workName = work.getWorkName();
 		this.priority = work.getPriority();
 		this.numberOfPomodoros = work.getNumberOfPomodoros();
@@ -116,6 +117,22 @@ public class WorkDTO implements Serializable {
 					.collect(Collectors.toList());
 		}
 		
+		List<Tag> tagListEntity = work.getTags();
+		if (!CollectionUtils.isEmpty(tagListEntity)) {
+			this.tags = tagListEntity.stream()
+							.map(tag -> {
+								TagDTO tagNew = new TagDTO();
+								tagNew.setId(tag.getId());
+								tagNew.setUserId(tag.getUser().getId());
+								tagNew.setTagName(tag.getTagName());
+								tagNew.setColorCode(tag.getColorCode());
+								tagNew.setCreatedDate(tag.getCreatedDate().getTime());
+								tagNew.setStatus(tag.getStatus());
+								
+								return tagNew;
+							})
+							.collect(Collectors.toList());
+		}
 	}
 
 }
