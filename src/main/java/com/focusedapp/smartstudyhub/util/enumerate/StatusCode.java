@@ -28,7 +28,10 @@ public enum StatusCode {
 	ACCOUNT_DELETED("2_4_f", "Account was deleted"),
 	OTP_CODE_INVALID("2_5_f", "OTP Code Invalid"),
 	/* GUEST User */
-	AUTHENTICATION_REQUIRE("3_1_f", "Authentication is required!");
+	AUTHENTICATION_REQUIRE("3_1_f", "Authentication is required!"),
+	/* CUSTOMER User */
+	CHANGE_EMAIL_NOT_LOCAL("4_1_f", "Change Email of User that is not LOCAL"),
+	UPDATE_INFO_FAILURE("4_2_f", "Upate User's Information Unsuccessfully!");
 	
 	private final String code;
 	private final String message;

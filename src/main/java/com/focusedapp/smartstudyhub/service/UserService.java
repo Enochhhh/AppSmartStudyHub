@@ -368,4 +368,57 @@ public class UserService {
 		}
 		return false;
 	}
+	
+	/**
+	 * Change Email User
+	 * 
+	 * @param authReq
+	 * @param user
+	 * @return
+	 */
+	public UserDTO changeEmailUser(AuthenticationDTO authReq, User user) {
+		
+		OtpCode otpCode = otpCodeService.findByEmail(authReq.getEmail());
+		if (!otpCode.getOtpCode().equals(authReq.getOtpCode()) 
+				|| otpCode.getOtpTimeExpiration().before(new Date())) {
+			throw new OTPCodeInvalidException("OTP Code Invalid or Expired", "UserService -> changeEmailUser");
+		}
+		if (!user.getProvider().equals(Provider.LOCAL.getValue())) {
+			return null;
+		}
+		user.setEmail(authReq.getEmail());
+		user.setUserName(authReq.getEmail());
+		user = userDAO.save(user);
+		
+		return new UserDTO(user);
+	}
+	
+	/**
+	 * Update Information User Customer
+	 * 
+	 * @param userInfo
+	 * @param user
+	 * @return
+	 */
+	public UserDTO updateInformationUserCustomer(UserDTO userInfo, User user) {
+		
+		if (user == null) {
+			return null;
+		}
+		
+		user.setPhoneNumber(userInfo.getPhoneNumber());
+		user.setFirstName(userInfo.getFirstName());
+		user.setLastName(userInfo.getLastName());
+		user.setAddress(userInfo.getAddress());
+		if (userInfo.getDateOfBirth() != null) {
+			user.setDateOfBirth(new Date(userInfo.getDateOfBirth()));
+		}
+		user.setCountry(userInfo.getCountry());
+		user.setImageUrl(user.getImageUrl());
+		user.setRole(user.getRole());
+		
+		user = userDAO.save(user);
+		
+		return new UserDTO(user);
+	}
 }

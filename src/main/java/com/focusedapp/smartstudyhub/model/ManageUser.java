@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @Entity
-@Table(name = "manager_users")
+@Table(name = "manage_users")
 public class ManageUser implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

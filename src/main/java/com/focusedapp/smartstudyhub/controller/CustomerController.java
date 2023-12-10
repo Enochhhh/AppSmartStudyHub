@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -96,6 +98,12 @@ public class CustomerController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Check Password Correct
+	 * 
+	 * @param authenRequest
+	 * @return
+	 */
 	@PostMapping("/check-password-correct")
 	public ResponseEntity<Result<AllResponseTypeDTO>> checkPasswordCorrect(@RequestBody AuthenticationDTO authenRequest) {
 		Result<AllResponseTypeDTO> result = new Result<>();
@@ -108,6 +116,80 @@ public class CustomerController extends BaseController {
 				.stringType(isValid ? "Password Is Corect!" : "Password Is Incorrect!")
 				.build();
 		result.setData(data);		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Change Email User Controller
+	 * 
+	 * @param authenRequest
+	 * @return
+	 */
+	@PostMapping("/change-email")
+	public ResponseEntity<Result<UserDTO>> changeEmailUser(@RequestBody AuthenticationDTO authenRequest) {
+		Result<UserDTO> result = new Result<>();
+		User user = getAuthenticatedUser();
+		
+		UserDTO userNew = userService.changeEmailUser(authenRequest, user);	
+		
+		if (userNew == null) {
+			result.getMeta().setStatusCode(StatusCode.CHANGE_EMAIL_NOT_LOCAL.getCode());
+			result.getMeta().setMessage(StatusCode.CHANGE_EMAIL_NOT_LOCAL.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
+		}
+		result.setData(userNew);		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Get Info of User
+	 * 
+	 * @return
+	 */
+	@GetMapping("/get-info")
+	public ResponseEntity<Result<UserDTO>> getInformationUserCustomer() {
+		
+		Result<UserDTO> result = new Result<>();
+			
+		User user = getAuthenticatedUser();
+		
+		result.setData(new UserDTO(user));		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Update Information User
+	 * 
+	 * @param userInfo
+	 * @return
+	 */
+	@PutMapping("/update-info")
+	public ResponseEntity<Result<UserDTO>> updateInformationUserCustomer(@RequestBody UserDTO userInfo) {
+		
+		Result<UserDTO> result = new Result<>();
+		
+		if (userInfo == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		User user = getAuthenticatedUser();
+		
+		UserDTO userNew = userService.updateInformationUserCustomer(userInfo, user);	
+		
+		if (userNew == null) {
+			result.getMeta().setStatusCode(StatusCode.UPDATE_INFO_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.UPDATE_INFO_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
+		}
+		result.setData(userNew);		
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
