@@ -38,6 +38,7 @@ public class ProjectDTO implements Serializable {
 	private Integer totalTimePassed;
 	private List<WorkDTO> listWorkCompleted;
 	private Long createdDate;
+	private List<WorkDTO> listWorkDeleted;
 	
 	public ProjectDTO(Project project) {
 		this.id = project.getId();
@@ -55,15 +56,9 @@ public class ProjectDTO implements Serializable {
 		this.totalTimePassed = 0;
 		this.listWorkActive = new ArrayList<>();
 		this.listWorkCompleted = new ArrayList<>();
+		this.listWorkDeleted = new ArrayList<>();
 		
-		List<Work> worksAllStatus = project.getWorks();
-		List<Work> works = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(worksAllStatus)) {
-			works = worksAllStatus.stream()
-					.filter(p -> p.getStatus().equals(EnumStatus.ACTIVE.getValue()) 
-							||  p.getStatus().equals(EnumStatus.COMPLETED.getValue()))
-					.collect(Collectors.toList());
-		}
+		List<Work> works = project.getWorks();
 		
 		if (!CollectionUtils.isEmpty(works)) {
 			works.stream().forEach(w -> {				
@@ -72,8 +67,10 @@ public class ProjectDTO implements Serializable {
 				this.totalTimePassed += w.getTimePassed();
 				if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
 					this.listWorkActive.add(new WorkDTO(w));
-				} else {
+				} else if (w.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
 					this.listWorkCompleted.add(new WorkDTO(w));
+				} else {
+					this.listWorkDeleted.add(new WorkDTO(w));
 				};
 			});
 			this.totalWorkActive = this.listWorkActive.size();
