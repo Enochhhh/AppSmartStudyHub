@@ -174,8 +174,12 @@ public class WorkService {
 		List<ExtraWork> extraWorks = workDb.getExtraWorks();
 		if (extraWorks != null) {
 			extraWorks.stream()
-				.forEach(ew -> ew.setStatus(EnumStatus.DELETED.getValue()));
+				.forEach(ew -> {
+					ew.setOldStatus(ew.getStatus());
+					ew.setStatus(EnumStatus.DELETED.getValue());
+				});
 		}
+		workDb.setOldStatus(workDb.getStatus());
 		workDb.setStatus(EnumStatus.DELETED.getValue());
 				
 		workDb = workDAO.save(workDb);
