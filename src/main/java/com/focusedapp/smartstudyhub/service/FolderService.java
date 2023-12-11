@@ -151,8 +151,7 @@ public class FolderService {
 		if (folder.isEmpty()) {
 			return null;
 		}
-		folder.get().setStatus(EnumStatus.DELETED.getValue());
-		
+				
 		List<Project> projects = folder.get().getProjects();
 		if (projects != null) {
 			projects.stream().forEach(pro -> {				
@@ -162,15 +161,23 @@ public class FolderService {
 						List<ExtraWork> extraWorks = w.getExtraWorks();
 						if (extraWorks != null) {
 							extraWorks.stream()
-								.forEach(e -> e.setStatus(EnumStatus.DELETED.getValue()));
+								.forEach(e -> {
+									e.setOldStatus(e.getStatus());
+									e.setStatus(EnumStatus.DELETED.getValue());
+								});
 						}
+						w.setOldStatus(w.getStatus());
 						w.setStatus(EnumStatus.DELETED.getValue());
 					}); 
 				}
+				pro.setOldStatus(pro.getStatus());
 				pro.setStatus(EnumStatus.DELETED.getValue());
 			});
 		}
-		folder.get().setProjects(projects);
+		
+		folder.get().setOldStatus(folder.get().getStatus());
+		folder.get().setStatus(EnumStatus.DELETED.getValue());
+		
 		return new FolderDTO(folderDAO.save(folder.get()));
 	}
 	

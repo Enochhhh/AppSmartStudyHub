@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -281,6 +283,7 @@ public class ProjectController extends BaseController {
 	 * @param projectId
 	 * @return
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	@DeleteMapping("/delete-completely/{projectId}")
 	public ResponseEntity<Result<ProjectDTO>> deleteCompletelyFolder(@PathVariable Integer projectId) {
 		Result<ProjectDTO> result = new Result<>();

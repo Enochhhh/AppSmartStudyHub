@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.service;
 
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +16,13 @@ import com.focusedapp.smartstudyhub.dao.WorkDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Project;
+import com.focusedapp.smartstudyhub.model.Tag;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
+import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
 public class WorkService {
@@ -38,6 +42,9 @@ public class WorkService {
 	@Autowired
 	ExtraWorkService extraWorkService;
 	
+	@Autowired
+	TagService tagService;
+	
 	/**
 	 * Find Work By Id and Status
 	 * 
@@ -48,6 +55,16 @@ public class WorkService {
 	public Work findByIdAndStatus(Integer workId, String status) {
 		return workDAO.findByIdAndStatus(workId, EnumStatus.ACTIVE.getValue())
 				.orElseThrow(() -> new NotFoundValueException("Not Found The Work By id and status", "WorkService -> findByIdAndStatus"));
+	}
+	
+	/**
+	 * Find Work by Id
+	 * 
+	 * @return
+	 */
+	public Work findById(Integer id) {
+		return workDAO.findById(id)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Work by Id!", "WorkService -> findById"));
 	}
 	
 	/**
@@ -64,6 +81,15 @@ public class WorkService {
 			project = projectOtp.get();
 		}
 		
+		List<Integer> tagIds = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(dataCreate.getTags())) {
+			tagIds = dataCreate.getTags().stream()
+						.map(t -> t.getId())
+						.collect(Collectors.toList());
+		}
+		
+		List<Tag> tags = tagService.findByIds(tagIds);
+		
 		Work work = Work.builder()
 				.user(userService.findByIdAndStatus(dataCreate.getUserId(), EnumStatus.ACTIVE.getValue()))
 				.project(project)
@@ -74,6 +100,7 @@ public class WorkService {
 				.timeOfPomodoro(dataCreate.getTimeOfPomodoro())
 				.isRemindered(Boolean.FALSE)
 				.isRepeated(Boolean.FALSE)
+				.tags(tags)
 				.createdDate(new Date())
 				.status(EnumStatus.ACTIVE.getValue())
 				.assignee(dataCreate.getAssigneeId() == null ? null : 
@@ -93,11 +120,19 @@ public class WorkService {
 	 */
 	public WorkDTO updateWork(WorkDTO dataUpdate) {
 
-		Work workDb = findByIdAndStatus(dataUpdate.getId(), EnumStatus.ACTIVE.getValue());
+		Work workDb = workDAO.findById(dataUpdate.getId())
+				.orElseThrow();
 		Optional<Project> projectOtp = projectDAO.findByIdAndStatus(dataUpdate.getProjectId(), EnumStatus.ACTIVE.getValue());
 		Project project = null;
 		if (!projectOtp.isEmpty()) {
 			project = projectOtp.get();
+		}
+		List<TagDTO> tagsReq = dataUpdate.getTags();
+		List<Integer> tagIds = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(tagsReq)) {
+			tagIds = tagsReq.stream()
+						.map(t -> t.getId())
+						.collect(Collectors.toList());
 		}
 		
 		workDb.setProject(project);
@@ -108,8 +143,7 @@ public class WorkService {
 		workDb.setTimeOfPomodoro(dataUpdate.getTimeOfPomodoro());
 		workDb.setIsRemindered(dataUpdate.getIsRemindered());
 		workDb.setIsRepeated(dataUpdate.getIsRepeated());
-		workDb.setNote(dataUpdate.getNote());
-		workDb.setTimePassed(dataUpdate.getTimePassed());		
+		workDb.setNote(dataUpdate.getNote());	
 		workDb.setAssignee(dataUpdate.getAssigneeId() == null ? null : 
 					userService.findByIdAndStatus(dataUpdate.getAssigneeId(), EnumStatus.ACTIVE.getValue()));
 		workDb.setNumberOfPomodorosDone(dataUpdate.getNumberOfPomodorosDone());
@@ -119,22 +153,12 @@ public class WorkService {
 		if (dataUpdate.getEndTime() != null) {
 			workDb.setEndTime(new Date(dataUpdate.getEndTime()));
 		}		
+		workDb.setTags(tagService.findByIds(tagIds));
 		workDb.setStatus(dataUpdate.getStatus() == null ? EnumStatus.ACTIVE.getValue() : dataUpdate.getStatus());
 				
 		workDb = workDAO.save(workDb);
 
 		return new WorkDTO(workDb);
-	}
-	
-	/**
-	 * Find Work by Id
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public Work findById(Integer id) {
-		return workDAO.findById(id)
-				.orElseThrow(() -> new NotFoundValueException("Not Found Work by Id!", "WorkService -> findById"));
 	}
 	
 	/**

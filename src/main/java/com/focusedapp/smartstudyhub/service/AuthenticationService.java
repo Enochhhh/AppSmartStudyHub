@@ -180,7 +180,7 @@ public class AuthenticationService {
 	public AuthenticationDTO authenticateToRecoverAccount(AuthenticationDTO request) {
 		User user = userService.findByUserName(request.getEmail());
 			
-		if (user.getUserName().equals(request.getEmail())
+		if (user.getEmail().equals(request.getEmail())
 				&& passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			return AuthenticationDTO.builder().email(user.getEmail()).firstName(user.getFirstName())
 					.lastName(user.getLastName()).role(user.getRole()).createdAt(user.getCreatedAt().getTime())

@@ -59,6 +59,9 @@ public class Folder implements Serializable {
 	
 	private String status;
 	
+	@Column(name = "old_status")
+	private String oldStatus;
+	
 	@OneToMany(mappedBy = "folder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	List<Project> projects; 
 	

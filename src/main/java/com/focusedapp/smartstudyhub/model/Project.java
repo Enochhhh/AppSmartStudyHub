@@ -63,6 +63,9 @@ public class Project implements Serializable {
 	
 	private String status;
 	
+	@Column(name = "old_status")
+	private String oldStatus;
+	
 	@OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Work> works;
 	

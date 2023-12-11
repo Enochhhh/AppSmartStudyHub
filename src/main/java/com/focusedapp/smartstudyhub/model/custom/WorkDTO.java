@@ -15,8 +15,6 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -118,7 +116,7 @@ public class WorkDTO implements Serializable {
 		}
 		
 		List<Tag> tagListEntity = work.getTags();
-		if (!CollectionUtils.isEmpty(tagListEntity)) {
+		if (tagListEntity != null) {
 			this.tags = tagListEntity.stream()
 							.map(tag -> {
 								TagDTO tagNew = new TagDTO();

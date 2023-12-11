@@ -92,6 +92,9 @@ public class Work implements Serializable {
 	
 	private String status;
 	
+	@Column(name = "old_status")
+	private String oldStatus;
+	
 	@Column(name = "created_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;

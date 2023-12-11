@@ -68,6 +68,9 @@ public class ExtraWork implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 	
+	@Column(name = "old_status")
+	private String oldStatus;
+	
 	@OneToMany(mappedBy = "extraWork", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Pomodoro> pomodoros;
 	
