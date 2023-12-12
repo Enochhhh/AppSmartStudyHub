@@ -175,12 +175,16 @@ public class WorkService {
 		if (extraWorks != null) {
 			extraWorks.stream()
 				.forEach(ew -> {
-					ew.setOldStatus(ew.getStatus());
-					ew.setStatus(EnumStatus.DELETED.getValue());
+					if (!ew.getStatus().equals(EnumStatus.DELETED.getValue())) {
+						ew.setOldStatus(ew.getStatus());
+						ew.setStatus(EnumStatus.DELETED.getValue());
+					}				
 				});
 		}
-		workDb.setOldStatus(workDb.getStatus());
-		workDb.setStatus(EnumStatus.DELETED.getValue());
+		if (!workDb.getStatus().equals(EnumStatus.DELETED.getValue())) {
+			workDb.setOldStatus(workDb.getStatus());
+			workDb.setStatus(EnumStatus.DELETED.getValue());
+		}	
 				
 		workDb = workDAO.save(workDb);
 

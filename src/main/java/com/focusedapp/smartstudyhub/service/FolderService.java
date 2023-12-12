@@ -162,22 +162,30 @@ public class FolderService {
 						if (extraWorks != null) {
 							extraWorks.stream()
 								.forEach(e -> {
-									e.setOldStatus(e.getStatus());
-									e.setStatus(EnumStatus.DELETED.getValue());
+									if (!e.getStatus().equals(EnumStatus.DELETED.getValue())) {
+										e.setOldStatus(e.getStatus());
+										e.setStatus(EnumStatus.DELETED.getValue());
+									}									
 								});
 						}
-						w.setOldStatus(w.getStatus());
-						w.setStatus(EnumStatus.DELETED.getValue());
+						if (!w.getStatus().equals(EnumStatus.DELETED.getValue())) {
+							w.setOldStatus(w.getStatus());
+							w.setStatus(EnumStatus.DELETED.getValue());
+						}						
 					}); 
 				}
-				pro.setOldStatus(pro.getStatus());
-				pro.setStatus(EnumStatus.DELETED.getValue());
+				if (!pro.getStatus().equals(EnumStatus.DELETED.getValue())) {
+					pro.setOldStatus(pro.getStatus());
+					pro.setStatus(EnumStatus.DELETED.getValue());
+				}			
 			});
 		}
 		
-		folder.get().setOldStatus(folder.get().getStatus());
-		folder.get().setStatus(EnumStatus.DELETED.getValue());
-		
+		if (!folder.get().getStatus().equals(EnumStatus.DELETED.getValue())) {
+			folder.get().setOldStatus(folder.get().getStatus());
+			folder.get().setStatus(EnumStatus.DELETED.getValue());
+		}	
+				
 		return new FolderDTO(folderDAO.save(folder.get()));
 	}
 	

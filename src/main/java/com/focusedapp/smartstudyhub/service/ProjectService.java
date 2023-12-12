@@ -153,9 +153,11 @@ public class ProjectService {
 		Project projectDb = projectDAO.findById(projectId)
 				.orElseThrow(() -> new NotFoundValueException("Not Fould the Project to delete!", "ProjectService -> deleteProject"));
 		
-		projectDb.setOldStatus(projectDb.getStatus());
-		projectDb.setStatus(EnumStatus.DELETED.getValue());
-		
+		if (!projectDb.getStatus().equals(EnumStatus.DELETED.getValue())) {
+			projectDb.setOldStatus(projectDb.getStatus());
+			projectDb.setStatus(EnumStatus.DELETED.getValue());
+		}
+				
 		List<Work> works = projectDb.getWorks();
 		if (works != null) {
 			works.stream()
@@ -164,12 +166,17 @@ public class ProjectService {
 					if (extraWorks != null) {
 						extraWorks.stream()
 							.forEach(ew -> {
-								ew.setOldStatus(ew.getStatus());
-								ew.setStatus(EnumStatus.DELETED.getValue());
+								if (!ew.getStatus().equals(EnumStatus.DELETED.getValue())) {
+									ew.setOldStatus(ew.getStatus());
+									ew.setStatus(EnumStatus.DELETED.getValue());
+								}			
 							});
 					}
-					w.setOldStatus(w.getStatus());
-					w.setStatus(EnumStatus.DELETED.getValue());
+					if (!w.getStatus().equals(EnumStatus.DELETED.getValue())) {
+						w.setOldStatus(w.getStatus());
+						w.setStatus(EnumStatus.DELETED.getValue());
+					}
+					
 				});
 		}
 

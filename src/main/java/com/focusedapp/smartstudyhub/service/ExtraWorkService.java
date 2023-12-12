@@ -128,4 +128,23 @@ public class ExtraWorkService {
 		return new ExtraWorkDTO(extraWorkDb);
 	}
 	
+	/**
+	 * Mark Deleted Extra Work
+	 * 
+	 * @param extraWorkId
+	 * @return
+	 */
+	public ExtraWorkDTO markDeleted(Integer extraWorkId) {
+
+		ExtraWork extraWorkDb = findById(extraWorkId);
+		
+		if (!extraWorkDb.getStatus().equals(EnumStatus.DELETED.getValue())) {
+			extraWorkDb.setOldStatus(extraWorkDb.getStatus());
+			extraWorkDb.setStatus(EnumStatus.DELETED.getValue());
+		}
+		
+		extraWorkDAO.save(extraWorkDb);
+		return new ExtraWorkDTO(extraWorkDb);
+	}
+	
 }
