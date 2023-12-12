@@ -167,4 +167,35 @@ public class ExtraWorkController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Recover Extra Work
+	 * 
+	 * @param extraWorkId
+	 * @return
+	 */
+	@PutMapping("/recover/{extraWorkId}")
+	public ResponseEntity<Result<ExtraWorkDTO>> recover(@PathVariable Integer extraWorkId) {
+		Result<ExtraWorkDTO> result = new Result<>();
+		
+		if (extraWorkId == null || extraWorkId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Extra Work Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		ExtraWorkDTO extraWorkRecovered = extraWorkService.recover(extraWorkId);
+		
+		if (extraWorkRecovered == null) {
+			result.getMeta().setStatusCode(StatusCode.RECOVER_EXTRAWORK_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.RECOVER_EXTRAWORK_FAILURE.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(extraWorkRecovered);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

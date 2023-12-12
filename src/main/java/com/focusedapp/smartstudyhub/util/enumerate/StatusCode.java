@@ -44,9 +44,11 @@ public enum StatusCode {
 	/* WORK */
 	MARK_DELETED_WORK_FAILURE("7_1_f", "Mark Deleted Work Failure!"),
 	MARK_COMPLETED_WORK_FAILURE("7_2_f", "Mark Completed Work Failure!"),
+	RECOVER_WORK_FAILURE("7_3_f", "Recover Work Failure!"),
 	/* EXTRA WORK */
 	MARK_DELETED_EXTRAWORK_FAILURE("8_1_f", "Mark Deleted Extra Work Failure!"),
-	MARK_COMPLETED_EXTRAWORK_FAILURE("8_2_f", "Mark Completed Extra Work Failure!"),;
+	MARK_COMPLETED_EXTRAWORK_FAILURE("8_2_f", "Mark Completed Extra Work Failure!"),
+	RECOVER_EXTRAWORK_FAILURE("8_3_f", "Recover Extra Work Failure!");
 	
 	private final String code;
 	private final String message;

@@ -156,4 +156,30 @@ public class ExtraWorkService {
 		return new ExtraWorkDTO(extraWorkDb);
 	}
 	
+	/**
+	 * Recover Extra Work
+	 * 
+	 * @param extraWorkId
+	 * @return
+	 */
+	public ExtraWorkDTO recover(Integer extraWorkId) {
+		Optional<ExtraWork> extraWorkOpt = extraWorkDAO.findById(extraWorkId);
+		if (extraWorkOpt.isEmpty()) {
+			return null;
+		}
+		ExtraWork extraWork = extraWorkOpt.get();
+		
+		if (extraWork.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
+			extraWork.setEndTime(null);
+			extraWork.setStatus(EnumStatus.ACTIVE.getValue());
+		} else if (extraWork.getStatus().equals(EnumStatus.DELETED.getValue())) {
+			extraWork.setStatus(extraWork.getOldStatus());
+			extraWork.setOldStatus(null);
+		}
+		
+		extraWorkDAO.save(extraWork);
+		
+		return new ExtraWorkDTO(extraWork);
+	}	
+		
 }
