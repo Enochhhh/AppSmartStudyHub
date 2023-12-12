@@ -151,7 +151,7 @@ public class FolderController extends BaseController {
 		if (folderCreated == null) {
 			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());
 			result.getMeta().setMessage(StatusCode.FAIL.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(folderCreated);
@@ -175,7 +175,7 @@ public class FolderController extends BaseController {
 		if (folder == null) {
 			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());
 			result.getMeta().setMessage(StatusCode.FAIL.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(new FolderDTO(folder));
@@ -233,7 +233,7 @@ public class FolderController extends BaseController {
 		if (data == null) {
 			result.getMeta().setStatusCode(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(data);
@@ -264,7 +264,7 @@ public class FolderController extends BaseController {
 		if (folderMarked == null) {
 			result.getMeta().setStatusCode(StatusCode.MARK_COMPLETED_FOLDER_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.MARK_COMPLETED_FOLDER_FAILURE.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(folderMarked);
@@ -272,5 +272,30 @@ public class FolderController extends BaseController {
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
 	}
+	
+//	@PutMapping("/recover/{folderId}")
+//	public ResponseEntity<Result<FolderDTO>> recover(@PathVariable Integer folderId) {
+//		Result<FolderDTO> result = new Result<>();
+//		
+//		if (folderId == null || folderId < 1) {
+//			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+//			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+//			result.getMeta().setDetails("Folder Id Invalid!");
+//			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+//		}
+//		
+//		FolderDTO folderRecovered = folderService.recover(folderId);
+//		
+//		if (folderRecovered == null) {
+//			result.getMeta().setStatusCode(StatusCode.RECOVER_FOLDER_FAILURE.getCode());
+//			result.getMeta().setMessage(StatusCode.RECOVER_FOLDER_FAILURE.getMessage());
+//			return createResponseEntity(result);
+//		}
+//		
+//		result.setData(folderRecovered);
+//		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+//		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+//		return createResponseEntity(result);
+//	}
 	
 }

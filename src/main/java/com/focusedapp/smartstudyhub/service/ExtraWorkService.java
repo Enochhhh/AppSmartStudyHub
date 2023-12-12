@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.service;
 
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,7 +88,11 @@ public class ExtraWorkService {
 	 */
 	public ExtraWorkDTO markCompleted(Integer extraWorkId) {
 
-		ExtraWork extraWorkDb = findByIdAndStatus(extraWorkId, EnumStatus.ACTIVE.getValue());
+		Optional<ExtraWork> extraWorkOpt = extraWorkDAO.findByIdAndStatus(extraWorkId, EnumStatus.ACTIVE.getValue());
+		if (extraWorkOpt.isEmpty()) {
+			return null;
+		}
+		ExtraWork extraWorkDb = extraWorkOpt.get();
 				
 		extraWorkDb.setStatus(EnumStatus.COMPLETED.getValue());
 		
@@ -136,7 +141,11 @@ public class ExtraWorkService {
 	 */
 	public ExtraWorkDTO markDeleted(Integer extraWorkId) {
 
-		ExtraWork extraWorkDb = findById(extraWorkId);
+		Optional<ExtraWork> extraWorkOpt = extraWorkDAO.findById(extraWorkId);
+		if (extraWorkOpt.isEmpty()) {
+			return null;
+		}
+		ExtraWork extraWorkDb = extraWorkOpt.get();
 		
 		if (!extraWorkDb.getStatus().equals(EnumStatus.DELETED.getValue())) {
 			extraWorkDb.setOldStatus(extraWorkDb.getStatus());

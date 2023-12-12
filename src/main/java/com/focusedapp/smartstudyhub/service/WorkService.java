@@ -169,16 +169,18 @@ public class WorkService {
 	 */
 	public WorkDTO markDeletedWork(Integer workId) {
 
-		Work workDb = findById(workId);
+		Optional<Work> workOpt = workDAO.findById(workId);
+		
+		if (workOpt.isEmpty()) {
+			return null;
+		}
+		Work workDb = workOpt.get();
 		
 		List<ExtraWork> extraWorks = workDb.getExtraWorks();
 		if (extraWorks != null) {
 			extraWorks.stream()
 				.forEach(ew -> {
-					if (!ew.getStatus().equals(EnumStatus.DELETED.getValue())) {
-						ew.setOldStatus(ew.getStatus());
-						ew.setStatus(EnumStatus.DELETED.getValue());
-					}				
+					extraWorkService.markDeleted(ew.getId());
 				});
 		}
 		if (!workDb.getStatus().equals(EnumStatus.DELETED.getValue())) {
@@ -241,7 +243,11 @@ public class WorkService {
 	 */
 	public WorkDTO markCompleted(Integer workId) {
 
-		Work workDb = findByIdAndStatus(workId, EnumStatus.ACTIVE.getValue());
+		Optional<Work> workOpt = workDAO.findByIdAndStatus(workId, EnumStatus.ACTIVE.getValue());
+		if (workOpt.isEmpty()) {
+			return null;
+		}
+		Work workDb = workOpt.get();
 		
 		List<ExtraWork> extraWorks = workDb.getExtraWorks();
 		if (extraWorks != null) {

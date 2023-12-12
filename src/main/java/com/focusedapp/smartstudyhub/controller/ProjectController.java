@@ -168,7 +168,7 @@ public class ProjectController extends BaseController {
 		if (project == null) {
 			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());
 			result.getMeta().setMessage(StatusCode.FAIL.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(new ProjectDTO(project));
@@ -187,12 +187,18 @@ public class ProjectController extends BaseController {
 	public ResponseEntity<Result<ProjectDTO>> deleteProject(@PathVariable Integer projectId) {
 		Result<ProjectDTO> result = new Result<>();
 		
-		Project project = projectService.deleteProject(projectId);
-		
 		if (projectId == null || projectId < 1) {
 			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
 			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		Project project = projectService.deleteProject(projectId);
+		
+		if (project == null) {
+			result.getMeta().setStatusCode(StatusCode.MARK_DELETED_PROJECT_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.MARK_DELETED_PROJECT_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(new ProjectDTO(project));
@@ -215,7 +221,7 @@ public class ProjectController extends BaseController {
 		if (CollectionUtils.isEmpty(projects)) {
 			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());
 			result.getMeta().setMessage(StatusCode.FAIL.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(projects);
@@ -300,7 +306,7 @@ public class ProjectController extends BaseController {
 		if (data == null) {
 			result.getMeta().setStatusCode(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.DELETE_FOLDER_COMPLETELY_FAILURE.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(data);
@@ -325,7 +331,7 @@ public class ProjectController extends BaseController {
 		if (projectMarked == null) {
 			result.getMeta().setStatusCode(StatusCode.MARK_COMPLETED_PROJECT_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.MARK_COMPLETED_PROJECT_FAILURE.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(projectMarked);

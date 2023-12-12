@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.dao.FolderDAO;
 import com.focusedapp.smartstudyhub.dao.ProjectDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
-import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.User;
@@ -150,8 +149,11 @@ public class ProjectService {
 	 * @return
 	 */
 	public Project deleteProject(Integer projectId) {
-		Project projectDb = projectDAO.findById(projectId)
-				.orElseThrow(() -> new NotFoundValueException("Not Fould the Project to delete!", "ProjectService -> deleteProject"));
+		Optional<Project> projectOpt = projectDAO.findById(projectId);
+		if (projectOpt.isEmpty()) {
+			return null;
+		}
+		Project projectDb = projectOpt.get();
 		
 		if (!projectDb.getStatus().equals(EnumStatus.DELETED.getValue())) {
 			projectDb.setOldStatus(projectDb.getStatus());
@@ -162,21 +164,7 @@ public class ProjectService {
 		if (works != null) {
 			works.stream()
 				.forEach(w -> {
-					List<ExtraWork> extraWorks = w.getExtraWorks();
-					if (extraWorks != null) {
-						extraWorks.stream()
-							.forEach(ew -> {
-								if (!ew.getStatus().equals(EnumStatus.DELETED.getValue())) {
-									ew.setOldStatus(ew.getStatus());
-									ew.setStatus(EnumStatus.DELETED.getValue());
-								}			
-							});
-					}
-					if (!w.getStatus().equals(EnumStatus.DELETED.getValue())) {
-						w.setOldStatus(w.getStatus());
-						w.setStatus(EnumStatus.DELETED.getValue());
-					}
-					
+					workService.markDeletedWork(w.getId());
 				});
 		}
 
@@ -265,15 +253,6 @@ public class ProjectService {
 			works.stream()
 				.forEach(w -> {
 					if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-						List<ExtraWork> extraWorks = w.getExtraWorks();
-						if (extraWorks != null) {
-							extraWorks.stream()
-								.forEach(ew -> {
-									if (ew.getStatus().equals(EnumStatus.ACTIVE.getValue())) {									
-										extraWorkService.markCompleted(ew.getId());
-									}
-								});
-						}
 						workService.markCompleted(w.getId());
 					}
 				});

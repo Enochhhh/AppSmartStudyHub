@@ -97,6 +97,12 @@ public class ExtraWorkController extends BaseController {
 		
 		ExtraWorkDTO extraWork = extraWorkService.markCompleted(extraWorkId);
 		
+		if (extraWork == null) {
+			result.getMeta().setStatusCode(StatusCode.MARK_COMPLETED_EXTRAWORK_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.MARK_COMPLETED_EXTRAWORK_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);		
+		}
+		
 		result.setData(extraWork);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
@@ -148,6 +154,12 @@ public class ExtraWorkController extends BaseController {
 		}
 		
 		ExtraWorkDTO extraWork = extraWorkService.markDeleted(extraWorkId);
+		
+		if (extraWork == null) {
+			result.getMeta().setStatusCode(StatusCode.MARK_DELETED_EXTRAWORK_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.MARK_DELETED_EXTRAWORK_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);		
+		}
 		
 		result.setData(extraWork);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

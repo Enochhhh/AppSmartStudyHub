@@ -12,11 +12,9 @@ import org.springframework.util.CollectionUtils;
 
 import com.focusedapp.smartstudyhub.dao.FolderDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
-import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Folder;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.User;
-import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.FolderDTO;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
@@ -155,29 +153,7 @@ public class FolderService {
 		List<Project> projects = folder.get().getProjects();
 		if (projects != null) {
 			projects.stream().forEach(pro -> {				
-				List<Work> works = pro.getWorks();
-				if (works != null) {
-					works.stream().forEach(w -> {
-						List<ExtraWork> extraWorks = w.getExtraWorks();
-						if (extraWorks != null) {
-							extraWorks.stream()
-								.forEach(e -> {
-									if (!e.getStatus().equals(EnumStatus.DELETED.getValue())) {
-										e.setOldStatus(e.getStatus());
-										e.setStatus(EnumStatus.DELETED.getValue());
-									}									
-								});
-						}
-						if (!w.getStatus().equals(EnumStatus.DELETED.getValue())) {
-							w.setOldStatus(w.getStatus());
-							w.setStatus(EnumStatus.DELETED.getValue());
-						}						
-					}); 
-				}
-				if (!pro.getStatus().equals(EnumStatus.DELETED.getValue())) {
-					pro.setOldStatus(pro.getStatus());
-					pro.setStatus(EnumStatus.DELETED.getValue());
-				}			
+				projectService.deleteProject(pro.getId());		
 			});
 		}
 		
@@ -262,25 +238,7 @@ public class FolderService {
 			projects.stream()
 				.forEach(p -> {
 					if (p.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-						List<Work> works = p.getWorks();
-						if (works != null) {
-							works.stream()
-								.forEach(w -> {
-									if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-										List<ExtraWork> extraWorks = w.getExtraWorks();
-										if (extraWorks != null) {
-											extraWorks.stream()
-												.forEach(ew -> {
-													if (ew.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-														extraWorkService.markCompleted(ew.getId());
-													}
-												});
-										}
-										workService.markCompleted(w.getId());
-									}
-								});
-						}
-						p.setStatus(EnumStatus.COMPLETED.getValue());
+						projectService.markCompleted(p.getId());
 					}
 				});
 		}
@@ -291,5 +249,22 @@ public class FolderService {
 		
 		return new FolderDTO(folder);
 	}
+	
+//	public FolderDTO recover(Integer folderId) {
+//		
+//		Optional<Folder> folderOpt = folderDAO.findByIdAndStatus(folderId, EnumStatus.ACTIVE.getValue());
+//		if (folderOpt.isEmpty()) {
+//			return null;
+//		}
+//		Folder folder = folderOpt.get();
+//	}
+//	
+////	public Folder recoverCompleted(Folder folderReq) {
+////		
+////	}
+////	
+////	public Folder recoverDeleted(Folder folderReq) {
+////		
+////	}
 	
 }

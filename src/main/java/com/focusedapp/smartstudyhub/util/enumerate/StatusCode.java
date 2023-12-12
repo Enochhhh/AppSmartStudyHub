@@ -35,9 +35,18 @@ public enum StatusCode {
 	/* FOLDER */
 	DELETE_FOLDER_COMPLETELY_FAILURE("5_1_f", "Delete Folder Completely Failure!"),
 	MARK_COMPLETED_FOLDER_FAILURE("5_2_f", "Mark Completed Folder Failure!"),
+	RECOVER_FOLDER_FAILURE("5_3_f", "Recover Folder Failure!"),
 	/* PROJECT */
 	DELETE_PROJECT_COMPLETELY_FAILURE("6_1_f", "Delete Project Completely Failure!"),
-	MARK_COMPLETED_PROJECT_FAILURE("5_2_f", "Mark Completed Project Failure!");
+	MARK_COMPLETED_PROJECT_FAILURE("6_2_f", "Mark Completed Project Failure!"),
+	RECOVER_PROJECT_FAILURE("6_3_f", "Recover Folder Failure!"),
+	MARK_DELETED_PROJECT_FAILURE("6_4_f", "Mark Deleted Project Failure!"),
+	/* WORK */
+	MARK_DELETED_WORK_FAILURE("7_1_f", "Mark Deleted Work Failure!"),
+	MARK_COMPLETED_WORK_FAILURE("7_2_f", "Mark Completed Work Failure!"),
+	/* EXTRA WORK */
+	MARK_DELETED_EXTRAWORK_FAILURE("8_1_f", "Mark Deleted Extra Work Failure!"),
+	MARK_COMPLETED_EXTRAWORK_FAILURE("8_2_f", "Mark Completed Extra Work Failure!"),;
 	
 	private final String code;
 	private final String message;

@@ -101,6 +101,12 @@ public class WorkController extends BaseController {
 		
 		WorkDTO workDeleted = workService.markDeletedWork(workId);
 		
+		if (workDeleted == null) {
+			result.getMeta().setStatusCode(StatusCode.MARK_DELETED_WORK_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.MARK_DELETED_WORK_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
+		}
+		
 		result.setData(workDeleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
@@ -196,6 +202,12 @@ public class WorkController extends BaseController {
 		}
 		
 		WorkDTO work = workService.markCompleted(workId);
+		
+		if (work == null) {
+			result.getMeta().setStatusCode(StatusCode.MARK_COMPLETED_WORK_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.MARK_COMPLETED_WORK_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
+		}
 		
 		result.setData(work);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
