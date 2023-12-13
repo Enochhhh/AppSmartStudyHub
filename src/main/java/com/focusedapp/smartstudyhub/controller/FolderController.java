@@ -273,29 +273,35 @@ public class FolderController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
-//	@PutMapping("/recover/{folderId}")
-//	public ResponseEntity<Result<FolderDTO>> recover(@PathVariable Integer folderId) {
-//		Result<FolderDTO> result = new Result<>();
-//		
-//		if (folderId == null || folderId < 1) {
-//			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
-//			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-//			result.getMeta().setDetails("Folder Id Invalid!");
-//			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
-//		}
-//		
-//		FolderDTO folderRecovered = folderService.recover(folderId);
-//		
-//		if (folderRecovered == null) {
-//			result.getMeta().setStatusCode(StatusCode.RECOVER_FOLDER_FAILURE.getCode());
-//			result.getMeta().setMessage(StatusCode.RECOVER_FOLDER_FAILURE.getMessage());
-//			return createResponseEntity(result);
-//		}
-//		
-//		result.setData(folderRecovered);
-//		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
-//		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-//		return createResponseEntity(result);
-//	}
+	/**
+	 * Recover Folder Controller
+	 * 
+	 * @param folderId
+	 * @return
+	 */
+	@PutMapping("/recover/{folderId}")
+	public ResponseEntity<Result<FolderDTO>> recover(@PathVariable Integer folderId) {
+		Result<FolderDTO> result = new Result<>();
+		
+		if (folderId == null || folderId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Folder Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		FolderDTO folderRecovered = folderService.recover(folderId);
+		
+		if (folderRecovered == null) {
+			result.getMeta().setStatusCode(StatusCode.RECOVER_FOLDER_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.RECOVER_FOLDER_FAILURE.getMessage());
+			return createResponseEntity(result);
+		}
+		
+		result.setData(folderRecovered);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
 	
 }

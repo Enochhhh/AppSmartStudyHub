@@ -250,21 +250,46 @@ public class FolderService {
 		return new FolderDTO(folder);
 	}
 	
-//	public FolderDTO recover(Integer folderId) {
-//		
-//		Optional<Folder> folderOpt = folderDAO.findByIdAndStatus(folderId, EnumStatus.ACTIVE.getValue());
-//		if (folderOpt.isEmpty()) {
-//			return null;
-//		}
-//		Folder folder = folderOpt.get();
-//	}
-//	
-////	public Folder recoverCompleted(Folder folderReq) {
-////		
-////	}
-////	
-////	public Folder recoverDeleted(Folder folderReq) {
-////		
-////	}
+	/**
+	 * Recover Folder
+	 * 
+	 * @param folderId
+	 * @return
+	 */
+	public FolderDTO recover(Integer folderId) {
+		
+		Optional<Folder> folderOpt = folderDAO.findById(folderId);
+		if (folderOpt.isEmpty()) {
+			return null;
+		}
+		Folder folder = folderOpt.get();
+		
+		List<Project> projects = folder.getProjects() == null ? new ArrayList<>() : folder.getProjects();
+		
+		if (folder.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
+			folder.setStatus(EnumStatus.ACTIVE.getValue());
+						
+			projects.stream()
+				.forEach(p -> {
+					if (p.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
+						projectService.recover(p.getId());
+					}
+				});					
+		} else if (folder.getStatus().equals(EnumStatus.DELETED.getValue())) {
+			folder.setStatus(folder.getOldStatus());
+			folder.setOldStatus(null);
+			
+			projects.stream()
+				.forEach(p -> {
+					if (p.getStatus().equals(EnumStatus.DELETED.getValue())) {
+						projectService.recover(p.getId());
+					}
+				});
+		}
+		
+		folder = folderDAO.save(folder);
+		
+		return new FolderDTO(folder);
+	}
 	
 }

@@ -341,7 +341,7 @@ public class ProjectController extends BaseController {
 	}
 	
 	/**
-	 * Recover Work
+	 * Recover Project
 	 * 
 	 * @param extraWorkId
 	 * @return
