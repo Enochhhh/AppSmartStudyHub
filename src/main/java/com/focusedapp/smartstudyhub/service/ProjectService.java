@@ -50,6 +50,17 @@ public class ProjectService {
 	}
 	
 	/**
+	 * Find Project by Id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Project findById(Integer id) {
+		return projectDAO.findById(id)
+					.orElseThrow(() -> new NotFoundValueException("Not Found Project by Id", "ProjectService -> findById"));
+	}
+	
+	/**
 	 * Create Project
 	 * 
 	 * @param dataCreate

@@ -292,4 +292,15 @@ public class FolderService {
 		return new FolderDTO(folder);
 	}
 	
+	/**
+	 * Find Folder by Id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Folder findById(Integer id) {
+		return folderDAO.findById(id)
+					.orElseThrow(() -> new NotFoundValueException("Not found Folder by Id!", "FolderService -> findById"));
+	}
+	
 }

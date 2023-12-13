@@ -14,4 +14,6 @@ public interface TagDAO extends JpaRepository<Tag, Integer> {
 
 	@Query(value = "select * from tag t where t.id in :ids", nativeQuery = true)
 	List<Tag> findByIds(@Param("ids") List<Integer> tagIds);
+	
+	List<Tag> findByUserIdAndStatus(Integer userId, String status);
 }

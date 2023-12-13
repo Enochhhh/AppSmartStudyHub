@@ -25,7 +25,6 @@ import com.focusedapp.smartstudyhub.model.custom.FolderDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.FolderService;
-import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
 @RestController
@@ -170,7 +169,7 @@ public class FolderController extends BaseController {
 	public ResponseEntity<Result<FolderDTO>> getDetailFolder(@RequestParam Integer folderId) {
 		Result<FolderDTO> result = new Result<>();
 		
-		Folder folder = folderService.findByIdAndStatus(folderId, EnumStatus.ACTIVE.getValue());
+		Folder folder = folderService.findById(folderId);
 		
 		if (folder == null) {
 			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());

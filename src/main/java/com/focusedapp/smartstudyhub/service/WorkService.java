@@ -232,7 +232,7 @@ public class WorkService {
 	 * @return
 	 */
 	public WorkDTO getDetailWork(Integer workId) {
-		Work work = findByIdAndStatus(workId, EnumStatus.ACTIVE.getValue());
+		Work work = findById(workId);
 		
 		return new WorkDTO(work);
 	}

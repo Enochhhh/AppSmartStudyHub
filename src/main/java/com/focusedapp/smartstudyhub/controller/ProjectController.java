@@ -27,7 +27,6 @@ import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.ProjectService;
-import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
 @RestController
@@ -139,7 +138,7 @@ public class ProjectController extends BaseController {
 	public ResponseEntity<Result<ProjectDTO>> getDetailProject(@RequestParam Integer projectId) {
 		Result<ProjectDTO> result = new Result<>();
 		
-		Project project = projectService.findByIdAndStatus(projectId, EnumStatus.ACTIVE.getValue());
+		Project project = projectService.findById(projectId);
 		
 		if (project == null) {
 			result.getMeta().setStatusCode(StatusCode.FAIL.getCode());

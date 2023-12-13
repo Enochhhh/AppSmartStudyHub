@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.focusedapp.smartstudyhub.dao.TagDAO;
+import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Tag;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -18,6 +19,8 @@ public class TagService {
 	TagDAO tagDAO;
 	@Autowired
 	UserService userService;
+	@Autowired
+	WorkService workService;
 	
 	/**
 	 * Find Tags By Ids List
@@ -27,6 +30,17 @@ public class TagService {
 	 */
 	public List<Tag> findByIds(List<Integer> tagIds) {
 		return tagDAO.findByIds(tagIds);
+	}
+	
+	/**
+	 * Find Tag by Id
+	 * 
+	 * @param tagId
+	 * @return
+	 */
+	public Tag findById(Integer tagId) {
+		return tagDAO.findById(tagId)
+					.orElseThrow(() -> new NotFoundValueException("Not Found Tag by Id", "TagService -> findById"));
 	}
 	
 	/**
@@ -46,5 +60,49 @@ public class TagService {
 		
 		tag = tagDAO.save(tag);
 		return new TagDTO(tag);
+	}
+	
+	/**
+	 * Update Tag
+	 * 
+	 * @param tagReq
+	 * @return
+	 */
+	public TagDTO update(TagDTO tagReq) {
+		
+		Tag tag = findById(tagReq.getId());
+		
+		tag.setTagName(tagReq.getTagName());
+		tag.setStatus(tagReq.getStatus());
+		tag.setColorCode(tagReq.getColorCode());
+		
+		tag = tagDAO.save(tag);
+		
+		return new TagDTO(tag);
+	}
+	
+	/**
+	 * Delete Tag by Id
+	 * 
+	 * @param tagId
+	 * @return
+	 */
+	public TagDTO delete(Integer tagId) {
+		
+		Tag tag = findById(tagId);
+		
+		tagDAO.delete(tag);
+		
+		return new TagDTO(tag);
+	}
+	
+	/**
+	 * Find tag by User Id and Status
+	 * 
+	 * @return
+	 */
+	public List<Tag> findByUserIdAndStatus(Integer userId, String status) {
+		
+		return tagDAO.findByUserIdAndStatus(userId, status);
 	}
 }

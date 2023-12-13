@@ -48,7 +48,9 @@ public enum StatusCode {
 	/* EXTRA WORK */
 	MARK_DELETED_EXTRAWORK_FAILURE("8_1_f", "Mark Deleted Extra Work Failure!"),
 	MARK_COMPLETED_EXTRAWORK_FAILURE("8_2_f", "Mark Completed Extra Work Failure!"),
-	RECOVER_EXTRAWORK_FAILURE("8_3_f", "Recover Extra Work Failure!");
+	RECOVER_EXTRAWORK_FAILURE("8_3_f", "Recover Extra Work Failure!"),
+	/* TAG */
+	DELETE_TAG_FAILURE("9_1_f", "Mark Deleted Tag Failure!");
 	
 	private final String code;
 	private final String message;
