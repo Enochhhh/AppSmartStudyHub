@@ -189,7 +189,7 @@ public class ExtraWorkController extends BaseController {
 		if (extraWorkRecovered == null) {
 			result.getMeta().setStatusCode(StatusCode.RECOVER_EXTRAWORK_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.RECOVER_EXTRAWORK_FAILURE.getMessage());
-			return createResponseEntity(result);
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		
 		result.setData(extraWorkRecovered);

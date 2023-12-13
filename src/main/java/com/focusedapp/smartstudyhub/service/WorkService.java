@@ -271,5 +271,47 @@ public class WorkService {
 
 		return new WorkDTO(workDb);
 	}
+	
+	/**
+	 * Recover Work
+	 * 
+	 * @param workId
+	 * @return
+	 */
+	public WorkDTO recover(Integer workId) {
+		Optional<Work> workOpt = workDAO.findById(workId);
+		if (workOpt.isEmpty()) {
+			return null;
+		}
+		Work work = workOpt.get();
+		
+		if (work.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
+			work.setEndTime(null);
+			work.setStatus(EnumStatus.ACTIVE.getValue());
+			
+			List<ExtraWork> extraWorks = work.getExtraWorks() == null ? new ArrayList<>() : work.getExtraWorks();
+			extraWorks.stream()
+				.forEach(ew -> {
+					if (ew.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
+						extraWorkService.recover(ew.getId());
+					}
+				});					
+		} else if (work.getStatus().equals(EnumStatus.DELETED.getValue())) {
+			work.setStatus(work.getOldStatus());
+			work.setOldStatus(null);
+			
+			List<ExtraWork> extraWorks = work.getExtraWorks() == null ? new ArrayList<>() : work.getExtraWorks();
+			extraWorks.stream()
+				.forEach(ew -> {
+					if (ew.getStatus().equals(EnumStatus.DELETED.getValue())) {
+						extraWorkService.recover(ew.getId());
+					}
+				});
+		}
+		
+		work = workDAO.save(work);
+		
+		return new WorkDTO(work);
+	}	
 
 }

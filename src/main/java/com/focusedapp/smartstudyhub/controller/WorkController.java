@@ -215,4 +215,35 @@ public class WorkController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Recover Work
+	 * 
+	 * @param extraWorkId
+	 * @return
+	 */
+	@PutMapping("/recover/{workId}")
+	public ResponseEntity<Result<WorkDTO>> recover(@PathVariable Integer workId) {
+		Result<WorkDTO> result = new Result<>();
+		
+		if (workId == null || workId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Work Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		WorkDTO workRecovered = workService.recover(workId);
+		
+		if (workRecovered == null) {
+			result.getMeta().setStatusCode(StatusCode.RECOVER_WORK_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.RECOVER_WORK_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
+		}
+		
+		result.setData(workRecovered);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

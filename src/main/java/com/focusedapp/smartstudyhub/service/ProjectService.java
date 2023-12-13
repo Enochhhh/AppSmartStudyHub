@@ -130,7 +130,10 @@ public class ProjectService {
 	public Project updateProject(ProjectDTO projectRequest) {
 		Project projectDb = projectDAO.findById(projectRequest.getId())
 				.orElseThrow(() -> new NotFoundValueException("Not Fould the Project to update!", "ProjectService -> updateProject"));
-		Folder folder = folderService.findByIdAndStatus(projectRequest.getFolderId(), EnumStatus.ACTIVE.getValue());
+		Folder folder = null;
+		if (projectRequest.getFolderId() != null) {
+			folder = folderService.findByIdAndStatus(projectRequest.getFolderId(), EnumStatus.ACTIVE.getValue());
+		}
 		
 		projectDb.setProjectName(projectRequest.getProjectName());
 		projectDb.setColorCode(projectRequest.getColorCode());
