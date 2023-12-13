@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
+import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.service.WorkService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
@@ -265,6 +267,25 @@ public class WorkController extends BaseController {
 		}
 		
 		List<WorkDTO> works = workService.searchByName(req.getStringType(), req.getIntegerType());
+		
+		result.setData(works);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	@GetMapping("/get-by-type")
+	public ResponseEntity<Result<WorkResponseDTO>> getWorkByTpe(@RequestParam String type, @RequestParam Integer userId) {
+		Result<WorkResponseDTO> result = new Result<>();
+		
+		if (StringUtils.isEmpty(type)) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		WorkResponseDTO works = workService.getWorkByType(type, userId);
 		
 		result.setData(works);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

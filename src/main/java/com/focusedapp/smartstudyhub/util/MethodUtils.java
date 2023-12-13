@@ -1,6 +1,9 @@
 package com.focusedapp.smartstudyhub.util;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -28,5 +31,22 @@ public class MethodUtils {
 		
 		Long diffInMilies = dateSecond.getTime() - dateFirst.getTime();
 		return timeUnit.convert(diffInMilies, TimeUnit.MILLISECONDS);
+	}
+	
+	public static Date convertoToDateTimeZone(Date date) {
+		ZoneId targetZone = ZoneId.of("Asia/Ho_Chi_Minh");
+		Instant instant = date.toInstant();
+		LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, targetZone);
+		Date convertedDate = Date.from(localDateTime.atZone(targetZone).toInstant());
+		
+		return convertedDate;
+	}
+	
+	public static LocalDateTime convertoToLocalDateTime(Date date) {
+		ZoneId targetZone = ZoneId.of("Asia/Ho_Chi_Minh");
+		Instant instant = date.toInstant();
+		LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, targetZone);		
+		
+		return localDateTime;
 	}
 }

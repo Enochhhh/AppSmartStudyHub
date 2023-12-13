@@ -1,7 +1,7 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -90,9 +90,13 @@ public class WorkDTO implements Serializable {
 			this.statusWork = EnumStatusWork.SOMEDAY.getValue();
 		} else {
 			this.dueDate = work.getDueDate().getTime();
-			Long distanceOfTwoDate = MethodUtils.distanceBetweenTwoDate(new Date(), work.getDueDate(), TimeUnit.DAYS);
-			SimpleDateFormat dateFormat = new SimpleDateFormat("F");
-			Long dayOfWeek = Long.valueOf(dateFormat.format(work.getDueDate()));
+			Date nowDate = new Date();
+			Long distanceOfTwoDate = MethodUtils.distanceBetweenTwoDate(nowDate, work.getDueDate(), TimeUnit.DAYS);		
+			
+			// Convert to LocalDate Timezone VietNam to get DayOfWeek Exactly
+			LocalDateTime dateTimeZone = MethodUtils.convertoToLocalDateTime(nowDate);
+			// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
+			int dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
 			if (distanceOfTwoDate < 0) {
 				this.statusWork = EnumStatusWork.OUTOFDATE.getValue();
 			} else if (distanceOfTwoDate == 0) {				
