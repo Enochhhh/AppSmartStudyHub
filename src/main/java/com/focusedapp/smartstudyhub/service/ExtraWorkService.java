@@ -42,6 +42,8 @@ public class ExtraWorkService {
 				.extraWorkName(extraWorkDTO.getExtraWorkName())
 				.status(EnumStatus.ACTIVE.getValue())
 				.createdDate(new Date())
+				.numberOfPomodoros(0)
+				.timePassed(0)
 				.build();
 		
 		extraWork = extraWorkDAO.save(extraWork);

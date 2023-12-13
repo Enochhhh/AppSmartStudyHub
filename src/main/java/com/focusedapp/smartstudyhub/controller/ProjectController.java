@@ -340,4 +340,35 @@ public class ProjectController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Recover Work
+	 * 
+	 * @param extraWorkId
+	 * @return
+	 */
+	@PutMapping("/recover/{projectId}")
+	public ResponseEntity<Result<ProjectDTO>> recover(@PathVariable Integer projectId) {
+		Result<ProjectDTO> result = new Result<>();
+		
+		if (projectId == null || projectId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Project Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		ProjectDTO projectRecovered = projectService.recover(projectId);
+		
+		if (projectRecovered == null) {
+			result.getMeta().setStatusCode(StatusCode.RECOVER_PROJECT_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.RECOVER_PROJECT_FAILURE.getMessage());
+			return createResponseEntity(result, HttpStatus.FORBIDDEN);
+		}
+		
+		result.setData(projectRecovered);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

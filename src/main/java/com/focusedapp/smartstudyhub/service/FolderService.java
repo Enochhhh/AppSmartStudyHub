@@ -44,10 +44,10 @@ public class FolderService {
 
 		List<ProjectDTO> projectsRquest = dataCreate.getListProjectActive();
 		List<Project> projects = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(projectsRquest)) {
-			projects = dataCreate.getListProjectActive().stream()
-					.map(p -> projectService.findByIdAndStatus(p.getId(), EnumStatus.ACTIVE.getValue()))
-					.collect(Collectors.toList());
+		if (!CollectionUtils.isEmpty(projectsRquest)) {			
+			projects = projectsRquest.stream()
+							.map(p -> projectService.findByIdAndStatus(p.getId(), EnumStatus.ACTIVE.getValue()))
+							.collect(Collectors.toList());
 		}
 
 		Folder folder = Folder.builder()

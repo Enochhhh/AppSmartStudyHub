@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.service;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -243,6 +244,12 @@ public class ProjectService {
 		return new ProjectDTO(project.get());
 	}
 	
+	/**
+	 * Mark Completed Project
+	 * 
+	 * @param projectId
+	 * @return
+	 */
 	public ProjectDTO markCompleted(Integer projectId) {
 		
 		Optional<Project> projectOption = projectDAO.findByIdAndStatus(projectId, EnumStatus.ACTIVE.getValue());
@@ -267,5 +274,45 @@ public class ProjectService {
 		
 		return new ProjectDTO(project);
 	}
+	
+	/**
+	 * Recover Project
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	public ProjectDTO recover(Integer projectId) {
+		Optional<Project> projectOptional = projectDAO.findById(projectId);
+		if (projectOptional.isEmpty()) {
+			return null;
+		}
+		Project project = projectOptional.get();
+		List<Work> works = project.getWorks() == null ? new ArrayList<>() : project.getWorks();
+		
+		if (project.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
+			project.setStatus(EnumStatus.ACTIVE.getValue());
+						
+			works.stream()
+				.forEach(w -> {
+					if (w.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
+						workService.recover(w.getId());
+					}
+				});					
+		} else if (project.getStatus().equals(EnumStatus.DELETED.getValue())) {
+			project.setStatus(project.getOldStatus());
+			project.setOldStatus(null);
+			
+			works.stream()
+				.forEach(w -> {
+					if (w.getStatus().equals(EnumStatus.DELETED.getValue())) {
+						workService.recover(w.getId());
+					}
+				});
+		}
+		
+		project = projectDAO.save(project);
+		
+		return new ProjectDTO(project);
+	}	
 
 }

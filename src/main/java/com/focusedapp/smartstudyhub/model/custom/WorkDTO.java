@@ -64,9 +64,9 @@ public class WorkDTO implements Serializable {
 		}
 		this.workName = work.getWorkName();
 		this.priority = work.getPriority();
-		this.numberOfPomodoros = work.getNumberOfPomodoros();
+		this.numberOfPomodoros = work.getNumberOfPomodoros() == null ? 0 : work.getNumberOfPomodoros();
 		this.timeOfPomodoro = work.getTimeOfPomodoro();
-		this.timePassed = work.getTimePassed();
+		this.timePassed = work.getTimePassed() == null ? 0 : work.getTimePassed();
 		
 		if (work.getStartTime() != null) {
 			this.startTime = work.getStartTime().getTime();
