@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -315,5 +316,23 @@ public class WorkService {
 		
 		return new WorkDTO(work);
 	}	
+	
+	/**
+	 * Searh Work By Name
+	 * 
+	 * @param keySearch
+	 * @return
+	 */
+	public List<WorkDTO> searchByName(String keySearch, Integer userId) {
+		List<Work> works = new ArrayList<>();
+		if (StringUtils.isEmpty(keySearch)) {
+			works = workDAO.findByUserIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		} else {
+			works = workDAO.findByWorkNameContainingAndUserIdAndStatus(keySearch, userId, EnumStatus.ACTIVE.getValue());
+		}
+		return works.stream()
+					.map(w -> new WorkDTO(w))
+					.collect(Collectors.toList());
+	}
 
 }

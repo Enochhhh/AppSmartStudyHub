@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.service.WorkService;
@@ -241,6 +242,31 @@ public class WorkController extends BaseController {
 		}
 		
 		result.setData(workRecovered);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Find Work by name
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	@PostMapping("/search-by-name")
+	public ResponseEntity<Result<List<WorkDTO>>> findByName(@RequestBody AllResponseTypeDTO req) {
+		Result<List<WorkDTO>> result = new Result<>();
+		
+		if (req == null || req.getStringType() == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		List<WorkDTO> works = workService.searchByName(req.getStringType(), req.getIntegerType());
+		
+		result.setData(works);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

@@ -95,8 +95,12 @@ public class WorkDTO implements Serializable {
 			Long dayOfWeek = Long.valueOf(dateFormat.format(work.getDueDate()));
 			if (distanceOfTwoDate < 0) {
 				this.statusWork = EnumStatusWork.OUTOFDATE.getValue();
-			} else if (distanceOfTwoDate == 0) {
-				this.statusWork = EnumStatusWork.TODAY.getValue();
+			} else if (distanceOfTwoDate == 0) {				
+				if (new Date().getTime() > work.getDueDate().getTime()) {
+					this.statusWork = EnumStatusWork.OUTOFDATE.getValue();
+				} else {
+					this.statusWork = EnumStatusWork.TODAY.getValue();
+				}
 			} else if (distanceOfTwoDate == 1) {
 				this.statusWork = EnumStatusWork.TOMORROW.getValue();
 			}else if(dayOfWeek + distanceOfTwoDate <= 8) {
