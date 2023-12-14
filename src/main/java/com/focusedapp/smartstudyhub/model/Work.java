@@ -90,6 +90,12 @@ public class Work implements Serializable {
 	@JoinColumn(name = "assignee_id")
 	private User assignee;
 	
+	@Column(name = "time_will_start")
+	private Date timeWillStart;
+	
+	@Column(name = "time_will_announce")
+	private Date timeWillAnnounce;
+	
 	private String status;
 	
 	@Column(name = "old_status")

@@ -99,6 +99,7 @@ public class WorkService {
 				.project(project)
 				.workName(dataCreate.getWorkName())
 				.dueDate(dataCreate.getDueDate() == null ? null : new Date(dataCreate.getDueDate()))
+				.timeWillStart(dataCreate.getTimeWillStart() == null ? null : new Date(dataCreate.getTimeWillStart()))
 				.priority(dataCreate.getPriority())
 				.numberOfPomodoros(dataCreate.getNumberOfPomodoros() == null ? 0 : dataCreate.getNumberOfPomodoros())
 				.timeOfPomodoro(dataCreate.getTimeOfPomodoro() == null ? 25 : dataCreate.getTimeOfPomodoro())
@@ -144,6 +145,8 @@ public class WorkService {
 		workDb.setProject(project);
 		workDb.setWorkName(dataUpdate.getWorkName());
 		workDb.setDueDate(dataUpdate.getDueDate() == null ? null : new Date(dataUpdate.getDueDate()));
+		workDb.setTimeWillStart(dataUpdate.getTimeWillStart() == null ? null : new Date(dataUpdate.getTimeWillStart()));
+		workDb.setTimeWillAnnounce(dataUpdate.getTimeWillAnnounce() == null ? null : new Date(dataUpdate.getTimeWillAnnounce()));
 		workDb.setPriority(dataUpdate.getPriority());
 		workDb.setNumberOfPomodoros(dataUpdate.getNumberOfPomodoros());
 		workDb.setTimeOfPomodoro(dataUpdate.getTimeOfPomodoro());

@@ -46,6 +46,8 @@ public class WorkDTO implements Serializable {
 	private Boolean isRepeated;
 	private String note;
 	private Integer assigneeId;
+	private Long timeWillStart;
+	private Long timeWillAnnounce;
 	private String status;
 	private String statusWork;
 	private Long createdDate;
@@ -66,7 +68,7 @@ public class WorkDTO implements Serializable {
 		this.priority = work.getPriority();
 		this.numberOfPomodoros = work.getNumberOfPomodoros() == null ? 0 : work.getNumberOfPomodoros();
 		this.timeOfPomodoro = work.getTimeOfPomodoro();
-		this.timePassed = work.getTimePassed() == null ? 0 : work.getTimePassed();
+		this.timePassed = work.getTimePassed() == null ? 0 : work.getTimePassed();				
 		
 		if (work.getStartTime() != null) {
 			this.startTime = work.getStartTime().getTime();
@@ -74,6 +76,14 @@ public class WorkDTO implements Serializable {
 		
 		if (work.getEndTime() != null) {
 			this.endTime = work.getEndTime().getTime();
+		}
+		
+		if (work.getTimeWillStart() != null) {
+			this.timeWillStart = work.getTimeWillStart().getTime();
+		}
+		
+		if (work.getTimeWillAnnounce() != null) {
+			this.timeWillAnnounce = work.getTimeWillAnnounce().getTime();
 		}
 		
 		this.isRemindered = work.getIsRemindered();
