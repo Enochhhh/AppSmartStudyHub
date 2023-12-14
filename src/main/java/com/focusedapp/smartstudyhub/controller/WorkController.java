@@ -293,4 +293,24 @@ public class WorkController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	@GetMapping("/get-by-priority")
+	public ResponseEntity<Result<WorkResponseDTO>> getByPriority(@RequestParam String priority, @RequestParam Integer userId) {
+		Result<WorkResponseDTO> result = new Result<>();
+		
+		if (StringUtils.isEmpty(priority)) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		WorkResponseDTO works = workService.getByPriority(priority, userId);
+		
+		result.setData(works);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+		
+	}
+	
 }

@@ -27,4 +27,10 @@ public interface WorkDAO extends JpaRepository<Work, Integer> {
 			+ " or w.status = :statusSecond)", nativeQuery = true)
 	List<Work> findByUserIdAndOneOfTwoStatus(@Param("userId") Integer userId, @Param("statusFirst") String statusFirst, 
 			@Param("statusSecond") String statusSecond);
+	
+	@Query(value = "select * from works w where w.user_id = :userId and w.priority = :priority and (w.status = :statusFirst "
+			+ " or w.status = :statusSecond)", nativeQuery = true)
+	List<Work> findByUserIdAndPriorityAndOneOfTwoStatus(@Param("userId") Integer userId, @Param("priority") String priority, 
+			@Param("statusFirst") String statusFirst, 
+			@Param("statusSecond") String statusSecond);
 }

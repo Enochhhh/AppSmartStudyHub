@@ -404,5 +404,32 @@ public class WorkService {
 		}
 		return new WorkResponseDTO(worksConvert);
 	}
-
+	
+	/**
+	 * Get Works by priority
+	 * 
+	 * @param priority
+	 * @param userId
+	 * @return
+	 */
+	public WorkResponseDTO getByPriority(String priority, Integer userId) {
+		
+		List<Work> listWorks = workDAO.findByUserIdAndPriorityAndOneOfTwoStatus(userId, priority, EnumStatus.ACTIVE.getValue(), 
+				EnumStatus.COMPLETED.getValue());
+		
+		if (CollectionUtils.isEmpty(listWorks)) {
+			return new WorkResponseDTO(new ArrayList<>());
+		}
+		
+		Comparator<WorkDTO> comparator = Comparator.comparing(WorkDTO::getCreatedDate,
+				Comparator.nullsFirst(Comparator.naturalOrder()));
+		
+		List<WorkDTO> worksConvert = listWorks.stream()
+				.map(w -> new WorkDTO(w))
+				.sorted(comparator.reversed())
+				.collect(Collectors.toList());		
+		
+		return new WorkResponseDTO(worksConvert);
+				
+	}
 }
