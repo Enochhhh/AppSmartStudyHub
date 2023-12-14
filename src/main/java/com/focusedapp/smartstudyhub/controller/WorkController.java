@@ -274,6 +274,13 @@ public class WorkController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Works by type
+	 * 
+	 * @param type
+	 * @param userId
+	 * @return
+	 */
 	@GetMapping("/get-by-type")
 	public ResponseEntity<Result<WorkResponseDTO>> getWorkByTpe(@RequestParam String type, @RequestParam Integer userId) {
 		Result<WorkResponseDTO> result = new Result<>();
@@ -293,6 +300,13 @@ public class WorkController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Works by Priority
+	 * 
+	 * @param priority
+	 * @param userId
+	 * @return
+	 */
 	@GetMapping("/get-by-priority")
 	public ResponseEntity<Result<WorkResponseDTO>> getByPriority(@RequestParam String priority, @RequestParam Integer userId) {
 		Result<WorkResponseDTO> result = new Result<>();
@@ -305,6 +319,26 @@ public class WorkController extends BaseController {
 		}
 		
 		WorkResponseDTO works = workService.getByPriority(priority, userId);
+		
+		result.setData(works);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+		
+	}
+	
+	@GetMapping("/get-by-date")
+	public ResponseEntity<Result<WorkResponseDTO>> getByDate(@RequestParam Long date, @RequestParam Integer userId) {
+		Result<WorkResponseDTO> result = new Result<>();
+		
+		if (date == null || date < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		WorkResponseDTO works = workService.getByDate(date, userId);
 		
 		result.setData(works);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.service;
 
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -268,6 +269,10 @@ public class WorkService {
 				});
 		}
 		workDb.setStatus(EnumStatus.COMPLETED.getValue());
+		workDb.setEndTime(new Date());
+		if (workDb.getStartTime() == null) {
+			workDb.setStartTime(new Date());
+		}
 		
 		PomodoroDTO pomodoroRequest = PomodoroDTO.builder()
 				.userId(workDb.getUser().getId())
@@ -435,4 +440,36 @@ public class WorkService {
 		return new WorkResponseDTO(worksConvert);
 				
 	}
+	
+	/**
+	 * Get Works by Date
+	 * 
+	 * @param date
+	 * @param userId
+	 * @return
+	 */
+	public WorkResponseDTO getByDate(Long date, Integer userId) {
+		
+//		List<Work> listWorks = workDAO.findByUserIdAndOneOfTwoStatus(userId, EnumStatus.ACTIVE.getValue(), 
+//				EnumStatus.COMPLETED.getValue());
+//		listWorks = listWorks.stream()
+//						.filter(w -> w.)
+//		
+//		if (CollectionUtils.isEmpty(listWorks)) {
+//			return new WorkResponseDTO(new ArrayList<>());
+//		}
+//		
+//		Comparator<WorkDTO> comparator = Comparator.comparing(WorkDTO::getCreatedDate,
+//				Comparator.nullsFirst(Comparator.naturalOrder()));
+//		
+//		List<WorkDTO> worksConvert = listWorks.stream()
+//				.map(w -> new WorkDTO(w))
+//				.sorted(comparator.reversed())
+//				.collect(Collectors.toList());		
+//		
+//		return new WorkResponseDTO(worksConvert);
+		return null;
+				
+	}
+
 }
