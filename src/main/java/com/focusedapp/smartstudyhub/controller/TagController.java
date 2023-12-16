@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.model.Tag;
+import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.service.TagService;
@@ -148,6 +149,31 @@ public class TagController extends BaseController {
 				.map(tag -> new TagDTO(tag))
 				.collect(Collectors.toList());
 		result.setData(tagsResponse);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Search Tag by name
+	 * 
+	 * @param req
+	 * @return
+	 */
+	@PostMapping("/search-by-name")
+	public ResponseEntity<Result<List<TagDTO>>> findByName(@RequestBody AllResponseTypeDTO req) {
+		Result<List<TagDTO>> result = new Result<>();
+		
+		if (req == null || req.getStringType() == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		List<TagDTO> tags = tagService.searchByName(req.getStringType(), req.getIntegerType());
+		
+		result.setData(tags);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

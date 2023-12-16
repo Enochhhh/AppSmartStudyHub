@@ -16,4 +16,6 @@ public interface TagDAO extends JpaRepository<Tag, Integer> {
 	List<Tag> findByIds(@Param("ids") List<Integer> tagIds);
 	
 	List<Tag> findByUserIdAndStatus(Integer userId, String status);
+	
+	List<Tag> findByTagNameContainingAndUserIdAndStatus(String keySearch, Integer userId, String status);
 }

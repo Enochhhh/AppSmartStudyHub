@@ -370,4 +370,29 @@ public class ProjectController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Search Project by name
+	 * 
+	 * @param req
+	 * @return
+	 */
+	@PostMapping("/search-by-name")
+	public ResponseEntity<Result<List<ProjectDTO>>> findByName(@RequestBody AllResponseTypeDTO req) {
+		Result<List<ProjectDTO>> result = new Result<>();
+		
+		if (req == null || req.getStringType() == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		List<ProjectDTO> projects = projectService.searchByName(req.getStringType(), req.getIntegerType());
+		
+		result.setData(projects);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

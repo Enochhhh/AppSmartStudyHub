@@ -1,8 +1,11 @@
 package com.focusedapp.smartstudyhub.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -104,5 +107,23 @@ public class TagService {
 	public List<Tag> findByUserIdAndStatus(Integer userId, String status) {
 		
 		return tagDAO.findByUserIdAndStatus(userId, status);
+	}
+	
+	/**
+	 * Searh Tag By Name
+	 * 
+	 * @param keySearch
+	 * @return
+	 */
+	public List<TagDTO> searchByName(String keySearch, Integer userId) {
+		List<Tag> tags = new ArrayList<>();
+		if (StringUtils.isEmpty(keySearch)) {
+			tags = tagDAO.findByUserIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		} else {
+			tags = tagDAO.findByTagNameContainingAndUserIdAndStatus(keySearch, userId, EnumStatus.ACTIVE.getValue());
+		}
+		return tags.stream()
+					.map(t -> new TagDTO(t))
+					.collect(Collectors.toList());
 	}
 }

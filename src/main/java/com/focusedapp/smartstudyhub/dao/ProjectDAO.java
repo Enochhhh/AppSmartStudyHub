@@ -28,4 +28,6 @@ public interface ProjectDAO extends JpaRepository<Project, Integer> {
 			+ "AND (p.status = 'ACTIVE' OR p.status = 'COMPLETED')", nativeQuery = true)
 	List<Project> getProjectsActiveAndCompletedByUserId(Integer userId);
 	
+	List<Project> findByProjectNameContainingAndUserIdAndStatus(String keySearch, Integer userId, String status);
+	
 }

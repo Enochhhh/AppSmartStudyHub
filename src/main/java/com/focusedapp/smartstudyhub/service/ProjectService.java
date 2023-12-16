@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -325,5 +326,23 @@ public class ProjectService {
 		
 		return new ProjectDTO(project);
 	}	
+	
+	/**
+	 * Searh Project By Name
+	 * 
+	 * @param keySearch
+	 * @return
+	 */
+	public List<ProjectDTO> searchByName(String keySearch, Integer userId) {
+		List<Project> projects = new ArrayList<>();
+		if (StringUtils.isEmpty(keySearch)) {
+			projects = projectDAO.findByUserIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		} else {
+			projects = projectDAO.findByProjectNameContainingAndUserIdAndStatus(keySearch, userId, EnumStatus.ACTIVE.getValue());
+		}
+		return projects.stream()
+					.map(p -> new ProjectDTO(p))
+					.collect(Collectors.toList());
+	}
 
 }
