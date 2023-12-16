@@ -303,4 +303,19 @@ public class FolderService {
 					.orElseThrow(() -> new NotFoundValueException("Not found Folder by Id!", "FolderService -> findById"));
 	}
 	
+	/**
+	 * Get Folder Completed of User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<FolderDTO> getFolderCompletedOfUser(Integer userId) {
+		
+		List<Folder> foldersDb = folderDAO.findByUserIdAndStatus(userId, EnumStatus.COMPLETED.getValue());
+		
+		return foldersDb.stream()
+				.map(f -> new FolderDTO(f))
+				.collect(Collectors.toList());	
+		
+	}
 }

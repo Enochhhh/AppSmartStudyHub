@@ -303,4 +303,24 @@ public class FolderController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	@GetMapping("/get-folder-completed")
+	public ResponseEntity<Result<List<FolderDTO>>> getFolderCompletedOfUser(@RequestParam Integer userId) {
+		
+		Result<List<FolderDTO>> result = new Result<>();
+		
+		if (userId == null || userId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("User Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<FolderDTO> folderCompleted = folderService.getFolderCompletedOfUser(userId);
+		
+		result.setData(folderCompleted);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

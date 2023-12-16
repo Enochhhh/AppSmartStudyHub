@@ -487,5 +487,21 @@ public class WorkService {
 		return new WorkScheduleDTO(date, userId, listWorkActive, listWorkCompleted, listWorkDueDate, listWorkOutOfDate);
 				
 	}
+	
+	/**
+	 * Get Work Completed of User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<WorkDTO> getWorkCompletedOfUser(Integer userId) {
+		
+		List<Work> works = workDAO.findByUserIdAndStatus(userId, EnumStatus.COMPLETED.getValue());
+		
+		return works.stream()
+				.map(w -> new WorkDTO(w))
+				.collect(Collectors.toList());	
+		
+	}
 
 }
