@@ -2,32 +2,13 @@
 -- create database sql12663094; 
 -- use sql12663094;
 
-drop database if exists smart_study_hub;
-create database smart_study_hub;
-use smart_study_hub;
+-- drop database if exists smart_study_hub;
+-- create database smart_study_hub;
+-- use smart_study_hub;
 
-drop table if exists users;
-drop table if exists report;
-drop table if exists vote;
-drop table if exists study_group;
-drop table if exists manage_users;
-drop table if exists add_friend_users;
-drop table if exists users_join_study_group;
-drop table if exists theme;
-drop table if exists folder;
-drop table if exists project;
-drop table if exists works;
-drop table if exists extra_work;
-drop table if exists tag;
-drop table if exists work_tag;
-drop table if exists sound_concentration;
-drop table if exists category_forum;
-drop table if exists post_forum;
-drop table if exists like_post;
-drop table if exists comment_post;
-drop table if exists report_post;
-drop table if exists like_comment;
-drop table if exists otp_code;
+drop database if exists defaultdb; 
+create database defaultdb; 
+use defaultdb;
 
 create table otp_code (
 	id int auto_increment,
@@ -80,7 +61,7 @@ create table report(
 	id int auto_increment,
     user_id int not null,
     email varchar(50), 
-    phonenumber varchar(11),
+    phone_number varchar(11),
     title nvarchar(100),
     content nvarchar(300),
     status_report text,
@@ -134,6 +115,7 @@ create table theme(
     url text,
     status_theme text, -- It have 2 value: DEFAULT, OWNED
     status text,
+    created_date datetime,
     constraint ThemePrimaryKey primary key(id),
     constraint ThemeUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -144,7 +126,9 @@ create table folder(
     folder_name nvarchar(50),
     color_code text,
     icon_url text,
+    created_date datetime,
     status text,
+    old_status text,
     constraint FolderPrimaryKey primary key(id),
     constraint FolderUserIdForeignKey foreign key(user_id) references users(id)
 );
@@ -156,7 +140,9 @@ create table project(
     project_name nvarchar(50),
     color_code text,
     icon_url text,
+    created_date datetime,
     status text,
+    old_status text,
     constraint ProjectPrimaryKey primary key(id),
     constraint ProjectFolderId foreign key(folder_id) references folder(id),
     constraint ProjectUserIdForeignKey foreign key(user_id) references users(id)
@@ -172,14 +158,18 @@ create table works(
     number_of_pomodoros int,
     time_of_pomodoro int,
     time_passed int,
+    number_of_pomodoros_done int,
     start_time datetime,
     end_time datetime,
     is_remindered boolean,
     is_repeated boolean,
     note nvarchar(300),
     assignee_id int,
-    mode text,
+    created_date datetime,
+    time_will_start datetime,
+    time_will_announce datetime,
     status text,
+    old_status text,
     constraint WorksPrimaryKey primary key(id),
     constraint WorksUserIdForeignKey foreign key(user_id) references users(id),
     constraint WorksProjectIdForeignKey foreign key(project_id) references project(id),
@@ -189,9 +179,14 @@ create table works(
 create table extra_work(
 	id int auto_increment,
     work_id int not null,
+    extra_work_name nvarchar(50),
     status nvarchar(20),
     start_time datetime,
     end_time datetime,
+    number_of_pomodoros int,
+    time_passed int,
+    created_date datetime,
+    old_status text,
     constraint ExtraWorkPrimaryKey primary key(id),
     constraint ExtraWorkWorkIdForeignKey foreign key(work_id) references works(id)
 );
@@ -201,6 +196,7 @@ create table tag(
     user_id int not null,
     tag_name nvarchar(50),
     color_code text,
+    created_date datetime,
     status text,
     constraint TagPrimaryKey primary key(id),
     constraint TagUserIdForeignKey foreign key(user_id) references users(id)
@@ -220,6 +216,7 @@ create table sound_concentration(
     name_sound nvarchar(50),
     url text,
     status_sound text, -- It have 3 value: DEFAULT, PREMIUM, OWNED
+    created_date datetime,
     status text,
     constraint SoundConcentrationPrimaryKey primary key(id),
     constraint SoundConcentrationUserIdForeignKey foreign key(user_id) references users(id)
@@ -230,6 +227,7 @@ create table category_forum(
     name_category nvarchar(50),
     total_post int,
     total_comment int,
+    created_date datetime,
     constraint CategoryForumPrimaryKey primary key(id)
 );
 
@@ -302,15 +300,122 @@ create table report_post(
 );
 
 create table errorlog(
-		id int auto_increment,
-        class_name text,
-        error text,
-        message text,
-        stack_trace text,
-        path text,
-        created_date datetime,
-        constraint ErrorLogPrimaryKey primary key(id)
+	id int auto_increment,
+	class_name text,
+	error text,
+	message text,
+	stack_trace text,
+	path text,
+	created_date datetime,
+	constraint ErrorLogPrimaryKey primary key(id)
 );
+
+create table pomodoros(
+	id int auto_increment,
+    user_id int,
+    work_id int,
+    extra_work_id int,
+    pomodoro_name text,
+    time_of_pomodoro int,
+    start_time datetime,
+    end_time datetime,
+    is_start_pomo boolean,
+    is_end_pomo boolean,
+    mode text,
+    number_pomo_done_of_work int,
+    created_date datetime,
+    constraint PomodorosPrimaryKey primary key(id),
+    constraint PomodorosUserIdForeignKey foreign key(user_id) references users(id),
+    constraint PomodorosWorkIdForeignKey foreign key(work_id) references works(id),
+    constraint PomodorosExtraWorkIdForeignKey foreign key(extra_work_id) references extra_work(id)
+);
+
+create table event_schedule(
+	id int auto_increment,
+    event_id_group int,
+    type_event text, -- EVENT-MEETING
+    location text,
+    is_all_day boolean,
+    color_code text,
+    announce_date datetime,
+    descriptions text,
+    url_attach_file text,
+    created_date datetime,
+    status text,
+    constraint EventSchedulePrimaryKey primary key(id)
+);
+
+create table assignee_event_schedule(
+	event_id int,
+    assignee_id int,
+	constraint AssigneeEventSchedulePrimaryKey primary key(event_id, assignee_id),
+    constraint AssigneeEventScheduleEventIdForeignKey foreign key(event_id) references event_schedule(id),
+    constraint AssigneeEventScheduleAssigneeIdForeignKey foreign key(assignee_id) references users(id)
+);
+
+-- TRIGGER
+-- Trigger auto update number of pomodoros and time passed of work when update extra work
+DELIMITER $$  
+create trigger after_update_extra_work
+after update 
+on extra_work for each row
+begin 
+	update works 
+    set number_of_pomodoros_done = ifnull(number_of_pomodoros_done, 0) + ifnull(new.number_of_pomodoros, 0) - ifnull(old.number_of_pomodoros, 0),
+		time_passed = ifnull(time_passed, 0) + ifnull(new.time_passed, 0) - ifnull(old.time_passed, 0)
+    where id = old.work_id;
+end $$
+DELIMITER ;
+
+-- TRIGGER auto update time focus of user when update time passed of work
+DELIMITER $$
+create trigger after_update_works
+after update 
+on works for each row
+begin 
+	if new.time_passed > old.time_passed then
+		update users 
+				set total_time_focus  = ifnull(total_time_focus, 0) + (new.time_passed - old.time_passed)
+				where id = new.user_id;
+    end if;
+end $$
+DELIMITER ;
+
+-- Trigger auto update work and extra work when insert pomodoro
+DELIMITER $$  
+create trigger after_insert_pomodoros
+after insert 
+on pomodoros for each row
+begin 
+	if new.work_id is not null then
+		if new.is_start_pomo = true and new.is_end_pomo = false then
+			update works 
+				set number_of_pomodoros_done = ifnull(number_of_pomodoros_done, 0) + 1,
+					time_passed = ifnull(time_passed, 0) + new.time_of_pomodoro,
+                    start_time = now()
+				where id = new.work_id;
+		elseif new.is_end_pomo = false then 
+			update works 
+				set number_of_pomodoros_done = ifnull(number_of_pomodoros_done, 0) + 1,
+					time_passed = ifnull(time_passed, 0) + new.time_of_pomodoro
+				where id = new.work_id;
+		end if;
+	elseif new.extra_work_id is not null then
+		if new.is_start_pomo = true and new.is_end_pomo = false then
+			update extra_work 
+				set number_of_pomodoros = ifnull(number_of_pomodoros, 0) + 1,
+					time_passed = ifnull(time_passed, 0) + new.time_of_pomodoro,
+                    start_time = now()
+				where id = new.extra_work_id;
+		elseif new.is_end_pomo = false then 
+			update extra_work 
+				set number_of_pomodoros = ifnull(number_of_pomodoros, 0) + 1,
+					time_passed = ifnull(time_passed, 0) + new.time_of_pomodoro
+				where id = new.extra_work_id;
+		end if;
+	end if;
+end $$
+DELIMITER ;
 
 
 

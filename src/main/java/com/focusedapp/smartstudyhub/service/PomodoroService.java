@@ -1,7 +1,11 @@
 package com.focusedapp.smartstudyhub.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +13,13 @@ import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.dao.ExtraWorkDAO;
 import com.focusedapp.smartstudyhub.dao.PomodoroDAO;
 import com.focusedapp.smartstudyhub.dao.WorkDAO;
+import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Pomodoro;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
+import com.focusedapp.smartstudyhub.model.custom.PomorodoGroupByDateDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumModePomo;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -87,5 +93,40 @@ public class PomodoroService {
 		
 		return new PomodoroDTO(pomodoro);
 				
+	}
+	
+	/**
+	 * Get Pomodoros
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<PomorodoGroupByDateDTO> getPomodoros(Integer userId) {
+		
+		List<Pomodoro> pomorosDb = pomodoroDAO.findByUserId(userId);
+		
+		Map<Long, List<PomodoroDTO>> mapPomodoro = pomorosDb.stream()	
+				.map(pomo -> new PomodoroDTO(pomo))
+				.collect(Collectors.groupingBy(PomodoroDTO::getEndTime, Collectors.toList()));
+		
+		List<PomorodoGroupByDateDTO> pomodoros = new ArrayList<>();
+		for (Map.Entry<Long, List<PomodoroDTO>> entry : mapPomodoro.entrySet()) {
+			pomodoros.add(new PomorodoGroupByDateDTO(entry.getKey(), entry.getValue()));
+		}
+		return pomodoros;
+	}
+	
+	/**
+	 * Delete Pomodoro
+	 * 
+	 * @param pomodoroId
+	 * @return
+	 */
+	public PomodoroDTO deletePomodoro(Integer pomodoroId) {
+		Pomodoro pomodoro = pomodoroDAO.findById(pomodoroId)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Pomodoro to delete!", "PomodoroService -> deletePomodoro"));
+		
+		pomodoroDAO.delete(pomodoro);
+		return new PomodoroDTO(pomodoro);
 	}
 }
