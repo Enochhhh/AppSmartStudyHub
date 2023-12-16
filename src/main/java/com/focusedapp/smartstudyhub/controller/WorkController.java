@@ -24,6 +24,7 @@ import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
+import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
 import com.focusedapp.smartstudyhub.service.WorkService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
@@ -327,9 +328,9 @@ public class WorkController extends BaseController {
 		
 	}
 	
-	@GetMapping("/get-by-date")
-	public ResponseEntity<Result<WorkResponseDTO>> getByDate(@RequestParam Long date, @RequestParam Integer userId) {
-		Result<WorkResponseDTO> result = new Result<>();
+	@GetMapping("/get-work-schedule")
+	public ResponseEntity<Result<WorkScheduleDTO>> getWorkSchedule(@RequestParam Long date, @RequestParam Integer userId) {
+		Result<WorkScheduleDTO> result = new Result<>();
 		
 		if (date == null || date < 1) {
 			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
@@ -338,7 +339,7 @@ public class WorkController extends BaseController {
 			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
 		}
 		
-		WorkResponseDTO works = workService.getByDate(date, userId);
+		WorkScheduleDTO works = workService.getWorkSchedule(date, userId);
 		
 		result.setData(works);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

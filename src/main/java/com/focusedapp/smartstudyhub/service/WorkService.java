@@ -2,7 +2,7 @@ package com.focusedapp.smartstudyhub.service;
 
 
 
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -25,6 +25,7 @@ import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
+import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
@@ -442,33 +443,48 @@ public class WorkService {
 	}
 	
 	/**
-	 * Get Works by Date
+	 * Get Works Schedule
 	 * 
 	 * @param date
 	 * @param userId
 	 * @return
 	 */
-	public WorkResponseDTO getByDate(Long date, Integer userId) {
+	public WorkScheduleDTO getWorkSchedule(Long date, Integer userId) {
 		
-//		List<Work> listWorks = workDAO.findByUserIdAndOneOfTwoStatus(userId, EnumStatus.ACTIVE.getValue(), 
-//				EnumStatus.COMPLETED.getValue());
-//		listWorks = listWorks.stream()
-//						.filter(w -> w.)
-//		
-//		if (CollectionUtils.isEmpty(listWorks)) {
-//			return new WorkResponseDTO(new ArrayList<>());
-//		}
-//		
-//		Comparator<WorkDTO> comparator = Comparator.comparing(WorkDTO::getCreatedDate,
-//				Comparator.nullsFirst(Comparator.naturalOrder()));
-//		
-//		List<WorkDTO> worksConvert = listWorks.stream()
-//				.map(w -> new WorkDTO(w))
-//				.sorted(comparator.reversed())
-//				.collect(Collectors.toList());		
-//		
-//		return new WorkResponseDTO(worksConvert);
-		return null;
+		List<Work> works = workDAO.findByUserIdAndOneOfTwoStatus(userId, EnumStatus.ACTIVE.getValue(), 
+				EnumStatus.COMPLETED.getValue());
+		List<WorkDTO> worksConvert = works.stream()
+				.map(w -> new WorkDTO(w))
+				.collect(Collectors.toList());
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateReq = new Date(date);
+		Boolean isToday = formatter.format(new Date()).equals(formatter.format(dateReq)) ? true : false;
+		
+		List<WorkDTO> listWorkActive = new ArrayList<>();
+		List<WorkDTO> listWorkCompleted = new ArrayList<>();
+		List<WorkDTO> listWorkDueDate = new ArrayList<>();
+		List<WorkDTO> listWorkOutOfDate = new ArrayList<>();
+		
+		for (WorkDTO work : worksConvert) {
+			
+			if (isToday && work.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue())) {
+				listWorkOutOfDate.add(work);
+			} else if (work.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+				if (formatter.format(new Date(work.getTimeWillStart())).equals(formatter.format(dateReq))) {
+					listWorkActive.add(work);
+				}
+				if (formatter.format(new Date(work.getDueDate())).equals(formatter.format(dateReq))) {
+					listWorkDueDate.add(work);
+				}
+				continue;
+			} else if (work.getStatus().equals(EnumStatus.COMPLETED.getValue()) 
+					&& formatter.format(new Date(work.getEndTime())).equals(formatter.format(dateReq))) {
+				listWorkCompleted.add(work);
+			} 
+		}
+		
+		return new WorkScheduleDTO(date, userId, listWorkActive, listWorkCompleted, listWorkDueDate, listWorkOutOfDate);
 				
 	}
 

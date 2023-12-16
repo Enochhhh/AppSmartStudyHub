@@ -14,6 +14,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -140,4 +141,8 @@ public class User implements Serializable {
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Pomodoro> pomodoros;
+	
+	@ManyToMany(mappedBy = "users")
+	List<EventSchedule> eventSchedules;
+	
 }
