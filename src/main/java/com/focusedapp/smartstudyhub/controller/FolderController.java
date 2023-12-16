@@ -303,6 +303,12 @@ public class FolderController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Folder Completed
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	@GetMapping("/get-folder-completed")
 	public ResponseEntity<Result<List<FolderDTO>>> getFolderCompletedOfUser(@RequestParam Integer userId) {
 		
@@ -318,6 +324,31 @@ public class FolderController extends BaseController {
 		List<FolderDTO> folderCompleted = folderService.getFolderCompletedOfUser(userId);
 		
 		result.setData(folderCompleted);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Find Folder by name
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	@PostMapping("/search-by-name")
+	public ResponseEntity<Result<List<FolderDTO>>> findByName(@RequestBody AllResponseTypeDTO req) {
+		Result<List<FolderDTO>> result = new Result<>();
+		
+		if (req == null || req.getStringType() == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
+		}
+		
+		List<FolderDTO> folders = folderService.searchByName(req.getStringType(), req.getIntegerType());
+		
+		result.setData(folders);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

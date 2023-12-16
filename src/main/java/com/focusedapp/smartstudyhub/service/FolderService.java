@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -318,4 +319,23 @@ public class FolderService {
 				.collect(Collectors.toList());	
 		
 	}
+	
+	/**
+	 * Searh Folder By Name
+	 * 
+	 * @param keySearch
+	 * @return
+	 */
+	public List<FolderDTO> searchByName(String keySearch, Integer userId) {
+		List<Folder> folders = new ArrayList<>();
+		if (StringUtils.isEmpty(keySearch)) {
+			folders = folderDAO.findByUserIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		} else {
+			folders = folderDAO.findByFolderNameContainingAndUserIdAndStatus(keySearch, userId, EnumStatus.ACTIVE.getValue());
+		}
+		return folders.stream()
+					.map(f -> new FolderDTO(f))
+					.collect(Collectors.toList());
+	}
+	
 }

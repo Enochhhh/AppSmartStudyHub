@@ -20,5 +20,6 @@ public interface FolderDAO extends JpaRepository<Folder, Integer> {
 	
 	Optional<Folder> findByIdAndStatus(Integer id, String status);
 	
+	List<Folder> findByFolderNameContainingAndUserIdAndStatus(String keySearch, Integer userId, String status);
 	
 }
