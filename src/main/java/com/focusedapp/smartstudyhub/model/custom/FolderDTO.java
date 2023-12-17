@@ -93,11 +93,14 @@ public class FolderDTO implements Serializable {
 				}
 				if (!CollectionUtils.isEmpty(works)) {
 					works.stream().forEach(w -> {
-						Integer time = w.getNumberOfPomodoros() * w.getTimeOfPomodoro();
-						this.totalTimeWork += time;
+						
 						this.totalTimePassed += w.getTimePassed();
 						if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+							Integer numberPomo = w.getNumberOfPomodoros() - w.getNumberOfPomodorosDone();
+							Integer time = (numberPomo < 0 ? 0 : numberPomo) * w.getTimeOfPomodoro();
+							
 							this.totalWorkActive++;
+							this.totalTimeWork += time;							
 						} else {
 							this.totalWorkCompleted++;
 						}

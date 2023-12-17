@@ -25,6 +25,7 @@ import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
+import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
 import com.focusedapp.smartstudyhub.service.WorkService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
@@ -355,6 +356,12 @@ public class WorkController extends BaseController {
 		
 	}
 	
+	/**
+	 * Get Work Completed Controller
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	@GetMapping("/get-work-completed")
 	public ResponseEntity<Result<List<WorkDTO>>> getWorkCompletedOfUser(@RequestParam Integer userId) {
 		
@@ -370,6 +377,26 @@ public class WorkController extends BaseController {
 		List<WorkDTO> workCompleted = workService.getWorkCompletedOfUser(userId);
 		
 		result.setData(workCompleted);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	@PostMapping("/sort-work")
+	public ResponseEntity<Result<List<WorkSortedResponseDTO> >> sortWork(@RequestParam String type, @RequestBody List<WorkDTO> works) {
+		
+		Result<List<WorkSortedResponseDTO> > result = new Result<>();
+		
+		if (StringUtils.isBlank(type)) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Type Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<WorkSortedResponseDTO>  worksSorted = workService.sortWork(type, works);
+		
+		result.setData(worksSorted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

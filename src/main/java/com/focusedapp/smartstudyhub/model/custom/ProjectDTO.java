@@ -61,10 +61,12 @@ public class ProjectDTO implements Serializable {
 		
 		if (!CollectionUtils.isEmpty(works)) {
 			works.stream().forEach(w -> {				
-				Integer time = w.getNumberOfPomodoros() * w.getTimeOfPomodoro();
-				this.totalTimeWork += time;
+				
 				this.totalTimePassed += w.getTimePassed();
 				if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+					Integer numberPomo = w.getNumberOfPomodoros() - w.getNumberOfPomodorosDone();
+					Integer time = (numberPomo < 0 ? 0 : numberPomo) * w.getTimeOfPomodoro();
+					this.totalTimeWork += time;
 					this.listWorkActive.add(new WorkDTO(w));
 				} else if (w.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
 					this.listWorkCompleted.add(new WorkDTO(w));

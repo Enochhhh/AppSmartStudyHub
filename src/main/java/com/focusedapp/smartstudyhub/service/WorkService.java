@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,9 @@ import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
+import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
+import com.focusedapp.smartstudyhub.util.comparator.SortByProjectNameComparator;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumSortType;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
@@ -503,5 +508,143 @@ public class WorkService {
 				.collect(Collectors.toList());	
 		
 	}
+	
+	/**
+	 * Sort Work by type
+	 * 
+	 * @param type
+	 * @param works
+	 * @return
+	 */
+	public List<WorkSortedResponseDTO> sortWork(String type, List<WorkDTO> works) {
+		
+		Comparator<WorkDTO> comparator = Comparator.comparing(WorkDTO::getCreatedDate,
+                Comparator.nullsFirst(Comparator.naturalOrder()));
+		
+		if (type.equals(EnumSortType.PROJECT.getValue())) {
+			Map<String, List<WorkDTO>> mapWork = works.stream()	
+					.collect(Collectors.groupingBy(w -> {
+						if (w.getProjectId() == null) {
+							return "Task Default";
+						}
+						Optional<Project> projectOption = projectDAO.findById(w.getProjectId());
+						if (projectOption.isEmpty()) {
+							return "Task Default";
+						}
+						Project project = projectOption.get();
+						return project.getProjectName();
+					},Collectors.toList()));
+			
+			mapWork = mapWork.entrySet().stream()
+					.sorted(Map.Entry.<String, List<WorkDTO>>comparingByKey(new SortByProjectNameComparator("Task Default")))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+			
+			List<WorkSortedResponseDTO> workSortedList = new ArrayList<>();
+			for (Map.Entry<String, List<WorkDTO>> entry : mapWork.entrySet()) {
+				List<WorkDTO> worksRes = entry.getValue().stream()
+						.sorted(comparator.reversed())
+						.collect(Collectors.toList());
+				workSortedList.add(new WorkSortedResponseDTO(entry.getKey(), worksRes));
+			}
+			return workSortedList;
+		}
+		return null;
+	}
+	
+//	/**
+//	 * Get Time and Number Work Active by type
+//	 * 
+//	 * @param type
+//	 * @return
+//	 */
+//	public WorkResponseDTO getTimeAndNumberWorkActiveByType(Integer userId) {
+//		
+//		List<Work> listWorkActive = workDAO.findByUserIdAndOneOfTwoStatus(userId, EnumStatus.ACTIVE.getValue(), EnumStatus.COMPLETED.getValue());
+//		if (CollectionUtils.isEmpty(listWorkActive)) {
+//			return new WorkResponseDTO(new ArrayList<>());
+//		}
+//		List<WorkDTO> worksConvert = listWorkActive.stream()
+//										.map(w -> new WorkDTO(w))
+//										.collect(Collectors.toList());
+//		
+//		Integer timeWorkToday = 0;
+//		Integer numberWorkActiveToday = 0;
+//		
+//		Integer timeWorkOutOfDate = 0;
+//		Integer numberWorkActiveOutOfDate = 0;
+//		
+//		Integer timeWorkTomorrow = 0;
+//		Integer numberWorkActiveTomorrow = 0;
+//		
+//		Integer timePassedThisWeek = 0;
+//		Integer numberWorkCompletedThisWeek = 0;
+//		
+//		Integer timePassedNext7Day = 0;
+//		Integer numberWorkCompletedNext7Day = 0;
+//		
+//		Integer timePassedSomeDay = 0;
+//		Integer numberWorkCompletedSomeDay= 0;
+//		
+//		Integer timePassedAll = 0;
+//		Integer numberWorkCompletedAll = 0;
+//		
+//		Integer timePassedTaskDefault= 0;
+//		Integer numberWorkCompletedTaskDefault = 0;
+//		
+//		Integer timePassedPlanned = 0;
+//		Integer numberWorkCompletedPlanned = 0;
+//		
+//		for (WorkDTO work : worksConvert) {
+//			if (work.getStatusWork().equals(EnumStatusWork.TODAY.getValue())
+//					|| work.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue())) {
+//				timePassedToday += work.getTimePassed();
+//				if (work.getStatus().equals(numberWorkCompletedPlanned)))
+//			}
+//		}
+//		
+//	
+//		} else if (type.equals(EnumStatusWork.OUTOFDATE.getValue())) {
+//			worksConvert = worksConvert.stream()
+//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue()))
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		} else if (type.equals(EnumStatusWork.TOMORROW.getValue())) {
+//			worksConvert = worksConvert.stream()
+//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.TOMORROW.getValue()))
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		} else if (type.equals(EnumStatusWork.THISWEEK.getValue())) {
+//			worksConvert = worksConvert.stream()
+//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.THISWEEK.getValue()))
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		} else if (type.equals(EnumStatusWork.NEXT7DAY.getValue())) {
+//			worksConvert = worksConvert.stream()
+//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.NEXT7DAY.getValue()))
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		} else if (type.equals(EnumStatusWork.SOMEDAY.getValue())) {
+//			worksConvert = worksConvert.stream()
+//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.SOMEDAY.getValue()))
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		} else if (type.equals(EnumStatusWork.ALL.getValue())) {
+//			worksConvert = worksConvert.stream()
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		} else if (type.equals(EnumStatusWork.TASK_DEFAULT.getValue())){
+//			worksConvert = worksConvert.stream()
+//					.filter(w -> w.getProjectId() == null)
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		} else if (type.equals(EnumStatusWork.PLANNED.getValue())) {
+//			worksConvert = worksConvert.stream()
+//					.filter(w -> !w.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue()) 
+//							&& !w.getStatusWork().equals(EnumStatusWork.SOMEDAY.getValue()))
+//					.sorted(comparator.reversed())
+//					.collect(Collectors.toList());
+//		}
+//		return new WorkResponseDTO(worksConvert);
+//	}
 
 }
