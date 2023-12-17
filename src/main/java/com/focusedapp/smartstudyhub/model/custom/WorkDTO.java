@@ -14,6 +14,7 @@ import com.focusedapp.smartstudyhub.model.Tag;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -129,6 +130,7 @@ public class WorkDTO implements Serializable {
 		this.createdDate = work.getCreatedDate().getTime();
 		if (work.getExtraWorks() != null) {
 			this.extraWorks = work.getExtraWorks().stream()
+					.filter(ew -> !ew.getStatus().equals(EnumStatus.DELETED.getValue()))				
 					.map(ew -> new ExtraWorkDTO(ew))
 					.collect(Collectors.toList());
 		}
