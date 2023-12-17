@@ -29,6 +29,7 @@ import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
+import com.focusedapp.smartstudyhub.util.comparator.SortByPriorityComparator;
 import com.focusedapp.smartstudyhub.util.comparator.SortByProjectNameComparator;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumSortType;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -521,6 +522,7 @@ public class WorkService {
 		Comparator<WorkDTO> comparator = Comparator.comparing(WorkDTO::getCreatedDate,
                 Comparator.nullsFirst(Comparator.naturalOrder()));
 		
+		List<WorkSortedResponseDTO> workSortedList = new ArrayList<>();
 		if (type.equals(EnumSortType.PROJECT.getValue())) {
 			Map<String, List<WorkDTO>> mapWork = works.stream()	
 					.collect(Collectors.groupingBy(w -> {
@@ -538,17 +540,29 @@ public class WorkService {
 			mapWork = mapWork.entrySet().stream()
 					.sorted(Map.Entry.<String, List<WorkDTO>>comparingByKey(new SortByProjectNameComparator("Task Default")))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+						
+			for (Map.Entry<String, List<WorkDTO>> entry : mapWork.entrySet()) {
+				List<WorkDTO> worksRes = entry.getValue().stream()
+						.sorted(comparator.reversed())
+						.collect(Collectors.toList());
+				workSortedList.add(new WorkSortedResponseDTO(entry.getKey(), worksRes));
+			}			
+		} else if (type.equals(EnumSortType.PRIORITY.getValue())) {
+			Map<String, List<WorkDTO>> mapWork = works.stream()	
+					.collect(Collectors.groupingBy(w -> w.getPriority(),Collectors.toList()));
 			
-			List<WorkSortedResponseDTO> workSortedList = new ArrayList<>();
+			mapWork = mapWork.entrySet().stream()
+					.sorted(Map.Entry.<String, List<WorkDTO>>comparingByKey(new SortByPriorityComparator()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+			
 			for (Map.Entry<String, List<WorkDTO>> entry : mapWork.entrySet()) {
 				List<WorkDTO> worksRes = entry.getValue().stream()
 						.sorted(comparator.reversed())
 						.collect(Collectors.toList());
 				workSortedList.add(new WorkSortedResponseDTO(entry.getKey(), worksRes));
 			}
-			return workSortedList;
 		}
-		return null;
+		return workSortedList;
 	}
 	
 //	/**
