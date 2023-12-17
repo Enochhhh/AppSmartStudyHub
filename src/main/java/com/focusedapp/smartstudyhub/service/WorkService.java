@@ -561,6 +561,20 @@ public class WorkService {
 						.collect(Collectors.toList());
 				workSortedList.add(new WorkSortedResponseDTO(entry.getKey(), worksRes));
 			}
+		} else if (type.equals(EnumSortType.DUEDATE.getValue())) {
+			Map<Long, List<WorkDTO>> mapWork = works.stream()	
+					.collect(Collectors.groupingBy(w -> w.getDueDate(),Collectors.toList()));
+			
+			mapWork = mapWork.entrySet().stream()
+					.sorted(Map.Entry.<Long, List<WorkDTO>>comparingByKey())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+			
+			for (Map.Entry<Long, List<WorkDTO>> entry : mapWork.entrySet()) {
+				List<WorkDTO> worksRes = entry.getValue().stream()
+						.sorted(comparator.reversed())
+						.collect(Collectors.toList());
+				workSortedList.add(new WorkSortedResponseDTO(entry.getKey(), worksRes));
+			}
 		}
 		return workSortedList;
 	}
