@@ -143,6 +143,8 @@ public class User implements Serializable {
 	private List<Pomodoro> pomodoros;
 	
 	@ManyToMany(mappedBy = "users")
-	List<EventSchedule> eventSchedules;
+	private List<EventSchedule> eventSchedules;
 	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Files> files;
 }

@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.focusedapp.smartstudyhub.model.User;
@@ -32,6 +33,7 @@ public class UserDTO implements Serializable {
 		this.dateOfBirth = user.getDateOfBirth() != null ? user.getDateOfBirth().getTime() : null;
 		this.country = user.getCountry();
 		this.imageUrl = user.getImageUrl();
+		
 		this.totalTimeFocus = user.getTotalTimeFocus();
 	}
 	

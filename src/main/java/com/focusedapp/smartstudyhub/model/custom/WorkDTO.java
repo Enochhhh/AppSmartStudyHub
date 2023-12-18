@@ -34,6 +34,7 @@ public class WorkDTO implements Serializable {
 	private Integer userId;
 	private ProjectDTO projectDTO;
 	private Integer projectId;
+	private String projectName;
 	private Long dueDate;
 	private String workName;
 	private String priority;
@@ -64,6 +65,7 @@ public class WorkDTO implements Serializable {
 		Project project = work.getProject();
 		if (project != null) {
 			this.projectId = project.getId();
+			this.projectName = project.getProjectName();
 		}
 		this.workName = work.getWorkName();
 		this.priority = work.getPriority();
