@@ -111,9 +111,9 @@ create table users_join_study_group(
 create table theme(
 	id int auto_increment,
     user_id int,
-    name_sound nvarchar(50),
+    name_theme nvarchar(50),
     url text,
-    status_theme text, -- It have 2 value: DEFAULT, OWNED
+    status_theme text, -- It have 3 value: DEFAULT, OWNED, PREMIUM
     status text,
     created_date datetime,
     constraint ThemePrimaryKey primary key(id),
@@ -216,10 +216,22 @@ create table sound_concentration(
     name_sound nvarchar(50),
     url text,
     status_sound text, -- It have 3 value: DEFAULT, PREMIUM, OWNED
-    created_date datetime,
     status text,
+    created_date datetime,
     constraint SoundConcentrationPrimaryKey primary key(id),
     constraint SoundConcentrationUserIdForeignKey foreign key(user_id) references users(id)
+);
+
+create table sound_done(
+	id int auto_increment,
+    user_id int,
+    name_sound nvarchar(50),
+    url text,
+    status_sound text, -- It have 3 value: DEFAULT, PREMIUM, OWNED
+	status text,
+    created_date datetime,
+    constraint SoundDonePrimaryKey primary key(id),
+    constraint SoundDUserIdForeignKey foreign key(user_id) references users(id)
 );
 
 create table category_forum(
@@ -351,6 +363,21 @@ create table assignee_event_schedule(
 	constraint AssigneeEventSchedulePrimaryKey primary key(event_id, assignee_id),
     constraint AssigneeEventScheduleEventIdForeignKey foreign key(event_id) references event_schedule(id),
     constraint AssigneeEventScheduleAssigneeIdForeignKey foreign key(assignee_id) references users(id)
+);
+
+create table files(
+	id int auto_increment,
+    user_id int,
+    type text,
+    folder text,
+    file_name text,
+    format text,
+    resource_type text,
+    secure_url text,
+    created_at datetime,
+    public_id text,
+    constraint FilesPrimaryKey primary key(id),
+    constraint FilesUserIdForeignKey foreign key(user_id) references users(id)
 );
 
 -- TRIGGER
