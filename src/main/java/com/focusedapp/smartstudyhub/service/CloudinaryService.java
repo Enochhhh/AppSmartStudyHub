@@ -17,6 +17,7 @@ import com.focusedapp.smartstudyhub.dao.UserDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Files;
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -47,9 +48,7 @@ public class CloudinaryService {
 	 * @return
 	 * @throws IOException
 	 */
-	public String uploadFile(MultipartFile file, String type, Integer userId) throws IOException {
-		
-		User user = userService.findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue()); 
+	public String uploadFile(MultipartFile file, String type, User user) throws IOException {
 
 		Cloudinary cloudinary = new Cloudinary(
 				ObjectUtils.asMap("cloud_name", cloudName, "api_key", apiKey, "api_secret", apiSecret));
@@ -74,9 +73,9 @@ public class CloudinaryService {
 		// Set the new file name in Cloudinary
 		String newFileName;
 		if (fileInDb != null) {
-			newFileName = "File_" + userId + "_" + (fileInDb.getId() + 1) + "_" + extension;
+			newFileName = "File_" + user.getId() + "_" + (fileInDb.getId() + 1) + "_" + extension;
 		} else {
-			newFileName = "File_" + userId + "_0_" + extension;
+			newFileName = "File_" + user.getId() + "_1_" + extension;
 		}
 		
 		String publicId = newFileName;
@@ -85,7 +84,9 @@ public class CloudinaryService {
 		Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
 				ObjectUtils.asMap("folder", folder, "public_id", publicId));
 
-		Files fileSave = Files.builder().folder(type).fileName(newFileName).format((String) uploadResult.get("format"))
+		Files fileSave = Files.builder().folder(folder)
+				.type(type)
+				.fileName(newFileName).format((String) uploadResult.get("format"))
 				.user(user)
 				.resourceType((String) uploadResult.get("resource_type"))
 				.secureUrl((String) uploadResult.get("secure_url"))
@@ -96,4 +97,28 @@ public class CloudinaryService {
 		
 		return fileSave.getSecureUrl();
 	}
+	
+	/**
+	 * Delete File in cloudinary
+	 * 
+	 * @param publicId
+	 * @return
+	 * @throws IOException
+	 */
+	public FilesDTO deleteFileInCloudinary(String publicId) throws IOException {
+	
+		Cloudinary cloudinary = new Cloudinary(
+				ObjectUtils.asMap("cloud_name", cloudName, "api_key", apiKey, "api_secret", apiSecret));
+
+		Files file = filesDAO.findByPublicId(publicId)
+				.orElseThrow(() -> new NotFoundValueException("Not Found the file to delete!", "CloudinaryService -> deleteFileInCloudinary"));
+
+		// Upload the image to Cloudinary
+		cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+
+		filesDAO.delete(file);
+		
+		return new FilesDTO(file);
+	}
+	
 }

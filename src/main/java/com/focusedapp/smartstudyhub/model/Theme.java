@@ -38,8 +38,8 @@ public class Theme implements Serializable {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@Column(name = "name_sound", length = 50)
-	private String nameSound;
+	@Column(name = "name_theme", length = 50)
+	private String nameTheme;
 	
 	private String url;
 	

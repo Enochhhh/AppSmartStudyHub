@@ -147,4 +147,11 @@ public class User implements Serializable {
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Files> files;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SoundConcentration> soundConcentrations;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SoundDone> soundDones;
+	
 }

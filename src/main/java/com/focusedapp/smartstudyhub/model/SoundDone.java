@@ -14,20 +14,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @Entity
-@Table(name = "files")
-public class Files implements Serializable {
-
+@Table(name = "sound_done")
+public class SoundDone implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -35,28 +35,21 @@ public class Files implements Serializable {
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id")
 	private User user;
 	
-	private String folder;
+	@Column(name = "name_sound", length = 50)
+	private String nameSound;
 	
-	@Column(name = "file_name")
-	private String fileName;
+	private String url;
 	
-	private String format;
+	@Column(name = "status_sound")
+	private String statusSound;
 	
-	@Column(name = "resource_type")
-	private String resourceType;
+	@Column(name = "created_date")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
 	
-	@Column(name = "secure_url")
-	private String secureUrl;
-	
-	@Column(name = "created_at")
-	private Date createdAt;
-	
-	@Column(name = "public_id")
-	private String publicId;
-	
-	private String type;
+	private String status;
 
 }
