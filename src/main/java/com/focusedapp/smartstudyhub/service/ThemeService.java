@@ -90,6 +90,9 @@ public class ThemeService {
 		
 		Theme theme = themeDAO.findByIdAndStatus(themeData.getId(), EnumStatus.ACTIVE.getValue())
 				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to update!", "ThemeService -> updateThemeOfPremiumUser"));
+		if (theme.getUser() == null || !theme.getStatusTheme().equals(EnumStatusCustomContent.OWNED.getValue())) {
+			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> updateThemeOfPremiumUser");
+		}
 		theme.setNameTheme(themeData.getNameTheme());
 		theme.setUrl(themeData.getUrl());
 		
@@ -101,7 +104,7 @@ public class ThemeService {
 	/**
 	 * Mark Deleted Theme 
 	 * 
-	 * @param themeData
+	 * @param themeId
 	 * @return
 	 */
 	public ThemeDTO markDeletedThemeOfPremiumUser(Integer themeId) {
@@ -121,15 +124,15 @@ public class ThemeService {
 	/**
 	 * Delete Theme 
 	 * 
-	 * @param themeData
+	 * @param themeId
 	 * @return
 	 */
 	public ThemeDTO deleteThemeOfPremiumUser(Integer themeId) throws IOException {
 		
 		Theme theme = themeDAO.findById(themeId)
-				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to delete!", "ThemeService -> markDeletedThemeOfPremiumUser"));
+				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to delete!", "ThemeService -> deleteThemeOfPremiumUser"));
 		if (theme.getUser() == null || !theme.getStatusTheme().equals(EnumStatusCustomContent.OWNED.getValue())) {
-			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> markDeletedThemeOfPremiumUser");
+			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> deleteThemeOfPremiumUser");
 		}
 		
 		String publicId = null;
@@ -150,15 +153,15 @@ public class ThemeService {
 	/**
 	 * Recover Theme 
 	 * 
-	 * @param themeData
+	 * @param themeId
 	 * @return
 	 */
 	public ThemeDTO recoverThemeOfPremiumUser(Integer themeId) {
 		
 		Theme theme = themeDAO.findById(themeId)
-				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to recover!", "ThemeService -> markDeletedThemeOfPremiumUser"));
+				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to recover!", "ThemeService -> recoverThemeOfPremiumUser"));
 		if (theme.getUser() == null || !theme.getStatusTheme().equals(EnumStatusCustomContent.OWNED.getValue())) {
-			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> markDeletedThemeOfPremiumUser");
+			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> recoverThemeOfPremiumUser");
 		}
 		theme.setStatus(EnumStatus.ACTIVE.getValue());
 		
