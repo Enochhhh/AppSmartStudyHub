@@ -74,7 +74,7 @@ public class SoundConcentrationController extends BaseController {
 	 * @return
 	 */
 	@PutMapping("/premium/soundconcentration/update")
-	public ResponseEntity<Result<SoundConcentrationDTO>> getThemeOfPremiumUser(@RequestBody SoundConcentrationDTO soundConcentrationRequest) {
+	public ResponseEntity<Result<SoundConcentrationDTO>> updateSoundConcentrationOfPremiumUser(@RequestBody SoundConcentrationDTO soundConcentrationRequest) {
 
 		Result<SoundConcentrationDTO> result = new Result<>();	
 
@@ -92,7 +92,7 @@ public class SoundConcentrationController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/premium/soundconcentration/insert")
-	public ResponseEntity<Result<SoundConcentrationDTO>> insertThemeOfPremiumUser(@RequestBody SoundConcentrationDTO soundConcentrationData) {
+	public ResponseEntity<Result<SoundConcentrationDTO>> insertSoundConcentrationOfPremiumUser(@RequestBody SoundConcentrationDTO soundConcentrationData) {
 
 		Result<SoundConcentrationDTO> result = new Result<>();	
 
@@ -135,18 +135,18 @@ public class SoundConcentrationController extends BaseController {
 
 		Result<SoundConcentrationDTO> result = new Result<>();	
 
-		SoundConcentrationDTO soundConcentrationDeleted = soundConcentrationService.recoverSoundConcentrationOfPremiumUser(soundConcentrationId);
+		SoundConcentrationDTO soundConcentrationRecovered = soundConcentrationService.recoverSoundConcentrationOfPremiumUser(soundConcentrationId);
 		
-		result.setData(soundConcentrationDeleted);
+		result.setData(soundConcentrationRecovered);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
 	}
 	
 	/**
-	 * Delete Theme of Premium user
+	 * Delete Sound Concentration of Premium user
 	 * 
-	 * @param themeId
+	 * @param soundConcentrationId
 	 * @return
 	 * @throws IOException
 	 */

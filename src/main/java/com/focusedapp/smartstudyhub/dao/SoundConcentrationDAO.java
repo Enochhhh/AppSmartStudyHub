@@ -11,9 +11,9 @@ import com.focusedapp.smartstudyhub.model.SoundConcentration;
 @Repository
 public interface SoundConcentrationDAO extends JpaRepository<SoundConcentration, Integer> {
 
-	public List<SoundConcentration> findByUserIdIsNullAndStatus(String status);
+	List<SoundConcentration> findByUserIdIsNullAndStatus(String status);
 	
 	List<SoundConcentration> findByUserIdOrUserIdIsNullAndStatus(Integer userId, String status);
 	
-	Optional<SoundConcentration> findByIdAndStatus(Integer themeId, String status);
+	Optional<SoundConcentration> findByIdAndStatus(Integer soundConcentrationId, String status);
 }
