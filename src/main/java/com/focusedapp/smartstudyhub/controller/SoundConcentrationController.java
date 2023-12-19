@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.SoundConcentrationDTO;
-import com.focusedapp.smartstudyhub.model.custom.ThemeDTO;
 import com.focusedapp.smartstudyhub.service.SoundConcentrationService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
