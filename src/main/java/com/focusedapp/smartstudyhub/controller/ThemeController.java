@@ -1,11 +1,17 @@
 package com.focusedapp.smartstudyhub.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,6 +63,100 @@ public class ThemeController extends BaseController {
 		List<ThemeDTO> listTheme = themeService.getThemeOfPremiumUser(user);
 		
 		result.setData(listTheme);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Update Theme of Premium User
+	 * 
+	 * @return
+	 */
+	@PutMapping("/premium/theme/update")
+	public ResponseEntity<Result<ThemeDTO>> getThemeOfPremiumUser(@RequestBody ThemeDTO themeRequest) {
+
+		Result<ThemeDTO> result = new Result<>();	
+
+		ThemeDTO themeUpdated = themeService.updateThemeOfPremiumUser(themeRequest);
+		
+		result.setData(themeUpdated);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Mark Deleted Theme of Premium User
+	 * 
+	 * @return
+	 */
+	@DeleteMapping("/premium/theme/mark-deleted/{themeId}")
+	public ResponseEntity<Result<ThemeDTO>> markDeletedThemeOfPremiumUser(@PathVariable Integer themeId) {
+
+		Result<ThemeDTO> result = new Result<>();	
+
+		ThemeDTO themeDeleted = themeService.markDeletedThemeOfPremiumUser(themeId);
+		
+		result.setData(themeDeleted);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Insert Theme of Premium User
+	 * 
+	 * @return
+	 */
+	@PostMapping("/premium/theme/insert")
+	public ResponseEntity<Result<ThemeDTO>> insertThemeOfPremiumUser(@RequestBody ThemeDTO themeData) {
+
+		Result<ThemeDTO> result = new Result<>();	
+
+		User user = getAuthenticatedUser();
+		ThemeDTO themeInserted = themeService.insertThemeOfPremiumUser(themeData, user);
+		
+		result.setData(themeInserted);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Delete Theme of Premium user
+	 * 
+	 * @param themeId
+	 * @return
+	 * @throws IOException
+	 */
+	@DeleteMapping("/premium/theme/delete/{themeId}")
+	public ResponseEntity<Result<ThemeDTO>> deleteThemeOfPremiumUser(@PathVariable Integer themeId) 
+			throws IOException{
+
+		Result<ThemeDTO> result = new Result<>();	
+
+		ThemeDTO themeDeleted = themeService.deleteThemeOfPremiumUser(themeId);
+		
+		result.setData(themeDeleted);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Recover Theme of Premium User
+	 * 
+	 * @return
+	 */
+	@PutMapping("/premium/theme/recover/{themeId}")
+	public ResponseEntity<Result<ThemeDTO>> recoverThemeOfPremiumUser(@PathVariable Integer themeId) {
+
+		Result<ThemeDTO> result = new Result<>();	
+
+		ThemeDTO themeDeleted = themeService.recoverThemeOfPremiumUser(themeId);
+		
+		result.setData(themeDeleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

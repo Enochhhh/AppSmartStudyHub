@@ -190,4 +190,20 @@ public class ExceptionControllerAdvice {
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	@ExceptionHandler(value = NoRightToPerformException.class)
+	public ResponseEntity<Result<JSONObject>> noRightToPerformException(NoRightToPerformException exception) {
+			
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.UNAUTHORIZED.getCode());
+		result.getMeta().setMessage(StatusCode.UNAUTHORIZED.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "No right to perform this action!");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		result.setUrl(exception.getPath());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.UNAUTHORIZED);
+	}
+	
 }
