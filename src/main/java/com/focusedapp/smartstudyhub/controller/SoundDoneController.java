@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.Result;
-import com.focusedapp.smartstudyhub.model.custom.SoundConcentrationDTO;
 import com.focusedapp.smartstudyhub.model.custom.SoundDoneDTO;
 import com.focusedapp.smartstudyhub.service.SoundDoneService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
@@ -96,7 +95,8 @@ public class SoundDoneController extends BaseController {
 	 * @return
 	 */
 	@PutMapping("/premium/sounddone/update")
-	public ResponseEntity<Result<SoundDoneDTO>> updateSoundDoneOfPremiumUser(@RequestBody SoundDoneDTO soundDoneRequest) {
+	public ResponseEntity<Result<SoundDoneDTO>> updateSoundDoneOfPremiumUser(@RequestBody SoundDoneDTO soundDoneRequest) 
+			throws IOException {
 
 		Result<SoundDoneDTO> result = new Result<>();	
 

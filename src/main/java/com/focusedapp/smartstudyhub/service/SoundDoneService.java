@@ -12,10 +12,8 @@ import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.dao.SoundDoneDAO;
 import com.focusedapp.smartstudyhub.exception.NoRightToPerformException;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
-import com.focusedapp.smartstudyhub.model.SoundConcentration;
 import com.focusedapp.smartstudyhub.model.SoundDone;
 import com.focusedapp.smartstudyhub.model.User;
-import com.focusedapp.smartstudyhub.model.custom.SoundConcentrationDTO;
 import com.focusedapp.smartstudyhub.model.custom.SoundDoneDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -88,7 +86,8 @@ public class SoundDoneService {
 	 * @param soundDoneData
 	 * @return
 	 */
-	public SoundDoneDTO updateSoundDoneOfPremiumUser(SoundDoneDTO soundDoneData) {
+	public SoundDoneDTO updateSoundDoneOfPremiumUser(SoundDoneDTO soundDoneData) 
+			throws IOException {
 		
 		SoundDone soundDone = soundDoneDAO.findByIdAndStatus(soundDoneData.getId(), EnumStatus.ACTIVE.getValue())
 				.orElseThrow(() -> new NotFoundValueException("Not Found the Sound Done to update!", 
@@ -98,7 +97,18 @@ public class SoundDoneService {
 					"SoundDoneService -> updateSoundConcentrationOfPremiumUser");
 		}
 		soundDone.setNameSound(soundDoneData.getNameSound());
-		soundDone.setUrl(soundDoneData.getUrl());
+		if (!soundDoneData.getUrl().equals(soundDone.getUrl())) {
+			String publicId = null;
+			if (StringUtils.isNotBlank(soundDone.getUrl())) {
+				Integer startingIndex = soundDone.getUrl().indexOf(ConstantUrl.URL_FOLDER);
+				publicId = soundDone.getUrl().substring(startingIndex + 1).split("\\.")[0];
+			}
+			
+			if (publicId != null) {
+				cloudinaryService.deleteFileInCloudinary(publicId);
+			}
+			soundDone.setUrl(soundDoneData.getUrl());
+		}
 		
 		soundDone = soundDoneDAO.save(soundDone);
 		

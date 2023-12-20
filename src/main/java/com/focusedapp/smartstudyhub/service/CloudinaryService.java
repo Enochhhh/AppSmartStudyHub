@@ -3,7 +3,6 @@ package com.focusedapp.smartstudyhub.service;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,13 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.focusedapp.smartstudyhub.dao.FilesDAO;
-import com.focusedapp.smartstudyhub.dao.UserDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Files;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
-import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
 @Service
 public class CloudinaryService {
@@ -63,20 +60,12 @@ public class CloudinaryService {
 		// Get Extension of file
 		String extension = file.getOriginalFilename().split("\\.")[1];
 
-		// Find top file to get Id
-		Optional<Files> fileOptionalTopInDb = filesDAO.findTopByOrderByIdDesc();
-		Files fileInDb = null;
-		if (!fileOptionalTopInDb.isEmpty()) {
-			fileInDb = fileOptionalTopInDb.get();
-		}
-
+		Files fileSave = Files.builder()
+				.user(user)
+				.build();
+		filesDAO.save(fileSave);
 		// Set the new file name in Cloudinary
-		String newFileName;
-		if (fileInDb != null) {
-			newFileName = "File_" + user.getId() + "_" + (fileInDb.getId() + 1) + "_" + extension;
-		} else {
-			newFileName = "File_" + user.getId() + "_1_" + extension;
-		}
+		String newFileName = "File_" + user.getId() + "_" + fileSave.getId() + "_" + extension;;
 		
 		String publicId = newFileName;
 
@@ -84,7 +73,8 @@ public class CloudinaryService {
 		Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
 				ObjectUtils.asMap("folder", folder, "public_id", publicId));
 
-		Files fileSave = Files.builder().folder(folder)
+		fileSave = Files.builder().folder(folder)
+				.id(fileSave.getId())
 				.type(type)
 				.fileName(newFileName).format((String) uploadResult.get("format"))
 				.user(user)

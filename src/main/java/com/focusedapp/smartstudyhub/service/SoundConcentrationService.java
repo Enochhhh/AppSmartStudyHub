@@ -63,7 +63,8 @@ public class SoundConcentrationService {
 	 * @param soundConcentrationData
 	 * @return
 	 */
-	public SoundConcentrationDTO updateSoundConcentrationOfPremiumUser(SoundConcentrationDTO soundConcentrationData) {
+	public SoundConcentrationDTO updateSoundConcentrationOfPremiumUser(SoundConcentrationDTO soundConcentrationData) 
+			throws IOException {
 		
 		SoundConcentration soundConcentration = soundConcentrationDAO.findByIdAndStatus(soundConcentrationData.getId(), EnumStatus.ACTIVE.getValue())
 				.orElseThrow(() -> new NotFoundValueException("Not Found the Sound Concentration to update!", 
@@ -72,8 +73,19 @@ public class SoundConcentrationService {
 			throw new NoRightToPerformException("No right to perform exception!", "SoundConcentrationService -> updateSoundConcentrationOfPremiumUser");
 		}
 		soundConcentration.setNameSound(soundConcentrationData.getNameSound());
-		soundConcentration.setUrl(soundConcentrationData.getUrl());
-		
+		if (!soundConcentrationData.getUrl().equals(soundConcentration.getUrl())) {
+			String publicId = null;
+			if (StringUtils.isNotBlank(soundConcentration.getUrl())) {
+				Integer startingIndex = soundConcentration.getUrl().indexOf(ConstantUrl.URL_FOLDER);
+				publicId = soundConcentration.getUrl().substring(startingIndex + 1).split("\\.")[0];
+			}
+			
+			if (publicId != null) {
+				cloudinaryService.deleteFileInCloudinary(publicId);
+			}
+			soundConcentration.setUrl(soundConcentrationData.getUrl());
+		}
+			
 		soundConcentration = soundConcentrationDAO.save(soundConcentration);
 		
 		return new SoundConcentrationDTO(soundConcentration);

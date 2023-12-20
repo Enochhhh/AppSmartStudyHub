@@ -71,10 +71,13 @@ public class SoundConcentrationController extends BaseController {
 	/**
 	 * Update Sound Concentration of Premium User
 	 * 
+	 * @param soundConcentrationRequest
 	 * @return
+	 * @throws IOException
 	 */
 	@PutMapping("/premium/soundconcentration/update")
-	public ResponseEntity<Result<SoundConcentrationDTO>> updateSoundConcentrationOfPremiumUser(@RequestBody SoundConcentrationDTO soundConcentrationRequest) {
+	public ResponseEntity<Result<SoundConcentrationDTO>> updateSoundConcentrationOfPremiumUser(
+			@RequestBody SoundConcentrationDTO soundConcentrationRequest) throws IOException {
 
 		Result<SoundConcentrationDTO> result = new Result<>();	
 

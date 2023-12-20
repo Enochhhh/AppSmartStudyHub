@@ -86,7 +86,8 @@ public class ThemeService {
 	 * @param themeData
 	 * @return
 	 */
-	public ThemeDTO updateThemeOfPremiumUser(ThemeDTO themeData) {
+	public ThemeDTO updateThemeOfPremiumUser(ThemeDTO themeData) 
+			throws IOException {
 		
 		Theme theme = themeDAO.findByIdAndStatus(themeData.getId(), EnumStatus.ACTIVE.getValue())
 				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to update!", "ThemeService -> updateThemeOfPremiumUser"));
@@ -94,7 +95,18 @@ public class ThemeService {
 			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> updateThemeOfPremiumUser");
 		}
 		theme.setNameTheme(themeData.getNameTheme());
-		theme.setUrl(themeData.getUrl());
+		if (!themeData.getUrl().equals(theme.getUrl())) {
+			String publicId = null;
+			if (StringUtils.isNotBlank(theme.getUrl())) {
+				Integer startingIndex = theme.getUrl().indexOf(ConstantUrl.URL_FOLDER);
+				publicId = theme.getUrl().substring(startingIndex + 1).split("\\.")[0];
+			}
+			
+			if (publicId != null) {
+				cloudinaryService.deleteFileInCloudinary(publicId);
+			}
+			theme.setUrl(themeData.getUrl());
+		}
 		
 		theme = themeDAO.save(theme);
 		
