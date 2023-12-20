@@ -402,4 +402,30 @@ public class WorkController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Work Completed Controller
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping("/get-work-deleted")
+	public ResponseEntity<Result<List<WorkDTO>>> getWorkDeletedOfUser(@RequestParam Integer userId) {
+		
+		Result<List<WorkDTO>> result = new Result<>();
+		
+		if (userId == null || userId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("User Id Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<WorkDTO> workDeleted = workService.getWorkDeletedOfUser(userId);
+		
+		result.setData(workDeleted);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

@@ -580,6 +580,22 @@ public class WorkService {
 	}
 	
 	/**
+	 * Get Work Deleted of User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<WorkDTO> getWorkDeletedOfUser(Integer userId) {
+		
+		List<Work> works = workDAO.findByUserIdAndStatus(userId, EnumStatus.DELETED.getValue());
+		
+		return works.stream()
+				.map(w -> new WorkDTO(w))
+				.collect(Collectors.toList());	
+		
+	}
+	
+	/**
 	 * Get Time and Number Work Active by type
 	 * 
 	 * @param type
