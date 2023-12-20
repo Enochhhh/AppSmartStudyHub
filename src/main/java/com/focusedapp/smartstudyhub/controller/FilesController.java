@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
+import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.CloudinaryService;
 import com.focusedapp.smartstudyhub.service.FilesService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
@@ -101,4 +104,27 @@ public class FilesController extends BaseController {
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
 	}
+	
+	/**
+	 * Delete Completely Files by Id
+	 * 
+	 * @param userInfo
+	 * @return
+	 */
+	@DeleteMapping("/customer/files/delete-completely-files-by-id/{filesId}")
+	public ResponseEntity<Result<FilesDTO>> deleteCompletelyFilesById(@PathVariable Integer filesId) 
+			throws IOException {
+		
+		Result<FilesDTO> result = new Result<>();
+		
+		User user = getAuthenticatedUser();
+		
+		FilesDTO filesDeleted = filesService.deleteCompletelyFilesById(user, filesId);	
+		
+		result.setData(filesDeleted);		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

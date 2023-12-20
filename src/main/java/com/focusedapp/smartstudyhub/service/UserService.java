@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.service;
 
 import java.util.Date;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,8 @@ public class UserService {
 	JwtService jwtService;
 	@Autowired
 	OtpCodeService otpCodeService;
+	@Autowired
+	FilesService filesService;
 
 	/**
 	 * 
@@ -414,11 +417,24 @@ public class UserService {
 			user.setDateOfBirth(new Date(userInfo.getDateOfBirth()));
 		}
 		user.setCountry(userInfo.getCountry());
-		user.setImageUrl(user.getImageUrl());
-		user.setRole(user.getRole());
+		user.setImageUrl(userInfo.getImageUrl());
 		
 		user = userDAO.save(user);
 		
 		return new UserDTO(user);
 	}
+	
+	/**
+	 * Delete Current Avatar of User
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public UserDTO deleteCurrentAvatarUserCustomer(User user) {
+		
+		user.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
+		userDAO.save(user);
+		return new UserDTO(user);
+	}
+	
 }

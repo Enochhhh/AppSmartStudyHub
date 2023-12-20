@@ -1,5 +1,6 @@
 package com.focusedapp.smartstudyhub.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -190,6 +191,27 @@ public class CustomerController extends BaseController {
 			return createResponseEntity(result, HttpStatus.FORBIDDEN);
 		}
 		result.setData(userNew);		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Delete Current Avatar User
+	 * 
+	 * @param userInfo
+	 * @return
+	 */
+	@DeleteMapping("/delete-current-avatar")
+	public ResponseEntity<Result<UserDTO>> deleteCurrentAvatarUserCustomer() {
+		
+		Result<UserDTO> result = new Result<>();
+		
+		User user = getAuthenticatedUser();
+		
+		UserDTO userUpdated = userService.deleteCurrentAvatarUserCustomer(user);	
+		
+		result.setData(userUpdated);		
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
