@@ -166,4 +166,23 @@ public class SoundDoneController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Sound Done Deleted of Premium User
+	 * 
+	 * @return
+	 */
+	@GetMapping("/premium/sounddone/get-deleted")
+	public ResponseEntity<Result<List<SoundDoneDTO>>> getSoundDoneDeletedOfPremiumUser() {
+
+		Result<List<SoundDoneDTO>> result = new Result<>();	
+
+		User user = getAuthenticatedUser();
+		List<SoundDoneDTO> listSoundDone = soundDoneService.getSoundDoneDeletedOfPremiumUser(user);
+		
+		result.setData(listSoundDone);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

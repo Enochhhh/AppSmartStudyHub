@@ -181,5 +181,20 @@ public class ThemeService {
 		
 		return new ThemeDTO(theme);
 	}
+	
+	/**
+	 * Get Theme Deleted of Premium User
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public List<ThemeDTO> getThemeDeletedOfPremiumUser(User user) {
+		
+		List<Theme> themes = themeDAO.findByUserIdAndStatus(user.getId(), EnumStatus.DELETED.getValue());
+		
+		return themes.stream()
+				.map(t -> new ThemeDTO(t))
+				.collect(Collectors.toList());
+	}
 
 }

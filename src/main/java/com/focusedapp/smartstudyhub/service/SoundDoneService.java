@@ -190,4 +190,19 @@ public class SoundDoneService {
 		return new SoundDoneDTO(soundDone);
 	}
 	
+	/**
+	 * Get Sound Done Deleted of Premium User
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public List<SoundDoneDTO> getSoundDoneDeletedOfPremiumUser(User user) {
+		
+		List<SoundDone> sounds = soundDoneDAO.findByUserIdAndStatus(user.getId(), EnumStatus.DELETED.getValue());
+		
+		return sounds.stream()
+				.map(s -> new SoundDoneDTO(s))
+				.collect(Collectors.toList());
+	}
+	
 }

@@ -17,4 +17,6 @@ public interface SoundDoneDAO extends JpaRepository<SoundDone, Integer> {
 	
 	Optional<SoundDone> findByIdAndStatus(Integer soundDoneId, String status);
 	
+	List<SoundDone> findByUserIdAndStatus(Integer userId, String status);
+	
 }

@@ -162,5 +162,24 @@ public class ThemeController extends BaseController {
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
 	}
+	
+	/**
+	 * Get Theme Deleted of Premium User
+	 * 
+	 * @return
+	 */
+	@GetMapping("/premium/theme/get-deleted")
+	public ResponseEntity<Result<List<ThemeDTO>>> getThemeDeletedOfPremiumUser() {
+
+		Result<List<ThemeDTO>> result = new Result<>();	
+
+		User user = getAuthenticatedUser();
+		List<ThemeDTO> listTheme = themeService.getThemeDeletedOfPremiumUser(user);
+		
+		result.setData(listTheme);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
 
 }

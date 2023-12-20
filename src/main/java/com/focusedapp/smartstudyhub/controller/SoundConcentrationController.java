@@ -167,4 +167,23 @@ public class SoundConcentrationController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Sound Concentration Deleted of Premium User
+	 * 
+	 * @return
+	 */
+	@GetMapping("/premium/soundconcentration/get-deleted")
+	public ResponseEntity<Result<List<SoundConcentrationDTO>>> getSoundConcentrationDeletedOfPremiumUser() {
+
+		Result<List<SoundConcentrationDTO>> result = new Result<>();	
+
+		User user = getAuthenticatedUser();
+		List<SoundConcentrationDTO> listSoundConcentration = soundConcentrationService.getSoundConcentrationDeletedOfPremiumUser(user);
+		
+		result.setData(listSoundConcentration);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
 }

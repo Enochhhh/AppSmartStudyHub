@@ -188,4 +188,19 @@ public class SoundConcentrationService {
 		return new SoundConcentrationDTO(soundConcentration);
 	}
 	
+	/**
+	 * Get Sound Concentration Deleted of Premium User
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public List<SoundConcentrationDTO> getSoundConcentrationDeletedOfPremiumUser(User user) {
+		
+		List<SoundConcentration> sounds = soundConcentrationDAO.findByUserIdAndStatus(user.getId(), EnumStatus.DELETED.getValue());
+		
+		return sounds.stream()
+				.map(s -> new SoundConcentrationDTO(s))
+				.collect(Collectors.toList());
+	}
+	
 }

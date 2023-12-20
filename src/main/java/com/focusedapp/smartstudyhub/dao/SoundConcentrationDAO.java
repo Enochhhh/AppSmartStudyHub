@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.SoundConcentration;
 
+
 @Repository
 public interface SoundConcentrationDAO extends JpaRepository<SoundConcentration, Integer> {
 
@@ -16,4 +17,6 @@ public interface SoundConcentrationDAO extends JpaRepository<SoundConcentration,
 	List<SoundConcentration> findByUserIdOrUserIdIsNullAndStatus(Integer userId, String status);
 	
 	Optional<SoundConcentration> findByIdAndStatus(Integer soundConcentrationId, String status);
+	
+	List<SoundConcentration> findByUserIdAndStatus(Integer userId, String status);
 }
