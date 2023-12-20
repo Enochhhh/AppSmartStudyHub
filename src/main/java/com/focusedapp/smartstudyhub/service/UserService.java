@@ -71,6 +71,18 @@ public class UserService {
 				.orElseThrow(() -> new NotFoundValueException("Not Found User By id: " + id.toString(),
 						"UserService->findByIdAndStatus"));
 	}
+	
+	/**
+	 * Find User By Id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public User findById(Integer userId) {
+		return userDAO.findById(userId)
+				.orElseThrow(() -> new NotFoundValueException("Not Found User By id: " + userId.toString(),
+						"UserService->findById"));
+	}
 
 	/**
 	 * 

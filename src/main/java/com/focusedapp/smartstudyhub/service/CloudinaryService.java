@@ -37,11 +37,11 @@ public class CloudinaryService {
 	UserService userService;
 
 	/**
-	 * Upload avatar User
+	 * Upload file User
 	 * 
 	 * @param file
 	 * @param type
-	 * @param userId
+	 * @param user
 	 * @return
 	 * @throws IOException
 	 */
@@ -109,6 +109,22 @@ public class CloudinaryService {
 		filesDAO.delete(file);
 		
 		return new FilesDTO(file);
+	}
+	
+	/**
+	 * Upload File User Guest
+	 * 
+	 * @param file
+	 * @param type
+	 * @param userId
+	 * @return
+	 * @throws IOException
+	 */
+	public String uploadFileUserGuest(MultipartFile file, String type, Integer userId) throws IOException {
+		
+		// Because User Account that is Deleted or Banned still can upload file to Report
+		User user = userService.findById(userId);
+		return uploadFile(file, type, user);
 	}
 	
 }

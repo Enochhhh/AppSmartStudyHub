@@ -22,7 +22,6 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
-import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.CloudinaryService;
 import com.focusedapp.smartstudyhub.service.FilesService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
@@ -40,7 +39,7 @@ public class FilesController extends BaseController {
 	FilesService filesService;
 
 	/**
-	 * Upload avatar user
+	 * Upload file user
 	 * 
 	 * @param files
 	 * @param type
@@ -122,6 +121,31 @@ public class FilesController extends BaseController {
 		FilesDTO filesDeleted = filesService.deleteCompletelyFilesById(user, filesId);	
 		
 		result.setData(filesDeleted);		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Upload file user Guest
+	 * 
+	 * @param files
+	 * @param type
+	 * @param userId
+	 * @return
+	 * @throws IOException
+	 */
+	@PostMapping("/guest/files/upload")
+	public ResponseEntity<Result<AllResponseTypeDTO>> uploadFile(@RequestParam("files") MultipartFile files,
+			@RequestParam String type, @RequestParam Integer userId) throws IOException {
+
+		Result<AllResponseTypeDTO> result = new Result<>();
+
+		String filesUploaded = cloudinaryService.uploadFileUserGuest(files, type, userId);
+		AllResponseTypeDTO allResponseTypeDTO = new AllResponseTypeDTO();
+		allResponseTypeDTO.setStringType(filesUploaded);
+
+		result.setData(allResponseTypeDTO);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

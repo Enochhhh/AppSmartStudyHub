@@ -579,100 +579,102 @@ public class WorkService {
 		return workSortedList;
 	}
 	
-//	/**
-//	 * Get Time and Number Work Active by type
-//	 * 
-//	 * @param type
-//	 * @return
-//	 */
-//	public WorkResponseDTO getTimeAndNumberWorkActiveByType(Integer userId) {
-//		
-//		List<Work> listWorkActive = workDAO.findByUserIdAndOneOfTwoStatus(userId, EnumStatus.ACTIVE.getValue(), EnumStatus.COMPLETED.getValue());
-//		if (CollectionUtils.isEmpty(listWorkActive)) {
-//			return new WorkResponseDTO(new ArrayList<>());
-//		}
-//		List<WorkDTO> worksConvert = listWorkActive.stream()
-//										.map(w -> new WorkDTO(w))
-//										.collect(Collectors.toList());
-//		
-//		Integer timeWorkToday = 0;
-//		Integer numberWorkActiveToday = 0;
-//		
-//		Integer timeWorkOutOfDate = 0;
-//		Integer numberWorkActiveOutOfDate = 0;
-//		
-//		Integer timeWorkTomorrow = 0;
-//		Integer numberWorkActiveTomorrow = 0;
-//		
-//		Integer timePassedThisWeek = 0;
-//		Integer numberWorkCompletedThisWeek = 0;
-//		
-//		Integer timePassedNext7Day = 0;
-//		Integer numberWorkCompletedNext7Day = 0;
-//		
-//		Integer timePassedSomeDay = 0;
-//		Integer numberWorkCompletedSomeDay= 0;
-//		
-//		Integer timePassedAll = 0;
-//		Integer numberWorkCompletedAll = 0;
-//		
-//		Integer timePassedTaskDefault= 0;
-//		Integer numberWorkCompletedTaskDefault = 0;
-//		
-//		Integer timePassedPlanned = 0;
-//		Integer numberWorkCompletedPlanned = 0;
-//		
-//		for (WorkDTO work : worksConvert) {
-//			if (work.getStatusWork().equals(EnumStatusWork.TODAY.getValue())
-//					|| work.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue())) {
-//				timePassedToday += work.getTimePassed();
-//				if (work.getStatus().equals(numberWorkCompletedPlanned)))
-//			}
-//		}
-//		
-//	
-//		} else if (type.equals(EnumStatusWork.OUTOFDATE.getValue())) {
-//			worksConvert = worksConvert.stream()
-//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue()))
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		} else if (type.equals(EnumStatusWork.TOMORROW.getValue())) {
-//			worksConvert = worksConvert.stream()
-//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.TOMORROW.getValue()))
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		} else if (type.equals(EnumStatusWork.THISWEEK.getValue())) {
-//			worksConvert = worksConvert.stream()
-//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.THISWEEK.getValue()))
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		} else if (type.equals(EnumStatusWork.NEXT7DAY.getValue())) {
-//			worksConvert = worksConvert.stream()
-//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.NEXT7DAY.getValue()))
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		} else if (type.equals(EnumStatusWork.SOMEDAY.getValue())) {
-//			worksConvert = worksConvert.stream()
-//					.filter(w -> w.getStatusWork().equals(EnumStatusWork.SOMEDAY.getValue()))
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		} else if (type.equals(EnumStatusWork.ALL.getValue())) {
-//			worksConvert = worksConvert.stream()
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		} else if (type.equals(EnumStatusWork.TASK_DEFAULT.getValue())){
-//			worksConvert = worksConvert.stream()
-//					.filter(w -> w.getProjectId() == null)
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		} else if (type.equals(EnumStatusWork.PLANNED.getValue())) {
-//			worksConvert = worksConvert.stream()
-//					.filter(w -> !w.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue()) 
-//							&& !w.getStatusWork().equals(EnumStatusWork.SOMEDAY.getValue()))
-//					.sorted(comparator.reversed())
-//					.collect(Collectors.toList());
-//		}
-//		return new WorkResponseDTO(worksConvert);
-//	}
+	/**
+	 * Get Time and Number Work Active by type
+	 * 
+	 * @param type
+	 * @return
+	 */
+	/*
+	public WorkResponseDTO getTimeAndNumberWorkActiveByType(Integer userId) {
+		
+		List<Work> listWorkActive = workDAO.findByUserIdAndOneOfTwoStatus(userId, EnumStatus.ACTIVE.getValue(), EnumStatus.COMPLETED.getValue());
+		if (CollectionUtils.isEmpty(listWorkActive)) {
+			return new WorkResponseDTO(new ArrayList<>());
+		}
+		List<WorkDTO> worksConvert = listWorkActive.stream()
+										.map(w -> new WorkDTO(w))
+										.collect(Collectors.toList());
+		
+		Integer timeWorkToday = 0;
+		Integer numberWorkActiveToday = 0;
+		
+		Integer timeWorkOutOfDate = 0;
+		Integer numberWorkActiveOutOfDate = 0;
+		
+		Integer timeWorkTomorrow = 0;
+		Integer numberWorkActiveTomorrow = 0;
+		
+		Integer timePassedThisWeek = 0;
+		Integer numberWorkCompletedThisWeek = 0;
+		
+		Integer timePassedNext7Day = 0;
+		Integer numberWorkCompletedNext7Day = 0;
+		
+		Integer timePassedSomeDay = 0;
+		Integer numberWorkCompletedSomeDay= 0;
+		
+		Integer timePassedAll = 0;
+		Integer numberWorkCompletedAll = 0;
+		
+		Integer timePassedTaskDefault= 0;
+		Integer numberWorkCompletedTaskDefault = 0;
+		
+		Integer timePassedPlanned = 0;
+		Integer numberWorkCompletedPlanned = 0;
+		
+		for (WorkDTO work : worksConvert) {
+			if (work.getStatusWork().equals(EnumStatusWork.TODAY.getValue())
+					|| work.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue())) {
+				timePassedToday += work.getTimePassed();
+				if (work.getStatus().equals(numberWorkCompletedPlanned)))
+			}
+		}
+		
+	
+		} else if (type.equals(EnumStatusWork.OUTOFDATE.getValue())) {
+			worksConvert = worksConvert.stream()
+					.filter(w -> w.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue()))
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		} else if (type.equals(EnumStatusWork.TOMORROW.getValue())) {
+			worksConvert = worksConvert.stream()
+					.filter(w -> w.getStatusWork().equals(EnumStatusWork.TOMORROW.getValue()))
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		} else if (type.equals(EnumStatusWork.THISWEEK.getValue())) {
+			worksConvert = worksConvert.stream()
+					.filter(w -> w.getStatusWork().equals(EnumStatusWork.THISWEEK.getValue()))
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		} else if (type.equals(EnumStatusWork.NEXT7DAY.getValue())) {
+			worksConvert = worksConvert.stream()
+					.filter(w -> w.getStatusWork().equals(EnumStatusWork.NEXT7DAY.getValue()))
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		} else if (type.equals(EnumStatusWork.SOMEDAY.getValue())) {
+			worksConvert = worksConvert.stream()
+					.filter(w -> w.getStatusWork().equals(EnumStatusWork.SOMEDAY.getValue()))
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		} else if (type.equals(EnumStatusWork.ALL.getValue())) {
+			worksConvert = worksConvert.stream()
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		} else if (type.equals(EnumStatusWork.TASK_DEFAULT.getValue())){
+			worksConvert = worksConvert.stream()
+					.filter(w -> w.getProjectId() == null)
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		} else if (type.equals(EnumStatusWork.PLANNED.getValue())) {
+			worksConvert = worksConvert.stream()
+					.filter(w -> !w.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue()) 
+							&& !w.getStatusWork().equals(EnumStatusWork.SOMEDAY.getValue()))
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+		}
+		return new WorkResponseDTO(worksConvert);
+	}
+	*/
 
 }

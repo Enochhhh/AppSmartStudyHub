@@ -2,7 +2,8 @@ package com.focusedapp.smartstudyhub.util.enumerate;
 
 public enum EnumTypeReport {
 	HELP("HELP"),
-	REPORT("REPORT"),
+	REPORTPROBLEM("REPORTPROBLEM"),
+	REPORTUSER("REPORTUSER"),
 	FEEDBACK("FEEDBACK");
 	
 	private final String value;

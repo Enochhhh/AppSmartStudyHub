@@ -17,12 +17,14 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @JsonInclude(value = Include.NON_NULL)
 @Entity
 @Table(name = "report")
@@ -32,7 +34,7 @@ public class Report implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	
 	@Column(name = "email", length = 50)
 	private String email;
@@ -59,6 +61,9 @@ public class Report implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	
+	@Column(name = "url_file")
+	private String urlFile;
 	
 	private String status;
 	
