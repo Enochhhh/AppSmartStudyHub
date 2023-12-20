@@ -67,6 +67,7 @@ create table report(
     status_report text,
     created_date datetime,
     type_report nvarchar(50),
+    url_file text,
     status text,
 	constraint ReportPrimaryKey primary key(id),
     constraint ReportUserIdForeignKey foreign key(user_id) references users(id)
