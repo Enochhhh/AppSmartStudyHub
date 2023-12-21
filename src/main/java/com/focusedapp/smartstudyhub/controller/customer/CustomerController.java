@@ -1,4 +1,4 @@
-package com.focusedapp.smartstudyhub.controller;
+package com.focusedapp.smartstudyhub.controller.customer;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.focusedapp.smartstudyhub.controller.BaseController;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;

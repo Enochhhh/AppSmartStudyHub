@@ -60,7 +60,7 @@ public class SecurityConfiguration {
 					.permitAll()
 					.requestMatchers("/mobile/v1/user/customer/**").hasAnyRole("CUSTOMER", "PREMIUM")
 					.requestMatchers("/mobile/v1/user/premium/**").hasAnyRole("PREMIUM")
-					.requestMatchers("/mobile/v1/user/admin/**").hasAnyRole("ADMIN")
+					.requestMatchers("/mobile/v1/admin/**").hasAnyRole("ADMIN")
 					.anyRequest()
 					.authenticated())
 			.formLogin(f -> f.disable())

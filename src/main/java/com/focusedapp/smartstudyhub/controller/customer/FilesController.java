@@ -1,4 +1,4 @@
-package com.focusedapp.smartstudyhub.controller;
+package com.focusedapp.smartstudyhub.controller.customer;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.focusedapp.smartstudyhub.controller.BaseController;
 import com.focusedapp.smartstudyhub.model.Files;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;

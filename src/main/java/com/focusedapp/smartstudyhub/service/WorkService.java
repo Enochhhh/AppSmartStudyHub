@@ -277,6 +277,7 @@ public class WorkService {
 				});
 		}
 		workDb.setStatus(EnumStatus.COMPLETED.getValue());
+		workDb.setIsRepeated(false);
 		workDb.setEndTime(new Date());
 		if (workDb.getStartTime() == null) {
 			workDb.setStartTime(new Date());
