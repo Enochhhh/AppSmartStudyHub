@@ -1,7 +1,11 @@
 package com.focusedapp.smartstudyhub.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +19,7 @@ import com.focusedapp.smartstudyhub.model.OtpCode;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
+import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
@@ -36,6 +41,8 @@ public class UserService {
 	OtpCodeService otpCodeService;
 	@Autowired
 	FilesService filesService;
+	@Autowired
+	PomodoroService pomodoroService;
 
 	/**
 	 * 
@@ -447,6 +454,80 @@ public class UserService {
 		user.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
 		userDAO.save(user);
 		return new UserDTO(user);
+	}
+	
+	/**
+	 * Rank By Focus All Time
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public RankUserFocusDTO rankByTimeFocusAllTime(Integer userId) {
+		
+		User user = findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		
+		Comparator<User> comparator = Comparator.comparing(User::getTotalTimeFocus,
+                Comparator.nullsFirst(Comparator.naturalOrder()));
+		
+		List<User> users = userDAO.findByStatus(EnumStatus.ACTIVE.getValue());
+		users = users.stream()
+				.sorted(comparator.reversed())
+				.collect(Collectors.toList());
+		
+		Integer rank = 0;
+		List<UserDTO> usersResponse = new ArrayList<>();
+		UserDTO userCurrent = null;
+		for (User userItem : users) {			
+			UserDTO temp = new UserDTO(++rank, userItem);
+			usersResponse.add(temp);	
+			if (userItem.getId().equals(user.getId())) {
+				userCurrent = temp;
+			} 
+		}
+		
+		return new RankUserFocusDTO(userCurrent, usersResponse);
+	}
+	
+	/**
+	 * Rank By Focus Previous Month
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public RankUserFocusDTO rankByTimeFocusPreviousMonth(Integer userId) {
+		
+		User user = findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+		
+		Comparator<User> comparator = Comparator.comparing(User::getTotalTimeFocus,
+                Comparator.nullsFirst(Comparator.naturalOrder()));
+		
+		List<User> users = userDAO.findByStatus(EnumStatus.ACTIVE.getValue());
+		
+		// Calculate Total Time Focus Previous Month
+		users.stream().forEach(u -> {
+			Long datemi = new Date().getTime();
+			Long miliAbstract = 30L * 24L * 3600L * 1000L;
+			Long dateMili = datemi - miliAbstract;
+			Integer totalTimeFocusPreMonth = pomodoroService.calculateTotalTimeFocusPreviousMonth(u, new Date(dateMili));
+			u.setTotalTimeFocus(totalTimeFocusPreMonth);
+		});
+		
+		users = users.stream()
+				.sorted(comparator.reversed())
+				.collect(Collectors.toList());
+		
+		Integer rank = 0;
+		List<UserDTO> usersResponse = new ArrayList<>();
+		UserDTO userCurrent = null;
+		for (User userItem : users) {			
+			UserDTO temp = new UserDTO(++rank, userItem);
+			usersResponse.add(temp);	
+			if (userItem.getId().equals(user.getId())) {
+				userCurrent = temp;
+			} 
+		}
+		
+		return new RankUserFocusDTO(userCurrent, usersResponse);
 	}
 	
 }

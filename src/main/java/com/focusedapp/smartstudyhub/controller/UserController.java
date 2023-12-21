@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
+import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.UserService;
@@ -95,6 +97,44 @@ public class UserController extends BaseController {
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Rank By Time Focus All Time
+	 * 
+	 * @return
+	 */
+	@GetMapping("/rank-by-focus-all-time")
+	public ResponseEntity<Result<RankUserFocusDTO>> rankByTimeFocusAllTime(@RequestParam Integer userId) {
+
+		Result<RankUserFocusDTO> result = new Result<>();
+
+		RankUserFocusDTO rankResponse = userService.rankByTimeFocusAllTime(userId);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		result.setData(rankResponse);
+
+		return createResponseEntity(result);
+
+	}
+	
+	/**
+	 * Rank By Time Focus Previous Month
+	 * 
+	 * @return
+	 */
+	@GetMapping("/rank-by-focus-previous-month")
+	public ResponseEntity<Result<RankUserFocusDTO>> rankByTimeFocusPreviousMonth(@RequestParam Integer userId) {
+
+		Result<RankUserFocusDTO> result = new Result<>();
+
+		RankUserFocusDTO rankResponse = userService.rankByTimeFocusPreviousMonth(userId);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		result.setData(rankResponse);
+
+		return createResponseEntity(result);
+
 	}
 
 }

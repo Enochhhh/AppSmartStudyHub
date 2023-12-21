@@ -129,4 +129,15 @@ public class PomodoroService {
 		pomodoroDAO.delete(pomodoro);
 		return new PomodoroDTO(pomodoro);
 	}
+	
+	/**
+	 * Calculate Total Time Focus Previous Month
+	 * 
+	 * @param userId
+	 * @param date
+	 * @return
+	 */
+	public Integer calculateTotalTimeFocusPreviousMonth(User user, Date date) {
+		return pomodoroDAO.calculateTotalTimeFocusPreviousMonth(user, date);
+	}
 }

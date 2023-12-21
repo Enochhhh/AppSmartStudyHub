@@ -37,6 +37,24 @@ public class UserDTO implements Serializable {
 		this.totalTimeFocus = user.getTotalTimeFocus();
 	}
 	
+	public UserDTO(Integer rank, User user) {
+		this.rank = rank;
+		this.id = user.getId();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.email = user.getEmail();
+		this.role = user.getRole();
+		this.createdAt = user.getCreatedAt().getTime();
+		this.phoneNumber = user.getPhoneNumber();
+		this.address = user.getAddress();
+		this.dateOfBirth = user.getDateOfBirth() != null ? user.getDateOfBirth().getTime() : null;
+		this.country = user.getCountry();
+		this.imageUrl = user.getImageUrl();
+		
+		this.totalTimeFocus = user.getTotalTimeFocus();
+	}
+	
+	private Integer rank;
 	private Integer id;
 	private String firstName;
 	private String lastName;

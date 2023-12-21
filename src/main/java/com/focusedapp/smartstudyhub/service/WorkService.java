@@ -31,6 +31,7 @@ import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
 import com.focusedapp.smartstudyhub.util.comparator.SortByPriorityComparator;
 import com.focusedapp.smartstudyhub.util.comparator.SortByProjectNameComparator;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumPriority;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumSortType;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
@@ -108,7 +109,7 @@ public class WorkService {
 				.workName(dataCreate.getWorkName())
 				.dueDate(dataCreate.getDueDate() == null ? null : new Date(dataCreate.getDueDate()))
 				.timeWillStart(dataCreate.getTimeWillStart() == null ? null : new Date(dataCreate.getTimeWillStart()))
-				.priority(dataCreate.getPriority())
+				.priority(dataCreate.getPriority() == null ? EnumPriority.NONE.getValue() : dataCreate.getPriority())
 				.numberOfPomodoros(dataCreate.getNumberOfPomodoros() == null ? 0 : dataCreate.getNumberOfPomodoros())
 				.timeOfPomodoro(dataCreate.getTimeOfPomodoro() == null ? 25 : dataCreate.getTimeOfPomodoro())
 				.isRemindered(Boolean.FALSE)
