@@ -242,37 +242,6 @@ public class FolderController extends BaseController {
 	}
 	
 	/**
-	 * Mark Completed Folder Controller
-	 * 
-	 * @param folderId
-	 * @return
-	 */
-	@PutMapping("/mark-completed/{folderId}")
-	public ResponseEntity<Result<FolderDTO>> markCompleted(@PathVariable Integer folderId) {
-		Result<FolderDTO> result = new Result<>();
-		
-		if (folderId == null || folderId < 1) {
-			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
-			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-			result.getMeta().setDetails("Folder Id Invalid!");
-			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
-		}
-		
-		FolderDTO folderMarked = folderService.markCompleted(folderId);
-		
-		if (folderMarked == null) {
-			result.getMeta().setStatusCode(StatusCode.MARK_COMPLETED_FOLDER_FAILURE.getCode());
-			result.getMeta().setMessage(StatusCode.MARK_COMPLETED_FOLDER_FAILURE.getMessage());
-			return createResponseEntity(result, HttpStatus.FORBIDDEN);
-		}
-		
-		result.setData(folderMarked);
-		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
-		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-		return createResponseEntity(result);
-	}
-	
-	/**
 	 * Recover Folder Controller
 	 * 
 	 * @param folderId
@@ -298,32 +267,6 @@ public class FolderController extends BaseController {
 		}
 		
 		result.setData(folderRecovered);
-		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
-		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-		return createResponseEntity(result);
-	}
-	
-	/**
-	 * Get Folder Completed
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	@GetMapping("/get-folder-completed")
-	public ResponseEntity<Result<List<FolderDTO>>> getFolderCompletedOfUser(@RequestParam Integer userId) {
-		
-		Result<List<FolderDTO>> result = new Result<>();
-		
-		if (userId == null || userId < 1) {
-			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
-			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-			result.getMeta().setDetails("User Id Invalid!");
-			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
-		}
-		
-		List<FolderDTO> folderCompleted = folderService.getFolderCompletedOfUser(userId);
-		
-		result.setData(folderCompleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);

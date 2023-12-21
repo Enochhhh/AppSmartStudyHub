@@ -221,37 +221,6 @@ public class FolderService {
 	}
 	
 	/**
-	 * Mark Completed Folder
-	 * 
-	 * @param folderId
-	 * @return
-	 */
-	public FolderDTO markCompleted(Integer folderId) {
-		
-		Optional<Folder> folderOpt = folderDAO.findByIdAndStatus(folderId, EnumStatus.ACTIVE.getValue());
-		if (folderOpt.isEmpty()) {
-			return null;
-		}
-		Folder folder = folderOpt.get();
-		List<Project> projects = folder.getProjects();
-		
-		if (projects != null) {
-			projects.stream()
-				.forEach(p -> {
-					if (p.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-						projectService.markCompleted(p.getId());
-					}
-				});
-		}
-		
-		folder.setStatus(EnumStatus.COMPLETED.getValue());
-		
-		folder = folderDAO.save(folder);
-		
-		return new FolderDTO(folder);
-	}
-	
-	/**
 	 * Recover Folder
 	 * 
 	 * @param folderId
@@ -302,22 +271,6 @@ public class FolderService {
 	public Folder findById(Integer id) {
 		return folderDAO.findById(id)
 					.orElseThrow(() -> new NotFoundValueException("Not found Folder by Id!", "FolderService -> findById"));
-	}
-	
-	/**
-	 * Get Folder Completed of User
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public List<FolderDTO> getFolderCompletedOfUser(Integer userId) {
-		
-		List<Folder> foldersDb = folderDAO.findByUserIdAndStatus(userId, EnumStatus.COMPLETED.getValue());
-		
-		return foldersDb.stream()
-				.map(f -> new FolderDTO(f))
-				.collect(Collectors.toList());	
-		
 	}
 	
 	/**

@@ -73,6 +73,12 @@ public class UserController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Delete User Guest
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	@DeleteMapping("/delete/{userId}")
 	public ResponseEntity<Result<UserDTO>> deleteUserGuest(@PathVariable Integer userId) {
 		Result<UserDTO> result = new Result<>();
