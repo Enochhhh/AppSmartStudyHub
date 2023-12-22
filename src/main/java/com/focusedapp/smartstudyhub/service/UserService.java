@@ -607,7 +607,7 @@ public class UserService {
 		user.setDateOfBirth(request.getDateOfBirth() != null ? new Date() : new Date(request.getDateOfBirth()));
 		user.setCountry(request.getCountry());
 		user.setImageUrl(request.getImageUrl());
-		user.setStatus(request.getStatus());
+		user.setRole(request.getRole());
 			
 		persistent(user);
 		

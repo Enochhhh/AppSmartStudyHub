@@ -53,7 +53,7 @@ public class AdminUserController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
-	@PutMapping("/update-user")
+	@PutMapping("/update")
 	public ResponseEntity<Result<UserAdminCreatedDTO>> updateUser(@RequestBody UserAdminCreatedDTO request) {
 		Result<UserAdminCreatedDTO> result = new Result<>();
 		if (request == null) {
