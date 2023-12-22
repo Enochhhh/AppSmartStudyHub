@@ -2,7 +2,7 @@ package com.focusedapp.smartstudyhub.util.enumerate;
 
 public enum EnumRole {
 	
-	ADMIN("ADD"),
+	ADMIN("ADMIN"),
 	CUSTOMER("CUSTOMER"),
 	PREMIUM("PREMIUM"),
 	GUEST("GUEST");

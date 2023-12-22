@@ -609,10 +609,58 @@ public class UserService {
 		user.setImageUrl(request.getImageUrl());
 		user.setRole(request.getRole());
 			
-		persistent(user);
-		
-		return request;
+		persistent(user);	
+		return new UserAdminCreatedDTO(user);
+	}
+	
+	/**
+	 * Mark Status User Admin
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public UserAdminCreatedDTO markStatus(UserAdminCreatedDTO request) {
 
+		User user = findById(request.getId());
+		user.setStatus(request.getStatus());
+		if (user.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+			user.setTimeAdminModified(null);
+		} else if (user.getStatus().equals(EnumStatus.DELETED.getValue())
+				|| user.getStatus().equals(EnumStatus.BANNED.getValue())) {
+			user.setTimeAdminModified(new Date());
+		}		
+		persistent(user);	
+		return new UserAdminCreatedDTO(user);
+	}
+	
+	/**
+	 * Mark Status User Admin
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public List<UserAdminCreatedDTO> getAll() {
+
+		List<User> users = userDAO.findByRoleNot(EnumRole.ADMIN.getValue());	
+		return users.stream()
+				.map(u -> new UserAdminCreatedDTO(u))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Delete User by Admin
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public UserAdminCreatedDTO adminDeleteById(Integer id) {
+		
+		User user = userDAO.findById(id).orElseThrow(
+				() -> new NotFoundValueException("Not Found the user to delete", "UserService->adminDeleteById"));
+		// Delete All Files of User
+		userDAO.delete(user);
+
+		return new UserAdminCreatedDTO(user);
 	}
 	
 }

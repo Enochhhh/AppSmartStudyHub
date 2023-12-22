@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.Tag;
 import com.focusedapp.smartstudyhub.model.User;
@@ -54,6 +56,7 @@ public class WorkDTO implements Serializable {
 	private String statusWork;
 	private Long createdDate;
 	private List<ExtraWorkDTO> extraWorks;
+	private List<ExtraWorkDTO> extraWorksDeleted;
 	private List<TagDTO> tags;
 	
 	public WorkDTO(Work work) {
@@ -130,11 +133,21 @@ public class WorkDTO implements Serializable {
 		}
 		this.numberOfPomodorosDone = work.getNumberOfPomodorosDone();
 		this.createdDate = work.getCreatedDate().getTime();
+		this.extraWorks = new ArrayList<>();
+		this.extraWorksDeleted = new ArrayList<>();
 		if (work.getExtraWorks() != null) {
-			this.extraWorks = work.getExtraWorks().stream()
-					.filter(ew -> !ew.getStatus().equals(EnumStatus.DELETED.getValue()))				
-					.map(ew -> new ExtraWorkDTO(ew))
-					.collect(Collectors.toList());
+//			this.extraWorks = work.getExtraWorks().stream()
+//					.filter(ew -> !ew.getStatus().equals(EnumStatus.DELETED.getValue()))				
+//					.map(ew -> new ExtraWorkDTO(ew))
+//					.collect(Collectors.toList());
+			List<ExtraWork> listExtra = work.getExtraWorks();
+			for (ExtraWork extra : listExtra) {
+				if (extra.getStatus().equals(EnumStatus.DELETED.getValue())) {
+					this.extraWorksDeleted.add(new ExtraWorkDTO(extra));
+				} else {
+					this.extraWorks.add(new ExtraWorkDTO(extra));
+				}
+			}
 		}
 		
 		List<Tag> tagListEntity = work.getTags();

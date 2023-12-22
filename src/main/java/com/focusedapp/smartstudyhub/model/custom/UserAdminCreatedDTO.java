@@ -1,9 +1,13 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +39,29 @@ public class UserAdminCreatedDTO implements Serializable  {
 	private String provider;
 	private Long createdAt;
 	private String status;
-	private Integer totalDateDeletedOrBanned;
+	private Long totalDateDeletedOrBanned;
+	
+	public UserAdminCreatedDTO(User user) {
+		this.id = user.getId();
+		this.userName = user.getUserName();
+		this.password = null;
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.email = user.getEmail();
+		this.phoneNumber = user.getPhoneNumber();
+		this.address = user.getAddress();
+		this.dateOfBirth = user.getDateOfBirth() != null ? user.getDateOfBirth().getTime() : null;
+		this.country = user.getCountry();
+		this.imageUrl = user.getImageUrl();
+		this.totalTimeFocus = user.getTotalTimeFocus();
+		this.role = user.getRole();
+		this.provider = user.getProvider();
+		this.createdAt = user.getCreatedAt() != null ? user.getCreatedAt().getTime() : null;
+		this.status = user.getStatus();
+		this.totalDateDeletedOrBanned = 0L;
+		if (user.getTimeAdminModified() != null) {
+			this.totalDateDeletedOrBanned = MethodUtils.distanceBetweenTwoDate(user.getTimeAdminModified(), new Date(),  TimeUnit.DAYS);
+		}
+	}
 
 }
