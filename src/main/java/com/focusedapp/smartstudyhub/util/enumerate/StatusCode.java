@@ -51,7 +51,10 @@ public enum StatusCode {
 	MARK_COMPLETED_EXTRAWORK_FAILURE("8_2_f", "Mark Completed Extra Work Failure!"),
 	RECOVER_EXTRAWORK_FAILURE("8_3_f", "Recover Extra Work Failure!"),
 	/* TAG */
-	DELETE_TAG_FAILURE("9_1_f", "Mark Deleted Tag Failure!");
+	DELETE_TAG_FAILURE("9_1_f", "Mark Deleted Tag Failure!"),
+	
+	// Admin - featureCode: 10
+	CREATE_USER_FAILURE("10_1_f", "Create User Failure!");
 	
 	private final String code;
 	private final String message;

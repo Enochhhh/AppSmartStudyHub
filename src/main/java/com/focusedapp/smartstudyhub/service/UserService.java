@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,13 @@ import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.dao.UserDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.exception.OTPCodeInvalidException;
+import com.focusedapp.smartstudyhub.exception.ValueExistedException;
 import com.focusedapp.smartstudyhub.model.OtpCode;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
 import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
+import com.focusedapp.smartstudyhub.model.custom.UserAdminCreatedDTO;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
@@ -528,6 +532,60 @@ public class UserService {
 		}
 		
 		return new RankUserFocusDTO(userCurrent, usersResponse);
+	}
+	
+	/**
+	 * Admin: Create User
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public UserAdminCreatedDTO createUser(UserAdminCreatedDTO request) {
+
+		if (existsByUserName(request.getEmail()) 
+				|| existsByEmailAndProviderLocal(request.getEmail())) {
+			throw new ValueExistedException("Email Invalid or Existed", "UserService -> createUser");
+		}
+		String passwordGenerated = RandomStringUtils.randomAlphabetic(10);
+		request.setPassword(passwordGenerated);
+		User user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
+				.userName(request.getEmail())
+				.email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).createdAt(new Date())
+				.role(request.getRole())
+				.phoneNumber(request.getPhoneNumber())
+				.address(request.getAddress())
+				.dateOfBirth(request.getDateOfBirth() != null ? new Date() : new Date(request.getDateOfBirth()))
+				.country(request.getCountry())
+				.provider(Provider.LOCAL.getValue())
+				.imageUrl(StringUtils.isBlank(request.getImageUrl()) ? ConstantUrl.DEFAULT_IMAGE : request.getImageUrl())
+				.status(EnumStatus.ACTIVE.getValue())
+				.build();
+		persistent(user);
+		sendNewAccountToEmailUser(request.getEmail(), request);
+		
+		return request;
+
+	}
+	
+	/**
+	 * Send New Account to Email
+	 * 
+	 * @param request
+	 */
+	public void sendNewAccountToEmailUser(String email, UserAdminCreatedDTO request) {
+
+		String subject = "Smart Study Hub send to you the new account: ";
+		StringBuilder body = new StringBuilder();
+		body.append("<b>Full Name: </b>");
+		body.append(request.getLastName());
+		body.append(" "); body.append(request.getFirstName());
+		body.append("<br> <b>Email Login: </b>"); 
+		body.append(request.getEmail());
+		body.append("<br> <b>Password: </b>");
+		body.append(request.getPassword());
+		body.append("<br> <b>Please change your account password immediately to ensure the security of your account</b> <br>"); 
+		
+		mailSenderService.sendEmail(email, subject, body.toString());
 	}
 	
 }
