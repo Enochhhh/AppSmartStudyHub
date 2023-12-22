@@ -164,7 +164,7 @@ public class WorkService {
 		workDb.setNote(dataUpdate.getNote());	
 		workDb.setAssignee(dataUpdate.getAssigneeId() == null ? null : 
 					userService.findByIdAndStatus(dataUpdate.getAssigneeId(), EnumStatus.ACTIVE.getValue()));
-		workDb.setNumberOfPomodorosDone(dataUpdate.getNumberOfPomodorosDone());
+		// workDb.setNumberOfPomodorosDone(dataUpdate.getNumberOfPomodorosDone());
 		if (dataUpdate.getStartTime() != null) {
 			workDb.setStartTime(new Date(dataUpdate.getStartTime()));
 		}

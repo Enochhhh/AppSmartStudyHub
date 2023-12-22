@@ -34,5 +34,7 @@ public class UserAdminCreatedDTO implements Serializable  {
 	private String role;
 	private String provider;
 	private Long createdAt;
+	private String status;
+	private Integer totalDateDeletedOrBanned;
 
 }

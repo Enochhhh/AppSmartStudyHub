@@ -85,6 +85,10 @@ public class User implements Serializable {
 	
 	private String provider;
 	
+	@Column(name = "time_admin_modified")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timeAdminModified;
+	
 	@OneToMany(mappedBy = "userManager", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ManageUser> userManagers;
 	

@@ -588,4 +588,31 @@ public class UserService {
 		mailSenderService.sendEmail(email, subject, body.toString());
 	}
 	
+	/**
+	 * Update User
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public UserAdminCreatedDTO updateUser(UserAdminCreatedDTO request) {
+
+		User user = findById(request.getId());
+
+		user.setFirstName(request.getFirstName());
+		user.setLastName(request.getLastName());
+		user.setUserName(request.getEmail());
+		user.setEmail(request.getEmail());
+		user.setPhoneNumber(request.getPhoneNumber());
+		user.setAddress(request.getAddress());
+		user.setDateOfBirth(request.getDateOfBirth() != null ? new Date() : new Date(request.getDateOfBirth()));
+		user.setCountry(request.getCountry());
+		user.setImageUrl(request.getImageUrl());
+		user.setStatus(request.getStatus());
+			
+		persistent(user);
+		
+		return request;
+
+	}
+	
 }
