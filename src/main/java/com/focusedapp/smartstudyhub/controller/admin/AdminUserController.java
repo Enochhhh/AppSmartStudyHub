@@ -53,21 +53,21 @@ public class AdminUserController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
-	@PutMapping("/update-user")
-	public ResponseEntity<Result<UserAdminCreatedDTO>> updateUser(@RequestBody UserAdminCreatedDTO request) {
-		Result<UserAdminCreatedDTO> result = new Result<>();
-		if (request == null) {
-			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
-			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
-		}
-		UserAdminCreatedDTO data = userService.updateUser(request);
-	
-		result.setData(data);
-		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
-		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-
-		return createResponseEntity(result);
-	}
+//	@PutMapping("/update-user")
+//	public ResponseEntity<Result<UserAdminCreatedDTO>> updateUser(@RequestBody UserAdminCreatedDTO request) {
+//		Result<UserAdminCreatedDTO> result = new Result<>();
+//		if (request == null) {
+//			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+//			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+//			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+//		}
+//		UserAdminCreatedDTO data = userService.updateUser(request);
+//	
+//		result.setData(data);
+//		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+//		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+//
+//		return createResponseEntity(result);
+//	}
 	
 }
