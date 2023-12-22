@@ -138,7 +138,7 @@ public class WorkService {
 
 		Work workDb = workDAO.findById(dataUpdate.getId())
 				.orElseThrow();
-		Optional<Project> projectOtp = projectDAO.findByIdAndStatus(dataUpdate.getProjectId(), EnumStatus.ACTIVE.getValue());
+		Optional<Project> projectOtp = projectDAO.findById(dataUpdate.getProjectId());
 		Project project = null;
 		if (!projectOtp.isEmpty()) {
 			project = projectOtp.get();

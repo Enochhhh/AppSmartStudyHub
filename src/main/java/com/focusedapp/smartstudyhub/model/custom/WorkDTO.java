@@ -104,10 +104,12 @@ public class WorkDTO implements Serializable {
 		// Handle set status work
 		if (work.getDueDate() == null) {
 			this.statusWork = EnumStatusWork.SOMEDAY.getValue();
-		} else {
+		} else {			
 			this.dueDate = work.getDueDate().getTime();
 			Date nowDate = new Date();
-			Long distanceOfTwoDate = MethodUtils.distanceBetweenTwoDate(nowDate, work.getDueDate(), TimeUnit.DAYS);		
+			Date dueDateTimeZone = MethodUtils.convertoToDateTimeZone(work.getDueDate());
+			Date nowDateTimeZone = MethodUtils.convertoToDateTimeZone(nowDate);
+			Long distanceOfTwoDate = MethodUtils.distanceBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, TimeUnit.DAYS);		
 			
 			// Convert to LocalDate Timezone VietNam to get DayOfWeek Exactly
 			LocalDateTime dateTimeZone = MethodUtils.convertoToLocalDateTime(nowDate);
