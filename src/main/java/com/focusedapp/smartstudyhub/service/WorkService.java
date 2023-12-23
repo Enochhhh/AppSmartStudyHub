@@ -138,11 +138,15 @@ public class WorkService {
 
 		Work workDb = workDAO.findById(dataUpdate.getId())
 				.orElseThrow();
-		Optional<Project> projectOtp = projectDAO.findById(dataUpdate.getProjectId());
 		Project project = null;
-		if (!projectOtp.isEmpty()) {
-			project = projectOtp.get();
+		if (dataUpdate.getProjectId() != null) {
+			Optional<Project> projectOtp = projectDAO.findById(dataUpdate.getProjectId());
+
+			if (!projectOtp.isEmpty()) {
+				project = projectOtp.get();
+			}
 		}
+		
 		List<TagDTO> tagsReq = dataUpdate.getTags();
 		List<Integer> tagIds = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(tagsReq)) {
