@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -152,6 +154,7 @@ public class SoundDoneController extends BaseController {
 	 * @return
 	 * @throws IOException
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	@DeleteMapping("/premium/sounddone/delete/{soundDoneId}")
 	public ResponseEntity<Result<SoundDoneDTO>> deleteSoundDoneOfPremiumUser(@PathVariable Integer soundDoneId) 
 			throws IOException{

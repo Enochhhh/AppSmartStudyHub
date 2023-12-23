@@ -82,6 +82,14 @@ public class ProjectController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Projects Of User by Folder and status
+	 * 
+	 * @param userId
+	 * @param folderId
+	 * @param status
+	 * @return
+	 */
 	@GetMapping("/get-by-user-folder-status")
 	public ResponseEntity<Result<List<ProjectDTO>>> getProjectsOfUserByFolderAndSatus(@RequestParam Integer userId, @RequestParam Integer folderId,
 			@RequestParam String status) {

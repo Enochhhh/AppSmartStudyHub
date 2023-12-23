@@ -1,5 +1,6 @@
 package com.focusedapp.smartstudyhub.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -35,18 +36,45 @@ public class UserService {
 
 	@Autowired
 	UserDAO userDAO;
+	
 	@Autowired
 	MailSenderService mailSenderService;
+	
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	
 	@Autowired
 	JwtService jwtService;
+	
 	@Autowired
 	OtpCodeService otpCodeService;
+	
 	@Autowired
 	FilesService filesService;
+	
 	@Autowired
 	PomodoroService pomodoroService;
+	
+	@Autowired
+	FolderService folderService;
+	
+	@Autowired
+	ProjectService projectService;
+	
+	@Autowired
+	WorkService workService;
+	
+	@Autowired
+	TagService tagService;
+	
+	@Autowired
+	ThemeService themeService;
+	
+	@Autowired
+	SoundConcentrationService soundConcentrationService;
+	
+	@Autowired
+	SoundDoneService soundDoneService;
 
 	/**
 	 * 
@@ -661,6 +689,27 @@ public class UserService {
 		userDAO.delete(user);
 
 		return new UserAdminCreatedDTO(user);
+	}
+	
+	/**
+	 * 
+	 * Clean Data User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public void cleanData(Integer userId) throws IOException {
+		
+		User user = findById(userId);
+		folderService.deleteAllFolderOfUser(user);
+		projectService.deleteAllProjectOfUser(user);
+		workService.deleteAllWorksOfUser(user);
+		pomodoroService.deleteAllPomodorosOfUser(user);
+		tagService.deleteAllTagsOfUser(user);
+		themeService.deleteAllThemesOfUser(user);
+		soundConcentrationService.deleteAllSoundsConcentrationOfUser(user);
+		soundDoneService.deleteAllSoundsDoneOfUser(user);;
+		filesService.deleteAllFilesUser(user);
 	}
 	
 }

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 
 @Repository
@@ -33,5 +35,7 @@ public interface WorkDAO extends JpaRepository<Work, Integer> {
 	List<Work> findByUserIdAndPriorityAndOneOfTwoStatus(@Param("userId") Integer userId, @Param("priority") String priority, 
 			@Param("statusFirst") String statusFirst, 
 			@Param("statusSecond") String statusSecond);
+	
+	void deleteByUser(User user);
 
 }

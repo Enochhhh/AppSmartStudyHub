@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.Folder;
+import com.focusedapp.smartstudyhub.model.User;
 
 @Repository
 public interface FolderDAO extends JpaRepository<Folder, Integer> {
@@ -21,5 +22,7 @@ public interface FolderDAO extends JpaRepository<Folder, Integer> {
 	Optional<Folder> findByIdAndStatus(Integer id, String status);
 	
 	List<Folder> findByFolderNameContainingAndUserIdAndStatus(String keySearch, Integer userId, String status);
+	
+	void deleteByUser(User user);
 	
 }

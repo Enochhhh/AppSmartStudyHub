@@ -291,4 +291,13 @@ public class FolderService {
 					.collect(Collectors.toList());
 	}
 	
+	/**
+	 * Delete All Folders of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllFolderOfUser(User user) {
+		folderDAO.deleteByUser(user);
+	}
+	
 }

@@ -119,6 +119,12 @@ public class AuthenticationController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Forgot Password
+	 * 
+	 * @param authenticationDTO
+	 * @return
+	 */
 	@PostMapping("/forgot-password")
 	public ResponseEntity<Result<Object>> changePassword(@RequestBody AuthenticationDTO authenticationDTO) {
 
@@ -139,6 +145,12 @@ public class AuthenticationController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Check Email Exist
+	 * 
+	 * @param authenticationDTO
+	 * @return
+	 */
 	@PostMapping("/check-email-exist")
 	public ResponseEntity<Result<Boolean>> checkEmailExist(@RequestBody AuthenticationDTO authenticationDTO) {
 		

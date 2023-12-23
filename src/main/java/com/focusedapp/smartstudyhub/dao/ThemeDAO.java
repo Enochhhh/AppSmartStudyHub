@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.Theme;
+import com.focusedapp.smartstudyhub.model.User;
 
 @Repository
 public interface ThemeDAO extends JpaRepository<Theme, Integer> {
@@ -18,4 +19,6 @@ public interface ThemeDAO extends JpaRepository<Theme, Integer> {
 	List<Theme> findByUserIdAndStatus(Integer userId, String status);
 	
 	Optional<Theme> findByIdAndStatus(Integer themeId, String status);
+	
+	void deleteByUser(User user);
 }

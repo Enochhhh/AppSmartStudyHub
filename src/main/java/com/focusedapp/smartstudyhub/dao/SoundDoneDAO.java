@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.SoundDone;
+import com.focusedapp.smartstudyhub.model.User;
 
 @Repository
 public interface SoundDoneDAO extends JpaRepository<SoundDone, Integer> {
@@ -18,5 +19,7 @@ public interface SoundDoneDAO extends JpaRepository<SoundDone, Integer> {
 	Optional<SoundDone> findByIdAndStatus(Integer soundDoneId, String status);
 	
 	List<SoundDone> findByUserIdAndStatus(Integer userId, String status);
+	
+	void deleteByUser(User user);
 	
 }

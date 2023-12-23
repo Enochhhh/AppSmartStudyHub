@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.dao.TagDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Tag;
+import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -125,5 +126,14 @@ public class TagService {
 		return tags.stream()
 					.map(t -> new TagDTO(t))
 					.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Delete All Tags of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllTagsOfUser(User user) {
+		tagDAO.deleteByUser(user);
 	}
 }

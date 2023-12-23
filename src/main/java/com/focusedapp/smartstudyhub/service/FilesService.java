@@ -72,4 +72,34 @@ public class FilesService {
 		return new FilesDTO(files);
 	}
 	
+	/**
+	 * Delete All Files User
+	 * 
+	 * @param user
+	 * @throws IOException
+	 */
+	public void deleteAllFilesUser(User user) throws IOException {
+		
+		List<Files> files = filesDAO.findByUserId(user.getId());
+		
+		for (Files file : files) {
+			deleteCompletelyFilesById(user, file.getId());
+		}
+	}
+	
+	/**
+	 * Delete All Files User by Type
+	 * 
+	 * @param user
+	 * @param type
+	 * @throws IOException
+	 */
+	public void deleteAllFilesByTypeOfUser(User user, String type) throws IOException {
+		List<Files> files = filesDAO.findByUserIdAndType(user.getId(), type);
+		
+		for (Files file : files) {
+			deleteCompletelyFilesById(user, file.getId());
+		}
+	}
+	
 }

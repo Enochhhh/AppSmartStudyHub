@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,6 +73,7 @@ public class PomodoroController extends BaseController {
 	 * @param pomodoroRequest
 	 * @return
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	@DeleteMapping("/delete/{pomodoroId}")
 	public ResponseEntity<Result<PomodoroDTO>> deletePomodoro(@PathVariable Integer pomodoroId) {
 		Result<PomodoroDTO> result = new Result<>();

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.SoundConcentration;
+import com.focusedapp.smartstudyhub.model.User;
 
 
 @Repository
@@ -19,4 +20,6 @@ public interface SoundConcentrationDAO extends JpaRepository<SoundConcentration,
 	Optional<SoundConcentration> findByIdAndStatus(Integer soundConcentrationId, String status);
 	
 	List<SoundConcentration> findByUserIdAndStatus(Integer userId, String status);
+	
+	void deleteByUser(User user);
 }

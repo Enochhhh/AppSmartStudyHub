@@ -18,6 +18,7 @@ import com.focusedapp.smartstudyhub.model.custom.ThemeDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusCustomContent;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 
 @Service
 public class ThemeService {
@@ -27,6 +28,9 @@ public class ThemeService {
 	
 	@Autowired
 	CloudinaryService cloudinaryService;
+	
+	@Autowired
+	FilesService filesService;
 	
 	/**
 	 * Get Theme of Guest
@@ -195,6 +199,16 @@ public class ThemeService {
 		return themes.stream()
 				.map(t -> new ThemeDTO(t))
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Delete All Themes of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllThemesOfUser(User user) throws IOException {
+		filesService.deleteAllFilesByTypeOfUser(user, EnumTypeFile.THEME.getValue());
+		themeDAO.deleteByUser(user);
 	}
 
 }

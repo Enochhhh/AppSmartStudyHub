@@ -16,4 +16,6 @@ public interface FilesDAO extends JpaRepository<Files, Integer> {
 	Optional<Files> findByPublicId(String publicId);
 	
 	List<Files> findByUserIdAndType(Integer userId, String type);
+	
+	List<Files> findByUserId(Integer userId);
 }

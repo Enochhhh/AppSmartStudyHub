@@ -140,4 +140,13 @@ public class PomodoroService {
 	public Integer calculateTotalTimeFocusPreviousMonth(User user, Date date) {
 		return pomodoroDAO.calculateTotalTimeFocusPreviousMonth(user, date);
 	}
+	
+	/**
+	 * Delete All Pomodoros of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllPomodorosOfUser(User user) {
+		pomodoroDAO.deleteByUser(user);
+	}
 }

@@ -20,4 +20,6 @@ public interface PomodoroDAO extends JpaRepository<Pomodoro, Integer> {
 	@Query("select sum(pomo.timeOfPomodoro) from Pomodoro pomo WHERE pomo.user = :user and pomo.createdDate >= :date "
 			+ "and pomo.isEndPomo = false group by pomo.user")
 	Integer calculateTotalTimeFocusPreviousMonth(@Param("user") User user, @Param("date") Date date);
+	
+	void deleteByUser(User user);
 }

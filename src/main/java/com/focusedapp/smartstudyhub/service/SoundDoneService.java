@@ -18,6 +18,7 @@ import com.focusedapp.smartstudyhub.model.custom.SoundDoneDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusCustomContent;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 
 @Service
 public class SoundDoneService {
@@ -27,6 +28,9 @@ public class SoundDoneService {
 	
 	@Autowired 
 	CloudinaryService cloudinaryService;
+	
+	@Autowired
+	FilesService filesService;
 	
 	/**
 	 * Get Sound Concentration of Guest
@@ -203,6 +207,17 @@ public class SoundDoneService {
 		return sounds.stream()
 				.map(s -> new SoundDoneDTO(s))
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Delete All Sounds Done Of User
+	 * 
+	 * @param user
+	 * @throws IOException
+	 */
+	public void deleteAllSoundsDoneOfUser(User user) throws IOException {
+		filesService.deleteAllFilesByTypeOfUser(user, EnumTypeFile.SOUNDDONE.getValue());
+		soundDoneDAO.deleteByUser(user);
 	}
 	
 }

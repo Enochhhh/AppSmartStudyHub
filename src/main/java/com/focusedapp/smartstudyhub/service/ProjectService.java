@@ -344,5 +344,14 @@ public class ProjectService {
 					.map(p -> new ProjectDTO(p))
 					.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Delete All Project Of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllProjectOfUser(User user) {
+		projectDAO.deleteByUser(user);
+	}
 
 }

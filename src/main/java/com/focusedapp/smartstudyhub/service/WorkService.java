@@ -22,6 +22,7 @@ import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.Tag;
+import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
@@ -599,6 +600,15 @@ public class WorkService {
 				.map(w -> new WorkDTO(w))
 				.collect(Collectors.toList());	
 		
+	}
+	
+	/**
+	 * Delete By User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllWorksOfUser(User user) {
+		workDAO.deleteByUser(user);
 	}
 	
 	/**

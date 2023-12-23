@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.Tag;
+import com.focusedapp.smartstudyhub.model.User;
 
 @Repository
 public interface TagDAO extends JpaRepository<Tag, Integer> {
@@ -18,4 +19,6 @@ public interface TagDAO extends JpaRepository<Tag, Integer> {
 	List<Tag> findByUserIdAndStatus(Integer userId, String status);
 	
 	List<Tag> findByTagNameContainingAndUserIdAndStatus(String keySearch, Integer userId, String status);
+	
+	void deleteByUser(User user);
 }

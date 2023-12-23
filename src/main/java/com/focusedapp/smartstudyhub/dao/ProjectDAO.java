@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.Project;
+import com.focusedapp.smartstudyhub.model.User;
 
 @Repository
 public interface ProjectDAO extends JpaRepository<Project, Integer> {
@@ -29,5 +30,7 @@ public interface ProjectDAO extends JpaRepository<Project, Integer> {
 	List<Project> getProjectsActiveAndCompletedByUserId(Integer userId);
 	
 	List<Project> findByProjectNameContainingAndUserIdAndStatus(String keySearch, Integer userId, String status);
+	
+	void deleteByUser(User user);
 	
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -131,6 +133,7 @@ public class AdminUserController extends BaseController {
 	 * @param id
 	 * @return
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	@PutMapping("/delete/{id}")
 	public ResponseEntity<Result<UserAdminCreatedDTO>> delete(@PathVariable Integer id) {
 		Result<UserAdminCreatedDTO> result = new Result<>();
