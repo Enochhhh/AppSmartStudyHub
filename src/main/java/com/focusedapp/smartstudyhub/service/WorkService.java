@@ -569,11 +569,22 @@ public class WorkService {
 				workSortedList.add(new WorkSortedResponseDTO(entry.getKey(), worksRes));
 			}
 		} else if (type.equals(EnumSortType.DUEDATE.getValue())) {
-			Map<Long, List<WorkDTO>> mapWork = works.stream()	
+			List<WorkDTO> worksDueDateNull = new ArrayList<>();
+			List<WorkDTO> worksRemain = new ArrayList<>();
+			
+			for (WorkDTO work : works) {
+				if (work.getDueDate() == null) {
+					worksDueDateNull.add(work);
+				} else {
+					worksRemain.add(work);
+				}
+			}
+			
+			Map<Long, List<WorkDTO>> mapWork = worksRemain.stream()	
 					.collect(Collectors.groupingBy(w -> w.getDueDate(),Collectors.toList()));
 			
 			mapWork = mapWork.entrySet().stream()
-					.sorted(Map.Entry.<Long, List<WorkDTO>>comparingByKey())
+					.sorted(Map.Entry.<Long, List<WorkDTO>>comparingByKey().reversed())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 			
 			for (Map.Entry<Long, List<WorkDTO>> entry : mapWork.entrySet()) {
@@ -582,6 +593,10 @@ public class WorkService {
 						.collect(Collectors.toList());
 				workSortedList.add(new WorkSortedResponseDTO(entry.getKey(), worksRes));
 			}
+			worksDueDateNull = worksDueDateNull.stream()
+					.sorted(comparator.reversed())
+					.collect(Collectors.toList());
+			workSortedList.add(new WorkSortedResponseDTO(0, worksDueDateNull));
 		}
 		return workSortedList;
 	}
