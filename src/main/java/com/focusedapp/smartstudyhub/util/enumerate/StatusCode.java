@@ -52,9 +52,11 @@ public enum StatusCode {
 	RECOVER_EXTRAWORK_FAILURE("8_3_f", "Recover Extra Work Failure!"),
 	/* TAG */
 	DELETE_TAG_FAILURE("9_1_f", "Mark Deleted Tag Failure!"),
+	/* UPLOAD FILE */
+	MISSING_FILE("10_1_f", "Missing file when upload!"),
 	
 	// Admin - featureCode: 10
-	CREATE_USER_FAILURE("10_1_f", "Create User Failure!");
+	CREATE_USER_FAILURE("11_1_f", "Create User Failure!");
 	
 	private final String code;
 	private final String message;

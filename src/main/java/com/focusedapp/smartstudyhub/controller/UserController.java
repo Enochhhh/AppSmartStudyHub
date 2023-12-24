@@ -140,25 +140,5 @@ public class UserController extends BaseController {
 		return createResponseEntity(result);
 
 	}
-	
-	/**
-	 * Rank By Time Focus Previous Month
-	 * 
-	 * @return
-	 */
-	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
-	@GetMapping("/cleandata")
-	public ResponseEntity<Result<Object>> cleanDataOfUser(@RequestParam Integer userId) 
-			throws IOException {
-
-		Result<Object> result = new Result<>();
-
-		userService.cleanData(userId);
-		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
-		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-
-		return createResponseEntity(result);
-
-	}
 
 }

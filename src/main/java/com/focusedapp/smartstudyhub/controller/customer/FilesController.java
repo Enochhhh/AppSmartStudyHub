@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,6 +54,12 @@ public class FilesController extends BaseController {
 			@RequestParam String type) throws IOException {
 
 		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		if (files == null || files.isEmpty()) {
+			result.getMeta().setStatusCode(StatusCode.MISSING_FILE.getCode());
+			result.getMeta().setMessage(StatusCode.MISSING_FILE.getMessage());
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+        }
 
 		User user = getAuthenticatedUser(); 
 		String filesUploaded = cloudinaryService.uploadFile(files, type, user);

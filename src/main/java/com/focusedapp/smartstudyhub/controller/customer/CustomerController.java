@@ -1,9 +1,13 @@
 package com.focusedapp.smartstudyhub.controller.customer;
 
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -216,6 +220,27 @@ public class CustomerController extends BaseController {
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Rank By Time Focus Previous Month
+	 * 
+	 * @return
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	@GetMapping("/cleandata")
+	public ResponseEntity<Result<Object>> cleanDataOfUser() 
+			throws IOException {
+
+		Result<Object> result = new Result<>();
+
+		User user = getAuthenticatedUser();
+		userService.cleanData(user);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+
+		return createResponseEntity(result);
+
 	}
 	
 }

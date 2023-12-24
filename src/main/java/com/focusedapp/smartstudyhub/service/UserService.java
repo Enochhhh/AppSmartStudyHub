@@ -698,9 +698,8 @@ public class UserService {
 	 * @param userId
 	 * @return
 	 */
-	public void cleanData(Integer userId) throws IOException {
+	public void cleanData(User user) throws IOException {
 		
-		User user = findById(userId);
 		folderService.deleteAllFolderOfUser(user);
 		projectService.deleteAllProjectOfUser(user);
 		workService.deleteAllWorksOfUser(user);
