@@ -344,29 +344,6 @@ create table pomodoros(
     constraint PomodorosExtraWorkIdForeignKey foreign key(extra_work_id) references extra_work(id)
 );
 
-create table event_schedule(
-	id int auto_increment,
-    event_id_group int,
-    type_event text, -- EVENT-MEETING
-    location text,
-    is_all_day boolean,
-    color_code text,
-    announce_date datetime,
-    descriptions text,
-    url_attach_file text,
-    created_date datetime,
-    status text,
-    constraint EventSchedulePrimaryKey primary key(id)
-);
-
-create table assignee_event_schedule(
-	event_id int,
-    assignee_id int,
-	constraint AssigneeEventSchedulePrimaryKey primary key(event_id, assignee_id),
-    constraint AssigneeEventScheduleEventIdForeignKey foreign key(event_id) references event_schedule(id),
-    constraint AssigneeEventScheduleAssigneeIdForeignKey foreign key(assignee_id) references users(id)
-);
-
 create table files(
 	id int auto_increment,
     user_id int,
@@ -381,6 +358,31 @@ create table files(
     constraint FilesPrimaryKey primary key(id),
     constraint FilesUserIdForeignKey foreign key(user_id) references users(id)
 );
+
+-- Expected to do more later
+-- create table event_schedule(
+-- 	id int auto_increment,
+--     event_id_group int,
+--     type_event text, -- EVENT-MEETING
+--     location text,
+--     is_all_day boolean,
+--     color_code text,
+--     announce_date datetime,
+--     descriptions text,
+--     url_attach_file text,
+--     created_date datetime,
+--     status text,
+--     constraint EventSchedulePrimaryKey primary key(id)
+-- );
+
+-- Expected to do more later
+-- create table assignee_event_schedule(
+-- 	event_id int,
+--     assignee_id int,
+-- 	constraint AssigneeEventSchedulePrimaryKey primary key(event_id, assignee_id),
+--     constraint AssigneeEventScheduleEventIdForeignKey foreign key(event_id) references event_schedule(id),
+--     constraint AssigneeEventScheduleAssigneeIdForeignKey foreign key(assignee_id) references users(id)
+-- );
 
 -- TRIGGER
 -- Trigger auto update number of pomodoros and time passed of work when update extra work
