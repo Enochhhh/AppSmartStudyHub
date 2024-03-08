@@ -1,10 +1,6 @@
--- drop database if exists sql12663094; 
--- create database sql12663094; 
--- use sql12663094;
-
--- drop database if exists smart_study_hub;
--- create database smart_study_hub;
--- use smart_study_hub;
+--  drop database if exists smart_study_hub;
+--  create database smart_study_hub;
+--  use smart_study_hub;
 
 drop database if exists defaultdb; 
 create database defaultdb; 
@@ -304,6 +300,7 @@ create table report_post(
 	id int auto_increment,
 	user_id int not null,
     post_id int not null,
+    title text,
     content nvarchar(3000),
     created_date datetime,
     status_report text,

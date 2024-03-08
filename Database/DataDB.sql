@@ -3,11 +3,11 @@
 use defaultdb;
 
 -- Users
-insert into users values(1, 'sonphan@gmail.com', 'sonphan@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
-	null, N'Son', N'Phan', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'PREMIUM', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
+insert into users values(1, 'enochphann@gmail.com', 'enochphann@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
+	null, N'Son', N'Phan', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
     null, 'local', 'ACTIVE', null);
 insert into users values(2, 'namdo@gmail.com', 'namdo@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
-	null, N'Nam', N'Do', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
+	null, N'Nam', N'Do', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'PREMIUM', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
     null, 'local', 'ACTIVE', null);
 insert into users values(3, 'chienpham@gmail.com', 'chienpham@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Chien', N'Pham', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
