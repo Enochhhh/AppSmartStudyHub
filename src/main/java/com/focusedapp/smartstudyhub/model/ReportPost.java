@@ -42,6 +42,8 @@ public class ReportPost implements Serializable {
 	@JoinColumn(name = "post_id", nullable = false)
 	private PostForum post;
 	
+	private String title;
+	
 	@Column(name = "content", length = 3000)
 	private String content;
 	
