@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtService;
@@ -667,9 +668,9 @@ public class UserService {
 	 * @param request
 	 * @return
 	 */
-	public List<UserAdminCreatedDTO> getAll() {
+	public List<UserAdminCreatedDTO> getAll(Pageable pageable) {
 
-		List<User> users = userDAO.findByRoleNot(EnumRole.ADMIN.getValue());	
+		List<User> users = userDAO.findByRoleNot(EnumRole.ADMIN.getValue(), pageable);	
 		return users.stream()
 				.map(u -> new UserAdminCreatedDTO(u))
 				.collect(Collectors.toList());

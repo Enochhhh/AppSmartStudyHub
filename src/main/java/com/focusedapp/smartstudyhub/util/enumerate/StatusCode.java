@@ -10,9 +10,10 @@ public enum StatusCode {
 	DATA_NOT_FOUND("0_5_f", "Data Not Found"),
 	FAIL("0_6_f", "Failed"),
 	DATA_EXISTED("0_7_f", "Data Existed"),
-	AUTHENTICATED_FAILURE("0_8_f", "Authenticatted Failure"),
+	AUTHENTICATED_FAILURE("0_8_f", "Authenticated Failure"),
 	PARSE_ERROR("0_9_f", "Parse Error"),
 	UNAUTHORIZED("0_10_f", "Unauthorized"),
+	TOKEN_INVALID("0_11_f", "Token Invalid"),
 	
 	// User - featureCode: 1
 	/* Register */

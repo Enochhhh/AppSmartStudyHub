@@ -19,6 +19,7 @@ import com.focusedapp.smartstudyhub.model.ErrorLog;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
 
@@ -70,6 +71,24 @@ public class ExceptionControllerAdvice {
 		
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("message", "Authenticated Failure, please try again");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
+	} 
+	
+	@ExceptionHandler(value = SignatureException.class)
+	public ResponseEntity<Result<JSONObject>> signatureException(SignatureException exception) {
+		
+		Logger logger = LoggerFactory.getLogger(ExceptionControllerAdvice.class);
+		logger.error(exception.getMessage());
+		
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.TOKEN_INVALID.getCode());
+		result.getMeta().setMessage(StatusCode.TOKEN_INVALID.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Token Invalid, please try again");
 		result.setData(jsonObject);
 		result.setLogInfo(exception.getMessage());
 		

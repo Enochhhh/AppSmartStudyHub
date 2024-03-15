@@ -3,6 +3,7 @@ package com.focusedapp.smartstudyhub.controller.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Propagation;
@@ -116,10 +117,10 @@ public class AdminUserController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/getall")
-	public ResponseEntity<Result<List<UserAdminCreatedDTO>>> getAll() {
+	public ResponseEntity<Result<List<UserAdminCreatedDTO>>> getAll(Pageable pageable) {
 		Result<List<UserAdminCreatedDTO>> result = new Result<>();
 		
-		List<UserAdminCreatedDTO> data = userService.getAll();
+		List<UserAdminCreatedDTO> data = userService.getAll(pageable);
 	
 		result.setData(data);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
