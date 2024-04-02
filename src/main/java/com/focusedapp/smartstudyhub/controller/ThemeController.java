@@ -76,7 +76,7 @@ public class ThemeController extends BaseController {
 	 * @return
 	 */
 	@PutMapping("/premium/theme/update")
-	public ResponseEntity<Result<ThemeDTO>> getThemeOfPremiumUser(@RequestBody ThemeDTO themeRequest) 
+	public ResponseEntity<Result<ThemeDTO>> updateThemeOfPremiumUser(@RequestBody ThemeDTO themeRequest) 
 			throws IOException {
 
 		Result<ThemeDTO> result = new Result<>();	

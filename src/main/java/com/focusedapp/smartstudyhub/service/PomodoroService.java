@@ -1,6 +1,8 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -106,9 +108,20 @@ public class PomodoroService {
 		List<Pomodoro> pomorosDb = pomodoroDAO.findByUserId(userId);
 		
 		Map<Long, List<PomodoroDTO>> mapPomodoro = pomorosDb.stream()	
-				.map(pomo -> new PomodoroDTO(pomo))
-				.collect(Collectors.groupingBy(PomodoroDTO::getEndTime, Collectors.toList()));
-		
+				.map(pomo -> new PomodoroDTO(pomo))				
+				.collect(Collectors.groupingBy(p -> { 
+						Date date = new Date(p.getEndTime());
+						// Get date at time 00:00:00
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(date);
+						calendar.set(Calendar.HOUR_OF_DAY, 0);
+						calendar.set(Calendar.MINUTE, 0);
+				        calendar.set(Calendar.SECOND, 0);
+				        calendar.set(Calendar.MILLISECOND, 0);
+				        date = calendar.getTime();
+						return date.getTime();
+					}, Collectors.toList()));
+		mapPomodoro.values().forEach(list -> list.sort(Comparator.comparing(PomodoroDTO::getEndTime)));
 		List<PomorodoGroupByDateDTO> pomodoros = new ArrayList<>();
 		for (Map.Entry<Long, List<PomodoroDTO>> entry : mapPomodoro.entrySet()) {
 			pomodoros.add(new PomorodoGroupByDateDTO(entry.getKey(), entry.getValue()));
