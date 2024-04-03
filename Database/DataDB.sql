@@ -88,13 +88,11 @@ insert into sound_concentration values(8, null, N'Stream', 'https://res.cloudina
 	'DEFAULT', 'ACTIVE', '2023-11-28 00:00:00');
 insert into sound_concentration values(9, null, N'Tik Tak', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956922/SmartStudyHub/SOUNDCONCENTRATION/DEFAULT/tiktack_iayjsj.mp3',
 	'DEFAULT', 'ACTIVE', '2023-11-28 00:00:00');
-insert into sound_concentration values(10, null, N'Tik Tak', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956922/SmartStudyHub/SOUNDCONCENTRATION/DEFAULT/tiktack_iayjsj.mp3',
-	'DEFAULT', 'ACTIVE', '2023-11-28 00:00:00');
-insert into sound_concentration values(11, null, N'Wave', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956930/SmartStudyHub/SOUNDCONCENTRATION/PREMIUM/waves_ejsexp.mp3',
+insert into sound_concentration values(10, null, N'Wave', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956930/SmartStudyHub/SOUNDCONCENTRATION/PREMIUM/waves_ejsexp.mp3',
 	'PREMIUM', 'ACTIVE', '2023-11-28 00:00:00');
-insert into sound_concentration values(12, null, N'Wind And Leaf', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956931/SmartStudyHub/SOUNDCONCENTRATION/PREMIUM/wind_and_leaf_depdev.mp3',
+insert into sound_concentration values(11, null, N'Wind And Leaf', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956931/SmartStudyHub/SOUNDCONCENTRATION/PREMIUM/wind_and_leaf_depdev.mp3',
 	'PREMIUM', 'ACTIVE', '2023-11-28 00:00:00');
-insert into sound_concentration values(13, null, N'White Noise', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956933/SmartStudyHub/SOUNDCONCENTRATION/PREMIUM/Whitenoise_appq6h.mp3',
+insert into sound_concentration values(12, null, N'White Noise', 'https://res.cloudinary.com/dnj5purhu/video/upload/v1702956933/SmartStudyHub/SOUNDCONCENTRATION/PREMIUM/Whitenoise_appq6h.mp3',
 	'PREMIUM', 'ACTIVE', '2023-11-28 00:00:00');
 
 
