@@ -32,6 +32,7 @@ public class PomodoroDTO implements Serializable {
 	private Boolean isEndPomo;
 	private String mode;
 	private Integer numberPomoDoneOfWork;
+	private Integer totalPomodorosOfWork;
 	private Long createdDate;
 	
 	public PomodoroDTO(Pomodoro pomodoro) {
@@ -62,6 +63,9 @@ public class PomodoroDTO implements Serializable {
 		this.isEndPomo = pomodoro.getIsEndPomo();
 		this.mode = pomodoro.getMode();
 		this.numberPomoDoneOfWork = pomodoro.getNumberPomoDoneOfWork();
+		if (pomodoro.getWork() != null) {
+			this.totalPomodorosOfWork = pomodoro.getWork().getNumberOfPomodoros();
+		}
 		this.pomodoroName = pomodoro.getPomodoroName();
 		this.createdDate = pomodoro.getCreatedDate().getTime();
 	}
