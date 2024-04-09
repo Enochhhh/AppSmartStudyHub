@@ -3,6 +3,7 @@ package com.focusedapp.smartstudyhub.service;
 
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,7 @@ import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.comparator.SortByPriorityComparator;
 import com.focusedapp.smartstudyhub.util.comparator.SortByProjectNameComparator;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumPriority;
@@ -122,6 +125,7 @@ public class WorkService {
 				.status(EnumStatus.ACTIVE.getValue())
 				.assignee(dataCreate.getAssigneeId() == null ? null : 
 					userService.findByIdAndStatus(dataCreate.getAssigneeId(), EnumStatus.ACTIVE.getValue()))
+				.note(dataCreate.getNote())
 				.build();
 				
 		work = workDAO.save(work);
@@ -377,6 +381,11 @@ public class WorkService {
 										.collect(Collectors.toList());		
 		Comparator<WorkDTO> comparator = Comparator.comparing(WorkDTO::getCreatedDate,
                 Comparator.nullsFirst(Comparator.naturalOrder()));
+		Date nowDate = new Date();
+		// Convert to LocalDate Timezone VietNam to get DayOfWeek Exactly
+		LocalDateTime dateTimeZone = MethodUtils.convertoToLocalDateTime(nowDate);
+		// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
+		int dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
 		if (type.equals(EnumStatusWork.TODAY.getValue())) {
 			worksConvert = worksConvert.stream()
 					.filter(w -> w.getStatusWork().equals(EnumStatusWork.TODAY.getValue()) 
@@ -395,12 +404,17 @@ public class WorkService {
 					.collect(Collectors.toList());
 		} else if (type.equals(EnumStatusWork.THISWEEK.getValue())) {
 			worksConvert = worksConvert.stream()
-					.filter(w -> w.getStatusWork().equals(EnumStatusWork.THISWEEK.getValue()))
+					.filter(w -> w.getStatusWork().equals(EnumStatusWork.THISWEEK.getValue())
+							|| w.getStatusWork().equals(EnumStatusWork.TODAY.getValue())
+							|| (w.getStatusWork().equals(EnumStatusWork.TOMORROW.getValue()) && (dayOfWeek + 1) <= 8))
 					.sorted(comparator.reversed())
 					.collect(Collectors.toList());
 		} else if (type.equals(EnumStatusWork.NEXT7DAY.getValue())) {
 			worksConvert = worksConvert.stream()
-					.filter(w -> w.getStatusWork().equals(EnumStatusWork.NEXT7DAY.getValue()))
+					.filter(w -> w.getStatusWork().equals(EnumStatusWork.NEXT7DAY.getValue())
+							|| w.getStatusWork().equals(EnumStatusWork.TODAY.getValue())
+							|| w.getStatusWork().equals(EnumStatusWork.TOMORROW.getValue())
+							|| w.getStatusWork().equals(EnumStatusWork.THISWEEK.getValue()))
 					.sorted(comparator.reversed())
 					.collect(Collectors.toList());
 		} else if (type.equals(EnumStatusWork.SOMEDAY.getValue())) {

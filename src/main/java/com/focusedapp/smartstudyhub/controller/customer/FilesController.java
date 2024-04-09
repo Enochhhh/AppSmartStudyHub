@@ -79,7 +79,7 @@ public class FilesController extends BaseController {
 	 * @return
 	 * @throws IOException
 	 */
-	@PostMapping("/customer/files/delete")
+	@DeleteMapping("/customer/files/delete")
 	public ResponseEntity<Result<FilesDTO>> deleteFile(@RequestBody Files fileDelete) throws IOException {
 
 		Result<FilesDTO> result = new Result<>();

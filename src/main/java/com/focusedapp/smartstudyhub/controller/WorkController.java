@@ -284,7 +284,7 @@ public class WorkController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/get-by-type")
-	public ResponseEntity<Result<WorkResponseDTO>> getWorkByTpe(@RequestParam String type, @RequestParam Integer userId) {
+	public ResponseEntity<Result<WorkResponseDTO>> getWorkByType(@RequestParam String type, @RequestParam Integer userId) {
 		Result<WorkResponseDTO> result = new Result<>();
 		
 		if (StringUtils.isEmpty(type)) {
