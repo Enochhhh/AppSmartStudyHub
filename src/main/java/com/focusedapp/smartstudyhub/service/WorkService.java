@@ -2,7 +2,6 @@ package com.focusedapp.smartstudyhub.service;
 
 
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +28,6 @@ import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
-import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.comparator.SortByPriorityComparator;
@@ -112,7 +109,6 @@ public class WorkService {
 				.project(project)
 				.workName(dataCreate.getWorkName())
 				.dueDate(dataCreate.getDueDate() == null ? null : new Date(dataCreate.getDueDate()))
-				.timeWillStart(dataCreate.getTimeWillStart() == null ? null : new Date(dataCreate.getTimeWillStart()))
 				.priority(dataCreate.getPriority() == null ? EnumPriority.NONE.getValue() : dataCreate.getPriority())
 				.numberOfPomodoros(dataCreate.getNumberOfPomodoros() == null ? 0 : dataCreate.getNumberOfPomodoros())
 				.timeOfPomodoro(dataCreate.getTimeOfPomodoro() == null ? 25 : dataCreate.getTimeOfPomodoro())
@@ -163,7 +159,6 @@ public class WorkService {
 		workDb.setProject(project);
 		workDb.setWorkName(dataUpdate.getWorkName());
 		workDb.setDueDate(dataUpdate.getDueDate() == null ? null : new Date(dataUpdate.getDueDate()));
-		workDb.setTimeWillStart(dataUpdate.getTimeWillStart() == null ? null : new Date(dataUpdate.getTimeWillStart()));
 		workDb.setTimeWillAnnounce(dataUpdate.getTimeWillAnnounce() == null ? null : new Date(dataUpdate.getTimeWillAnnounce()));
 		workDb.setPriority(dataUpdate.getPriority());
 		workDb.setNumberOfPomodoros(dataUpdate.getNumberOfPomodoros());
@@ -466,52 +461,6 @@ public class WorkService {
 				.collect(Collectors.toList());		
 		
 		return new WorkResponseDTO(worksConvert);
-				
-	}
-	
-	/**
-	 * Get Works Schedule
-	 * 
-	 * @param date
-	 * @param userId
-	 * @return
-	 */
-	public WorkScheduleDTO getWorkSchedule(Long date, Integer userId) {
-		
-		List<Work> works = workDAO.findByUserIdAndOneOfTwoStatus(userId, EnumStatus.ACTIVE.getValue(), 
-				EnumStatus.COMPLETED.getValue());
-		List<WorkDTO> worksConvert = works.stream()
-				.map(w -> new WorkDTO(w))
-				.collect(Collectors.toList());
-		
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateReq = new Date(date);
-		Boolean isToday = formatter.format(new Date()).equals(formatter.format(dateReq)) ? true : false;
-		
-		List<WorkDTO> listWorkActive = new ArrayList<>();
-		List<WorkDTO> listWorkCompleted = new ArrayList<>();
-		List<WorkDTO> listWorkDueDate = new ArrayList<>();
-		List<WorkDTO> listWorkOutOfDate = new ArrayList<>();
-		
-		for (WorkDTO work : worksConvert) {
-			
-			if (isToday && work.getStatusWork().equals(EnumStatusWork.OUTOFDATE.getValue())) {
-				listWorkOutOfDate.add(work);
-			} else if (work.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-				if (formatter.format(new Date(work.getTimeWillStart())).equals(formatter.format(dateReq))) {
-					listWorkActive.add(work);
-				}
-				if (formatter.format(new Date(work.getDueDate())).equals(formatter.format(dateReq))) {
-					listWorkDueDate.add(work);
-				}
-				continue;
-			} else if (work.getStatus().equals(EnumStatus.COMPLETED.getValue()) 
-					&& formatter.format(new Date(work.getEndTime())).equals(formatter.format(dateReq))) {
-				listWorkCompleted.add(work);
-			} 
-		}
-		
-		return new WorkScheduleDTO(date, userId, listWorkActive, listWorkCompleted, listWorkDueDate, listWorkOutOfDate);
 				
 	}
 	

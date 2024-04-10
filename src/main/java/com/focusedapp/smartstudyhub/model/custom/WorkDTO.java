@@ -50,7 +50,6 @@ public class WorkDTO implements Serializable {
 	private Boolean isRepeated;
 	private String note;
 	private Integer assigneeId;
-	private Long timeWillStart;
 	private Long timeWillAnnounce;
 	private String status;
 	private String statusWork;
@@ -82,10 +81,6 @@ public class WorkDTO implements Serializable {
 		
 		if (work.getEndTime() != null) {
 			this.endTime = work.getEndTime().getTime();
-		}
-		
-		if (work.getTimeWillStart() != null) {
-			this.timeWillStart = work.getTimeWillStart().getTime();
 		}
 		
 		if (work.getTimeWillAnnounce() != null) {

@@ -178,22 +178,13 @@ public class UserService {
 	 */
 	public UserDTO createGuestUser() {
 
-		Optional<User> userTop = userDAO.findTopByOrderByIdDesc();
-		User user = null;
-		if (userTop.isEmpty()) {
-			user = User.builder().firstName("#GUEST ").lastName(Integer.valueOf(1).toString())
+		User user = User.builder().lastName("#GUEST ")
 					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue())
 					.provider(Provider.LOCAL.getValue())
-					.imageUrl(ConstantUrl.DEFAULT_IMAGE).build();
-		} else {
-			user = User.builder().firstName(Integer.valueOf(userTop.get().getId() + 1).toString()).lastName("#GUEST ")
-					.createdAt(new Date()).role(EnumRole.GUEST.getValue()).status(EnumStatus.ACTIVE.getValue())
-					.provider(Provider.LOCAL.getValue())
-					.imageUrl(ConstantUrl.DEFAULT_IMAGE).build();
-		}
-		
+					.imageUrl(ConstantUrl.DEFAULT_IMAGE).build();	
 		user = persistent(user);
-
+		user.setFirstName(user.getId().toString());
+		user = persistent(user);
 		return UserDTO.builder().firstName(user.getFirstName()).lastName(user.getLastName()).id(user.getId())
 				.role(user.getRole()).createdAt(user.getCreatedAt().getTime())
 				.imageUrl(user.getImageUrl()).build();

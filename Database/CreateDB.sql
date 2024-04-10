@@ -35,25 +35,6 @@ create table users(
     constraint UserPrimaryKey primary key(id)
 );
 
-create table manage_users(
-	user_manager_id int not null,
-    user_id int not null,
-    created_date datetime,
-    constraint ManageUserPrimaryKey primary key(user_manager_id, user_id),
-	constraint ManageUsersUserManagerIdForeignKey foreign key(user_manager_id) references users(id),
-	constraint ManageUsersUserIdForeignKey foreign key(user_id) references users(id)
-);
-
-create table friend_users(
-	user_id int not null,
-    user_id_friend int not null,
-    created_date datetime,
-    status text, -- BLOCK, FRIEND, UNFRIEND
-    constraint FriendUserPrimaryKey primary key(user_id, user_id_friend),
-    constraint FriendUsersUserIdForeignKey foreign key(user_id) references users(id),
-	constraint FriendUsersUserIdFriendForeignKey foreign key(user_id_friend) references users(id)
-);
-
 create table report(
 	id int auto_increment,
     user_id int not null,
@@ -164,7 +145,6 @@ create table works(
     note nvarchar(300),
     assignee_id int,
     created_date datetime,
-    time_will_start datetime,
     time_will_announce datetime,
     status text,
     old_status text,
@@ -232,84 +212,6 @@ create table sound_done(
     constraint SoundDUserIdForeignKey foreign key(user_id) references users(id)
 );
 
-create table category_forum(
-	id int auto_increment,
-    name_category nvarchar(50),
-    total_post int,
-    total_comment int,
-    created_date datetime,
-    constraint CategoryForumPrimaryKey primary key(id)
-);
-
-create table post_forum(
-	id int auto_increment,
-    user_id int not null,
-    category_forum_id int not null,
-    title nvarchar(50),
-    content nvarchar(3000),
-    tag text,
-    image_url text,
-    total_like int,
-    total_view int,
-    created_date datetime,
-    url_post text,
-    total_type_react text,
-    limits text,
-    status_post text, -- It have 2 value: ACTIVE, DELETED, BANNED
-    status text,
-    constraint PostForumPrimaryKey primary key(id),
-    constraint PostForumUserIdForeignKey foreign key(user_id) references users(id),
-    constraint PostForumCategoryForumIdForeignKey foreign key(category_forum_id) references category_forum(id)
-);
-
-create table like_post(
-	post_id int not null,
-    user_id int not null,
-    created_date datetime,
-    type_react text,
-    constraint LikePostPrimaryKey primary key(post_id, user_id),
-    constraint LikePostPostIdForeignKey foreign key(post_id) references post_forum(id),
-    constraint LikePostUserIdForeignKey foreign key(user_id) references users(id)
-);
-
-create table comment_post(
-	id int auto_increment,
-	post_id int not null,
-    user_id int not null,
-    content nvarchar(3000),
-    created_date datetime,
-    total_like int,
-    total_type_react text,
-    status text,
-    constraint CommentPostPrimaryKey primary key(id),
-	constraint CommentPostPostIdForeignKey foreign key(post_id) references post_forum(id),
-    constraint CommentPostUserIdForeignKey foreign key(user_id) references users(id)
-);
-
-create table like_comment(
-	comment_id int not null,
-    user_id int not null,
-    created_date datetime,
-    type_react text,
-    constraint LikeCommentPrimaryKey primary key(comment_id, user_id),
-    constraint LikeCommentCommentIdForeignKey foreign key(comment_id) references comment_post(id),
-    constraint LikeCommentUserIdForeignKey foreign key(user_id) references users(id)
-);
-
-create table report_post(
-	id int auto_increment,
-	user_id int not null,
-    post_id int not null,
-    title text,
-    content nvarchar(3000),
-    created_date datetime,
-    status_report text,
-    status text,
-    constraint ReportPostPrimaryKey primary key(id),
-    constraint ReportPostUserIdForeignKey foreign key(user_id) references users(id),
-    constraint ReportPostPostIdForeignKey foreign key(post_id) references post_forum(id)
-);
-
 create table errorlog(
 	id int auto_increment,
 	class_name text,
@@ -356,58 +258,33 @@ create table files(
     constraint FilesUserIdForeignKey foreign key(user_id) references users(id)
 );
 
--- Expected to do more later
-create table event_schedule(
-	id int auto_increment,
-    event_id_group int,
-    type_event text, -- EVENT-MEETING
-    location text,
-    is_all_day boolean,
-    color_code text,
-    announce_date datetime,
-    descriptions text,
-    url_attach_file text,
-    created_date datetime,
-    status text,
-    constraint EventSchedulePrimaryKey primary key(id)
-);
-
--- Expected to do more later
-create table assignee_event_schedule(
-	event_id int,
-    assignee_id int,
-	constraint AssigneeEventSchedulePrimaryKey primary key(event_id, assignee_id),
-    constraint AssigneeEventScheduleEventIdForeignKey foreign key(event_id) references event_schedule(id),
-    constraint AssigneeEventScheduleAssigneeIdForeignKey foreign key(assignee_id) references users(id)
-);
-
 -- TRIGGER
 -- Trigger auto update number of pomodoros and time passed of work when update extra work
-DELIMITER $$  
-create trigger after_update_extra_work
-after update 
-on extra_work for each row
-begin 
-	update works 
-    set number_of_pomodoros_done = ifnull(number_of_pomodoros_done, 0) + ifnull(new.number_of_pomodoros, 0) - ifnull(old.number_of_pomodoros, 0),
-		time_passed = ifnull(time_passed, 0) + ifnull(new.time_passed, 0) - ifnull(old.time_passed, 0)
-    where id = old.work_id;
-end $$
-DELIMITER ;
+-- DELIMITER $$  
+-- create trigger after_update_extra_work
+-- after update 
+-- on extra_work for each row
+-- begin 
+-- 	update works 
+--     set number_of_pomodoros_done = ifnull(number_of_pomodoros_done, 0) + ifnull(new.number_of_pomodoros, 0) - ifnull(old.number_of_pomodoros, 0),
+-- 		time_passed = ifnull(time_passed, 0) + ifnull(new.time_passed, 0) - ifnull(old.time_passed, 0)
+--     where id = old.work_id;
+-- end $$
+-- DELIMITER ;
 
 -- TRIGGER auto update time focus of user when update time passed of work
-DELIMITER $$
-create trigger after_update_works
-after update 
-on works for each row
-begin 
-	if new.time_passed > old.time_passed then
-		update users 
-				set total_time_focus  = ifnull(total_time_focus, 0) + (new.time_passed - old.time_passed)
-				where id = new.user_id;
-    end if;
-end $$
-DELIMITER ;
+-- DELIMITER $$
+-- create trigger after_update_works
+-- after update 
+-- on works for each row
+-- begin 
+-- 	if new.time_passed > old.time_passed then
+-- 		update users 
+-- 				set total_time_focus  = ifnull(total_time_focus, 0) + (new.time_passed - old.time_passed)
+-- 				where id = new.user_id;
+--     end if;
+-- end $$
+-- DELIMITER ;
 
 -- Trigger auto update work and extra work when insert pomodoro
 DELIMITER $$  
@@ -415,6 +292,11 @@ create trigger after_insert_pomodoros
 after insert 
 on pomodoros for each row
 begin 
+	if new.is_end_pomo = false then
+		update users 
+				set total_time_focus  = ifnull(total_time_focus, 0) + new.time_of_pomodoro
+				where id = new.user_id;
+	end if;
 	if new.work_id is not null then
 		if new.is_start_pomo = true and new.is_end_pomo = false then
 			update works 

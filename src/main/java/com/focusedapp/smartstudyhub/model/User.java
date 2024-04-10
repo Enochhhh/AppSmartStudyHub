@@ -89,18 +89,6 @@ public class User implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeAdminModified;
 	
-	@OneToMany(mappedBy = "userManager", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<ManageUser> userManagers;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<ManageUser> usersManaged;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<FriendUser> usersOwnedListFriend;
-	
-	@OneToMany(mappedBy = "userFriend", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<FriendUser> usersFriend;
-	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Report> reports;
 	
@@ -127,21 +115,6 @@ public class User implements Serializable {
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Tag> tags;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<PostForum> postsForum;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<LikePost> postsLiked;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<CommentPost> postsCommented;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<LikeComment> commentsLiked;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<ReportPost> postsReported;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Pomodoro> pomodoros;

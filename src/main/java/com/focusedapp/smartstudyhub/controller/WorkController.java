@@ -24,7 +24,6 @@ import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
-import com.focusedapp.smartstudyhub.model.custom.WorkScheduleDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
 import com.focusedapp.smartstudyhub.service.WorkService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
@@ -321,33 +320,6 @@ public class WorkController extends BaseController {
 		}
 		
 		WorkResponseDTO works = workService.getByPriority(priority, userId);
-		
-		result.setData(works);
-		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
-		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-		return createResponseEntity(result);
-		
-	}
-	
-	/**
-	 * Get Work Schedule Controller
-	 * 
-	 * @param date
-	 * @param userId
-	 * @return
-	 */
-	@GetMapping("/get-work-schedule")
-	public ResponseEntity<Result<WorkScheduleDTO>> getWorkSchedule(@RequestParam Long date, @RequestParam Integer userId) {
-		Result<WorkScheduleDTO> result = new Result<>();
-		
-		if (date == null || date < 1) {
-			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
-			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
-			result.getMeta().setDetails("Data Invalid!");
-			return createResponseEntity(result, HttpStatus.BAD_REQUEST);							
-		}
-		
-		WorkScheduleDTO works = workService.getWorkSchedule(date, userId);
 		
 		result.setData(works);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
