@@ -2,10 +2,10 @@ package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,6 +18,8 @@ import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -102,9 +104,10 @@ public class WorkDTO implements Serializable {
 		} else {			
 			this.dueDate = work.getDueDate().getTime();
 			Date nowDate = new Date();
-			Date dueDateTimeZone = MethodUtils.convertoToDateTimeZone(work.getDueDate());
-			Date nowDateTimeZone = MethodUtils.convertoToDateTimeZone(nowDate);
-			Long distanceOfTwoDate = MethodUtils.distanceBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, TimeUnit.DAYS);		
+			LocalDateTime dueDateTimeZone = MethodUtils.convertoToLocalDateTime(work.getDueDate());
+			LocalDateTime nowDateTimeZone = MethodUtils.convertoToLocalDateTime(nowDate);
+			Long distanceOfTwoDate = MethodUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
+					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));		
 			
 			// Convert to LocalDate Timezone VietNam to get DayOfWeek Exactly
 			LocalDateTime dateTimeZone = MethodUtils.convertoToLocalDateTime(nowDate);
@@ -113,7 +116,7 @@ public class WorkDTO implements Serializable {
 			if (distanceOfTwoDate < 0) {
 				this.statusWork = EnumStatusWork.OUTOFDATE.getValue();
 			} else if (distanceOfTwoDate == 0) {				
-				if (new Date().getTime() > work.getDueDate().getTime()) {
+				if (nowDate.getTime() > work.getDueDate().getTime()) {
 					this.statusWork = EnumStatusWork.OUTOFDATE.getValue();
 				} else {
 					this.statusWork = EnumStatusWork.TODAY.getValue();

@@ -1,13 +1,15 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +62,10 @@ public class UserAdminCreatedDTO implements Serializable  {
 		this.status = user.getStatus();
 		this.totalDateDeletedOrBanned = 0L;
 		if (user.getTimeAdminModified() != null) {
-			this.totalDateDeletedOrBanned = MethodUtils.distanceBetweenTwoDate(user.getTimeAdminModified(), new Date(),  TimeUnit.DAYS);
+			LocalDateTime timeAdminModified = MethodUtils.convertoToLocalDateTime(user.getTimeAdminModified());
+			LocalDateTime nowDate = MethodUtils.convertoToLocalDateTime(new Date());
+			this.totalDateDeletedOrBanned = MethodUtils.distanceDaysBetweenTwoDate(timeAdminModified, nowDate, 
+					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
 		}
 	}
 
