@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.SoundConcentration;
@@ -15,7 +17,9 @@ public interface SoundConcentrationDAO extends JpaRepository<SoundConcentration,
 
 	List<SoundConcentration> findByUserIdIsNullAndStatus(String status);
 	
-	List<SoundConcentration> findByUserIdOrUserIdIsNullAndStatus(Integer userId, String status);
+	@Query(value = "SELECT * FROM sound_concentration s WHERE (s.user_id = :userId or s.user_id IS NULL)"
+			+ " AND s.status = :status", nativeQuery = true)
+	List<SoundConcentration> findByUserIdOrUserIdIsNullAndStatus(@Param("userId") Integer userId, @Param("status") String status);
 	
 	Optional<SoundConcentration> findByIdAndStatus(Integer soundConcentrationId, String status);
 	

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.SoundDone;
@@ -14,7 +16,9 @@ public interface SoundDoneDAO extends JpaRepository<SoundDone, Integer> {
 
 	public List<SoundDone> findByUserIdIsNullAndStatus(String status);
 	
-	List<SoundDone> findByUserIdOrUserIdIsNullAndStatus(Integer userId, String status);
+	@Query(value = "SELECT * FROM sound_done s WHERE (s.user_id = :userId or s.user_id IS NULL)"
+			+ " AND s.status = :status", nativeQuery = true)
+	List<SoundDone> findByUserIdOrUserIdIsNullAndStatus(@Param("userId") Integer userId, @Param("status") String status);
 	
 	Optional<SoundDone> findByIdAndStatus(Integer soundDoneId, String status);
 	
