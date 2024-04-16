@@ -107,7 +107,6 @@ create table folder(
     icon_url text,
     created_date datetime,
     status text,
-    old_status text,
     constraint FolderPrimaryKey primary key(id),
     constraint FolderUserIdForeignKey foreign key(user_id) references users(id)
 );

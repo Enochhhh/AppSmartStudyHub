@@ -29,9 +29,9 @@ insert into users values(8, 'phanhongson234@gmail.com', 'phanhongson234@gmail.co
     null, 'local', 'ACTIVE', null);
     
 -- Folder
-insert into folder values(1, 1, N'Folder 1 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
-insert into folder values(2, 2, N'Folder 1 Nam Do', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
-insert into folder values(3, 1, N'Folder 3 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
+insert into folder values(1, 1, N'Folder 1 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE');
+insert into folder values(2, 2, N'Folder 1 Nam Do', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE');
+insert into folder values(3, 1, N'Folder 3 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE');
 
 -- Project
 insert into project values(1, 1, 1, N'Project 1 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
