@@ -687,4 +687,13 @@ public class WorkService {
 	}
 	*/
 
+	/**
+	 * Persistent all works in list
+	 * 
+	 * @param works
+	 * @return
+	 */
+	public List<Work> persistentAll(List<Work> works) {
+		return workDAO.saveAll(works);
+	}
 }

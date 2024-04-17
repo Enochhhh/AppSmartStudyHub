@@ -13,6 +13,7 @@ import com.focusedapp.smartstudyhub.dao.TagDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Tag;
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -92,9 +93,16 @@ public class TagService {
 	 * @return
 	 */
 	public TagDTO delete(Integer tagId) {
-		
 		Tag tag = findById(tagId);
-		
+		List<Work> works = tag.getWorks();
+		works.stream().forEach(work -> {
+			List<Tag> tags = work.getTags().stream()
+					.filter(t -> !t.getId().equals(tagId))
+					.collect(Collectors.toList());
+			work.setTags(tags);
+		});
+		works = workService.persistentAll(works);
+		//tag.setWorks(null);
 		tagDAO.delete(tag);
 		
 		return new TagDTO(tag);
