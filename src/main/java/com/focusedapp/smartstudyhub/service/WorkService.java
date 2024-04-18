@@ -352,7 +352,8 @@ public class WorkService {
 		if (StringUtils.isEmpty(keySearch)) {
 			works = workDAO.findByUserIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
 		} else {
-			works = workDAO.findByWorkNameContainingAndUserIdAndStatus(keySearch, userId, EnumStatus.ACTIVE.getValue());
+			works = workDAO.findByWorkNameContainingAndUserIdAndStatusBetween(keySearch, userId, EnumStatus.ACTIVE.getValue(), 
+					EnumStatus.COMPLETED.getValue());
 		}
 		return works.stream()
 					.map(w -> new WorkDTO(w))

@@ -25,6 +25,11 @@ public interface WorkDAO extends JpaRepository<Work, Integer> {
 	
 	List<Work> findByWorkNameContainingAndUserIdAndStatus(String keySearch, Integer userId, String status);
 	
+	@Query(value = "select * from works w where w.user_id = :userId and w.work_name like %:keySearch% and (w.status = :statusFirst "
+			+ " or w.status = :statusSecond)", nativeQuery = true)
+	List<Work> findByWorkNameContainingAndUserIdAndStatusBetween(@Param("keySearch") String keySearch, @Param("userId") Integer userId, @Param("statusFirst") String statusFirst, 
+			@Param("statusSecond") String statusSecond);
+	
 	@Query(value = "select * from works w where w.user_id = :userId and (w.status = :statusFirst "
 			+ " or w.status = :statusSecond)", nativeQuery = true)
 	List<Work> findByUserIdAndOneOfTwoStatus(@Param("userId") Integer userId, @Param("statusFirst") String statusFirst, 
