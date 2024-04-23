@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtService;
@@ -487,30 +489,26 @@ public class UserService {
 	 * @param userId
 	 * @return
 	 */
-	public RankUserFocusDTO rankByTimeFocusAllTime(Integer userId) {
+	public RankUserFocusDTO rankByTimeFocusAllTime(Integer userId, Integer page, Integer size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("totalTimeFocus").descending());
+	
+		UserDTO currentUserDto = null;
+		if (page == 0) {
+			User user = findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
+			List<User> allUsers = userDAO.findByStatusAndRoleNot(EnumStatus.ACTIVE.getValue(), EnumRole.ADMIN.getValue(), 
+					Sort.by("totalTimeFocus").descending());
+			currentUserDto = new UserDTO(allUsers.indexOf(user) + 1, user);
+		}
 		
-		User user = findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
-		
-		Comparator<User> comparator = Comparator.comparing(User::getTotalTimeFocus,
-                Comparator.nullsFirst(Comparator.naturalOrder()));
-		
-		List<User> users = userDAO.findByStatus(EnumStatus.ACTIVE.getValue());
-		users = users.stream()
-				.sorted(comparator.reversed())
-				.collect(Collectors.toList());
-		
-		Integer rank = 0;
+		List<User> users = userDAO.findByStatusAndRoleNot(EnumStatus.ACTIVE.getValue(), EnumRole.ADMIN.getValue(), pageable);	
 		List<UserDTO> usersResponse = new ArrayList<>();
-		UserDTO userCurrent = null;
+		Integer rank = page * size;
 		for (User userItem : users) {			
 			UserDTO temp = new UserDTO(++rank, userItem);
 			usersResponse.add(temp);	
-			if (userItem.getId().equals(user.getId())) {
-				userCurrent = temp;
-			} 
 		}
 		
-		return new RankUserFocusDTO(userCurrent, usersResponse);
+		return new RankUserFocusDTO(currentUserDto, usersResponse);
 	}
 	
 	/**

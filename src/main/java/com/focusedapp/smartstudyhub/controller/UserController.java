@@ -106,11 +106,12 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/rank-by-focus-all-time")
-	public ResponseEntity<Result<RankUserFocusDTO>> rankByTimeFocusAllTime(@RequestParam Integer userId) {
+	public ResponseEntity<Result<RankUserFocusDTO>> rankByTimeFocusAllTime(@RequestParam Integer userId, 
+			@RequestParam Integer page, @RequestParam Integer size) {
 
 		Result<RankUserFocusDTO> result = new Result<>();
 
-		RankUserFocusDTO rankResponse = userService.rankByTimeFocusAllTime(userId);
+		RankUserFocusDTO rankResponse = userService.rankByTimeFocusAllTime(userId, page, size);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		result.setData(rankResponse);
