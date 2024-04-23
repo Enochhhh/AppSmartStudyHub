@@ -461,6 +461,7 @@ public class UserService {
 		}
 		user.setCountry(userInfo.getCountry());
 		user.setImageUrl(userInfo.getImageUrl());
+		user.setIsTwoFactor(userInfo.getIsTwoFactor());
 		
 		user = userDAO.save(user);
 		

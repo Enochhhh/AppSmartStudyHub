@@ -17,6 +17,7 @@ import com.focusedapp.smartstudyhub.model.Files;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 
 @Service
 public class CloudinaryService {
@@ -51,7 +52,11 @@ public class CloudinaryService {
 				ObjectUtils.asMap("cloud_name", cloudName, "api_key", apiKey, "api_secret", apiSecret));
 
 		String folder = ConstantUrl.URL_FOLDER + "/" + type + "/";
-
+		String resourceType = "image";
+		if (type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue()) 
+				|| type.equals(EnumTypeFile.SOUNDDONE.getValue())) {
+			resourceType = "video";
+		}
 
 		// Set the transformation if needed (e.g., resizing, cropping, etc.)
 		// Transformation transformation = new
@@ -70,8 +75,16 @@ public class CloudinaryService {
 		String publicId = newFileName;
 
 		// Upload the image to Cloudinary
-		Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
-				ObjectUtils.asMap("folder", folder, "public_id", publicId));
+		Map uploadResult;
+		try {
+			uploadResult = cloudinary.uploader().upload(file.getBytes(),
+					ObjectUtils.asMap("folder", folder, "public_id", publicId, "resource_type", resourceType));
+		} catch (Exception e) {
+			filesDAO.delete(fileSave);
+			throw e;
+		}
+//		Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+//				ObjectUtils.asMap("folder", folder, "public_id", publicId, "resource_type", resourceType));
 
 		fileSave = Files.builder().folder(folder)
 				.id(fileSave.getId())
@@ -99,12 +112,16 @@ public class CloudinaryService {
 	
 		Cloudinary cloudinary = new Cloudinary(
 				ObjectUtils.asMap("cloud_name", cloudName, "api_key", apiKey, "api_secret", apiSecret));
-
+		String resourceType = "image"; 
+		if (publicId.split("/")[1].equals(EnumTypeFile.SOUNDCONCENTRATION.getValue()) 
+				|| publicId.split("/")[1].equals(EnumTypeFile.SOUNDDONE.getValue())) {
+			resourceType = "video"; 
+		}
 		Files file = filesDAO.findByPublicId(publicId)
 				.orElseThrow(() -> new NotFoundValueException("Not Found the file to delete!", "CloudinaryService -> deleteFileInCloudinary"));
 
 		// Upload the image to Cloudinary
-		cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+		cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", resourceType));
 
 		filesDAO.delete(file);
 		

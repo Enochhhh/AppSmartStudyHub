@@ -116,6 +116,7 @@ public class AuthenticationService {
 		return AuthenticationDTO.builder().email(user.getEmail()).firstName(user.getFirstName())
 				.lastName(user.getLastName()).role(user.getRole()).createdAt(user.getCreatedAt().getTime())
 				.imageUrl(user.getImageUrl())
+				.isTwoFactor(user.getIsTwoFactor())
 				.token(jwtService.generateToken(new JwtUser(user))).build();
 	}
 	

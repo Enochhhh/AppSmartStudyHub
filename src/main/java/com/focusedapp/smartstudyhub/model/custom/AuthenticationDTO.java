@@ -29,6 +29,7 @@ public class AuthenticationDTO implements Serializable {
 		this.role = user.getRole();
 		this.createdAt = user.getCreatedAt().getTime();
 		this.imageUrl = user.getImageUrl();
+		this.isTwoFactor = user.getIsTwoFactor();
 	}
 	
 	private Integer id;
@@ -43,5 +44,6 @@ public class AuthenticationDTO implements Serializable {
 	private Long otpTimeExpiration;
 	private String imageUrl;
 	private Integer guestId;
+	private Boolean isTwoFactor;
 	
 }

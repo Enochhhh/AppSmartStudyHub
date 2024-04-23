@@ -33,8 +33,8 @@ public class UserDTO implements Serializable {
 		this.dateOfBirth = user.getDateOfBirth() != null ? user.getDateOfBirth().getTime() : null;
 		this.country = user.getCountry();
 		this.imageUrl = user.getImageUrl();
-		
 		this.totalTimeFocus = user.getTotalTimeFocus();
+		this.isTwoFactor = user.getIsTwoFactor();
 	}
 	
 	public UserDTO(Integer rank, User user) {
@@ -50,7 +50,7 @@ public class UserDTO implements Serializable {
 		this.dateOfBirth = user.getDateOfBirth() != null ? user.getDateOfBirth().getTime() : null;
 		this.country = user.getCountry();
 		this.imageUrl = user.getImageUrl();
-		
+		this.isTwoFactor = user.getIsTwoFactor();
 		this.totalTimeFocus = user.getTotalTimeFocus();
 	}
 	
@@ -68,5 +68,6 @@ public class UserDTO implements Serializable {
 	private String role;
 	private Long createdAt;
 	private String token;
+	private Boolean isTwoFactor;
 
 }

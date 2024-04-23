@@ -32,6 +32,7 @@ create table users(
     provider text,
     status text, -- It have 2 value: ACTIVE, BANNED and DELETED
     time_admin_modified datetime,
+    is_two_factor boolean,
     constraint UserPrimaryKey primary key(id)
 );
 

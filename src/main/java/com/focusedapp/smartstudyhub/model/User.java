@@ -89,6 +89,9 @@ public class User implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeAdminModified;
 	
+	@Column(name = "is_two_factor")
+	private Boolean isTwoFactor;
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Report> reports;
 	
