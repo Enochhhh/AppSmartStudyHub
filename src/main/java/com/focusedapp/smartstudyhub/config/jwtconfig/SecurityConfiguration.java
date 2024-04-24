@@ -53,7 +53,6 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.cors(c -> c.disable())
 			.csrf(cs -> cs.disable())
 			.authorizeHttpRequests(authorize -> authorize.requestMatchers("/mobile/v1/auth/**", "/oauth2/**")
 					.permitAll()
