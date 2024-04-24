@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.focusedapp.smartstudyhub.exception.AccessDeniedHandlerException;
 import com.focusedapp.smartstudyhub.exception.AuthenticationEntryPointException;
@@ -37,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity 
 @RequiredArgsConstructor
+@CrossOrigin(origins ="*", methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT})
 public class SecurityConfiguration {
 	
 	@Autowired
@@ -54,6 +57,7 @@ public class SecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(cs -> cs.disable())
+			.cors(cor -> cor.disable())
 			.authorizeHttpRequests(authorize -> authorize.requestMatchers("/mobile/v1/auth/**", "/oauth2/**")
 					.permitAll()
 					.requestMatchers("/mobile/v1/user/guest/**")
