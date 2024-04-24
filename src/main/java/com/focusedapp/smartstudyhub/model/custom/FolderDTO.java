@@ -53,6 +53,8 @@ public class FolderDTO implements Serializable {
 	private List<ProjectDTO> listProjectCompleted;
 	private List<ProjectDTO> listProjectDeleted;
 	private Long createdDate;
+	private List<WorkDTO> listWorkActive;
+	private List<WorkDTO> listWorkCompleted;
 
 	public FolderDTO(Folder folder) {
 		this.id = folder.getId();
@@ -71,6 +73,8 @@ public class FolderDTO implements Serializable {
 		this.listProjectActive = new ArrayList<>();
 		this.listProjectCompleted = new ArrayList<>();
 		this.listProjectDeleted = new ArrayList<>();
+		this.listWorkActive = new ArrayList<>();
+		this.listWorkCompleted = new ArrayList<>();
 
 		List<Project> projects = folder.getProjects();
 		
@@ -99,10 +103,10 @@ public class FolderDTO implements Serializable {
 							Integer numberPomo = w.getNumberOfPomodoros() - w.getNumberOfPomodorosDone();
 							Integer time = (numberPomo < 0 ? 0 : numberPomo) * w.getTimeOfPomodoro();
 							
-							this.totalWorkActive++;
+							this.listWorkActive.add(new WorkDTO(w));
 							this.totalTimeWork += time;							
 						} else {
-							this.totalWorkCompleted++;
+							this.listWorkCompleted.add(new WorkDTO(w));
 						}
 					});
 				}
@@ -110,6 +114,8 @@ public class FolderDTO implements Serializable {
 			this.totalProjectActive = this.listProjectActive.size();
 			this.totalProjectCompleted = this.listProjectCompleted.size();
 			this.createdDate = folder.getCreatedDate().getTime();
+			this.totalWorkActive = this.listWorkActive.size();
+			this.totalWorkCompleted = this.listWorkCompleted.size();
 		}
 	}
 
