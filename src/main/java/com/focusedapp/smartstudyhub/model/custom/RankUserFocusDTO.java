@@ -22,5 +22,6 @@ public class RankUserFocusDTO implements Serializable {
 	
 	private UserDTO userCurrent;
 	private List<UserDTO> allUsers;
+	private Integer totalUsers;
 
 }

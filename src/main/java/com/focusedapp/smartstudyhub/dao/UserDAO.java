@@ -1,5 +1,6 @@
 package com.focusedapp.smartstudyhub.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.model.projectioninterface.RankUsersProjectionInterface;
 
 @Repository
 public interface UserDAO extends JpaRepository<User, Integer> {
@@ -48,5 +50,14 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 	List<User> findByStatusAndRoleNot(String status, String role, Pageable pageable);
 	
 	List<User> findByStatusAndRoleNot(String status, String role, Sort sort);
+	
+	Integer countByStatusAndRoleNot(String status, String role);
+	
+	@Query(value = "select ROW_NUMBER() OVER (ORDER BY SUM(p.time_of_pomodoro) DESC) as ranks, "
+			+ "u.id id, u.first_name firstName, u.last_name lastName, u.image_url imageUrl ,sum(p.time_of_pomodoro) totalTimeFocus " + 
+			"from users u left join pomodoros p on p.user_id = u.id and p.created_date >= :date and p.is_end_pomo = false " +
+			"where u.status = 'ACTIVE' and u.roles != 'ADMIN' " +
+			"group by u.id ", nativeQuery = true)
+	List<RankUsersProjectionInterface> rankByTimeFocusPreviousMonth(@Param("date") Date date, Pageable pageable);
 	
 }

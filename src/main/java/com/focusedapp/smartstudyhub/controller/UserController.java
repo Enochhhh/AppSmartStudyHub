@@ -2,6 +2,7 @@ package com.focusedapp.smartstudyhub.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -126,11 +127,11 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/rank-by-focus-previous-month")
-	public ResponseEntity<Result<RankUserFocusDTO>> rankByTimeFocusPreviousMonth(@RequestParam Integer userId) {
+	public ResponseEntity<Result<RankUserFocusDTO>> rankByTimeFocusPreviousMonth(@RequestParam Integer userId, Pageable pageable) {
 
 		Result<RankUserFocusDTO> result = new Result<>();
 
-		RankUserFocusDTO rankResponse = userService.rankByTimeFocusPreviousMonth(userId);
+		RankUserFocusDTO rankResponse = userService.rankByTimeFocusPreviousMonth(userId, pageable);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		result.setData(rankResponse);

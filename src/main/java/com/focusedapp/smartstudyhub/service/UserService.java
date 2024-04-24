@@ -2,7 +2,6 @@ package com.focusedapp.smartstudyhub.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +28,7 @@ import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
 import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
 import com.focusedapp.smartstudyhub.model.custom.UserAdminCreatedDTO;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
+import com.focusedapp.smartstudyhub.model.projectioninterface.RankUsersProjectionInterface;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -493,11 +493,13 @@ public class UserService {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("totalTimeFocus").descending());
 	
 		UserDTO currentUserDto = null;
+		Integer totalUsers = 0;
 		if (page == 0) {
 			User user = findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
 			List<User> allUsers = userDAO.findByStatusAndRoleNot(EnumStatus.ACTIVE.getValue(), EnumRole.ADMIN.getValue(), 
 					Sort.by("totalTimeFocus").descending());
 			currentUserDto = new UserDTO(allUsers.indexOf(user) + 1, user);
+			totalUsers = allUsers.size();
 		}
 		
 		List<User> users = userDAO.findByStatusAndRoleNot(EnumStatus.ACTIVE.getValue(), EnumRole.ADMIN.getValue(), pageable);	
@@ -508,7 +510,7 @@ public class UserService {
 			usersResponse.add(temp);	
 		}
 		
-		return new RankUserFocusDTO(currentUserDto, usersResponse);
+		return new RankUserFocusDTO(currentUserDto, usersResponse, totalUsers);
 	}
 	
 	/**
@@ -517,40 +519,38 @@ public class UserService {
 	 * @param userId
 	 * @return
 	 */
-	public RankUserFocusDTO rankByTimeFocusPreviousMonth(Integer userId) {
+	public RankUserFocusDTO rankByTimeFocusPreviousMonth(Integer userId, Pageable pageable) {
 		
-		User user = findByIdAndStatus(userId, EnumStatus.ACTIVE.getValue());
-		
-		Comparator<User> comparator = Comparator.comparing(User::getTotalTimeFocus,
-                Comparator.nullsFirst(Comparator.naturalOrder()));
-		
-		List<User> users = userDAO.findByStatus(EnumStatus.ACTIVE.getValue());
-		
-		// Calculate Total Time Focus Previous Month
-		users.stream().forEach(u -> {
-			Long datemi = new Date().getTime();
-			Long miliAbstract = 30L * 24L * 3600L * 1000L;
-			Long dateMili = datemi - miliAbstract;
-			Integer totalTimeFocusPreMonth = pomodoroService.calculateTotalTimeFocusPreviousMonth(u, new Date(dateMili));
-			u.setTotalTimeFocus(totalTimeFocusPreMonth);
-		});
-		
-		users = users.stream()
-				.sorted(comparator.reversed())
-				.collect(Collectors.toList());
-		
-		Integer rank = 0;
+		Integer totalUsers = userDAO.countByStatusAndRoleNot(EnumStatus.ACTIVE.getValue(), EnumRole.ADMIN.getValue());
+		Long datemi = new Date().getTime();
+		Long miliAbstract = 30L * 24L * 3600L * 1000L;
+		Long dateMili = datemi - miliAbstract;
+		List<RankUsersProjectionInterface> listUserRanked = userDAO.rankByTimeFocusPreviousMonth(new Date(dateMili), pageable);
 		List<UserDTO> usersResponse = new ArrayList<>();
 		UserDTO userCurrent = null;
-		for (User userItem : users) {			
-			UserDTO temp = new UserDTO(++rank, userItem);
-			usersResponse.add(temp);	
-			if (userItem.getId().equals(user.getId())) {
-				userCurrent = temp;
-			} 
+		for (RankUsersProjectionInterface e : listUserRanked) {
+			if (e.getId().equals(userId)) {
+				userCurrent = new UserDTO();
+				userCurrent.setId(e.getId());
+				userCurrent.setRank(e.getRanks());
+				userCurrent.setFirstName(e.getFirstName());
+				userCurrent.setLastName(e.getLastName());
+				userCurrent.setTotalTimeFocus(e.getTotalTimeFocus() == null ? 0 : e.getTotalTimeFocus());
+				userCurrent.setImageUrl(e.getImageUrl());
+				usersResponse.add(userCurrent);
+			} else {
+				UserDTO tempUser = new UserDTO();
+				tempUser.setId(e.getId());
+				tempUser.setRank(e.getRanks());
+				tempUser.setFirstName(e.getFirstName());
+				tempUser.setLastName(e.getLastName());
+				tempUser.setTotalTimeFocus(e.getTotalTimeFocus() == null ? 0 : e.getTotalTimeFocus());
+				tempUser.setImageUrl(e.getImageUrl());
+				usersResponse.add(tempUser);
+			}
 		}
 		
-		return new RankUserFocusDTO(userCurrent, usersResponse);
+		return new RankUserFocusDTO(userCurrent, usersResponse, totalUsers);
 	}
 	
 	/**
