@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.config.jwtconfig;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.sql.DataSource;
 
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.cors.CorsConfiguration;
 
 import com.focusedapp.smartstudyhub.exception.AccessDeniedHandlerException;
 import com.focusedapp.smartstudyhub.exception.AuthenticationEntryPointException;
@@ -57,7 +59,15 @@ public class SecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(cs -> cs.disable())
-			.cors(cor -> cor.disable())
+			.cors(cors -> cors
+	                .configurationSource(request -> {
+	                    CorsConfiguration configuration = new CorsConfiguration();
+	                    configuration.setAllowedOrigins(Arrays.asList("*"));
+	                    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+	                    configuration.setAllowedHeaders(Arrays.asList("*"));
+	                    return configuration;
+	                })
+	            )
 			.authorizeHttpRequests(authorize -> authorize.requestMatchers("/mobile/v1/auth/**", "/oauth2/**")
 					.permitAll()
 					.requestMatchers("/mobile/v1/user/guest/**")
