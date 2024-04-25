@@ -258,20 +258,6 @@ create table files(
     constraint FilesUserIdForeignKey foreign key(user_id) references users(id)
 );
 
--- TRIGGER
--- Trigger auto update number of pomodoros and time passed of work when update extra work
--- DELIMITER $$  
--- create trigger after_update_extra_work
--- after update 
--- on extra_work for each row
--- begin 
--- 	update works 
---     set number_of_pomodoros_done = ifnull(number_of_pomodoros_done, 0) + ifnull(new.number_of_pomodoros, 0) - ifnull(old.number_of_pomodoros, 0),
--- 		time_passed = ifnull(time_passed, 0) + ifnull(new.time_passed, 0) - ifnull(old.time_passed, 0)
---     where id = old.work_id;
--- end $$
--- DELIMITER ;
-
 -- TRIGGER auto update time focus of user when update time passed of work
 -- DELIMITER $$
 -- create trigger after_update_works
@@ -324,6 +310,19 @@ begin
 				where id = new.extra_work_id;
 		end if;
 	end if;
+end $$
+DELIMITER ;
+
+-- Trigger auto update number of pomodoros and time passed of work when update extra work
+DELIMITER $$  
+create trigger after_update_extra_work
+after update 
+on extra_work for each row
+begin 
+	update works 
+    set number_of_pomodoros_done = ifnull(number_of_pomodoros_done, 0) + ifnull(new.number_of_pomodoros, 0) - ifnull(old.number_of_pomodoros, 0),
+		time_passed = ifnull(time_passed, 0) + ifnull(new.time_passed, 0) - ifnull(old.time_passed, 0)
+    where id = old.work_id;
 end $$
 DELIMITER ;
 

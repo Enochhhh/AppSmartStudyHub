@@ -78,6 +78,37 @@ public class SecurityConfiguration {
 					.anyRequest()
 					.authenticated())
 			.formLogin(f -> f.disable())
+			.oauth2Login(o -> o.userInfoEndpoint(ui -> ui.userService(oauthUserService))
+					//.authorizationEndpoint(au -> au.baseUri("/oauth2/authorize"))
+					//.redirectionEndpoint(r -> r.baseUri("/oauth2/callback/*"))
+					.successHandler(new AuthenticationSuccessHandler() {
+
+						@Override
+						public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+								Authentication authentication) throws IOException, ServletException {
+							// TODO Auto-generated method stub
+							OAuth2UserInfo oauthUser = (OAuth2UserInfo) authentication.getPrincipal();
+
+							User user = userService.processOAuthPostLogin(oauthUser);
+							if (user.getStatus().equals(EnumStatus.DELETED.getValue())) {
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-deleted");
+							} else if (user.getStatus().equals(EnumStatus.BANNED.getValue())) {
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-banned");
+							}
+							else {
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));
+							}				           
+						}
+					})
+					.failureHandler(new AuthenticationFailureHandler() {
+
+						@Override
+						public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+								AuthenticationException exception) throws IOException, ServletException {
+							// TODO Auto-generated method stub
+				            response.sendRedirect(ConstantUrl.CLIENT_URL + "/error");
+						}
+					})) 
 			.logout(l -> l.permitAll())
 			.rememberMe(r -> r.tokenRepository(persistentTokenRepository()))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))	
