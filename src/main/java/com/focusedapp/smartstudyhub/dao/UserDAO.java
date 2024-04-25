@@ -62,4 +62,6 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 			"group by u.id ", nativeQuery = true)
 	List<RankUsersProjectionInterface> rankByTimeFocusPreviousMonth(@Param("date") Date date, Pageable pageable);
 	
+	Integer countByRoleNot(String role);
+	
 }

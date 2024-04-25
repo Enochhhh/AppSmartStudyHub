@@ -1,11 +1,15 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
-
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +39,14 @@ public class UserDTO implements Serializable {
 		this.imageUrl = user.getImageUrl();
 		this.totalTimeFocus = user.getTotalTimeFocus();
 		this.isTwoFactor = user.getIsTwoFactor();
+		this.status = user.getStatus();
+		this.totalDateDeletedOrBanned = 0L;
+		if (user.getTimeAdminModified() != null) {
+			LocalDateTime timeAdminModified = MethodUtils.convertoToLocalDateTime(user.getTimeAdminModified());
+			LocalDateTime nowDate = MethodUtils.convertoToLocalDateTime(new Date());
+			this.totalDateDeletedOrBanned = MethodUtils.distanceDaysBetweenTwoDate(timeAdminModified, nowDate, 
+					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
+		}
 	}
 	
 	public UserDTO(Integer rank, User user) {
@@ -69,5 +81,8 @@ public class UserDTO implements Serializable {
 	private Long createdAt;
 	private String token;
 	private Boolean isTwoFactor;
+	private String status;
+	private Long totalDateDeletedOrBanned;
+	private String password;
 
 }

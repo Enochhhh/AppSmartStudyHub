@@ -26,7 +26,6 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
 import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
-import com.focusedapp.smartstudyhub.model.custom.UserAdminCreatedDTO;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.model.projectioninterface.RankUsersProjectionInterface;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
@@ -78,6 +77,9 @@ public class UserService {
 	
 	@Autowired
 	SoundDoneService soundDoneService;
+	
+	@Autowired
+	ThreadService threadService;
 
 	/**
 	 * 
@@ -559,7 +561,7 @@ public class UserService {
 	 * @param request
 	 * @return
 	 */
-	public UserAdminCreatedDTO createUser(UserAdminCreatedDTO request) {
+	public UserDTO createUser(UserDTO request) {
 
 		if (existsByUserName(request.getEmail()) 
 				|| existsByEmailAndProviderLocal(request.getEmail())) {
@@ -580,9 +582,9 @@ public class UserService {
 				.status(EnumStatus.ACTIVE.getValue())
 				.build();
 		persistent(user);
-		sendNewAccountToEmailUser(request.getEmail(), request);
+		threadService.sendNewAccountToEmailUser(request);
 		
-		return request;
+		return new UserDTO(user);
 
 	}
 	
@@ -591,20 +593,21 @@ public class UserService {
 	 * 
 	 * @param request
 	 */
-	public void sendNewAccountToEmailUser(String email, UserAdminCreatedDTO request) {
+	public void sendNewAccountToEmailUser(UserDTO request) {
 
-		String subject = "Smart Study Hub send to you the new account: ";
+		String subject = "Smart Study Hub send to you the new account information";
 		StringBuilder body = new StringBuilder();
-		body.append("<b>Full Name: </b>");
+		body.append("<b>Full Name: </b> <i>");
 		body.append(request.getLastName());
 		body.append(" "); body.append(request.getFirstName());
-		body.append("<br> <b>Email Login: </b>"); 
+		body.append("</i> <br> <b>Email Login: </b> <i>"); 
 		body.append(request.getEmail());
-		body.append("<br> <b>Password: </b>");
+		body.append("</i> <br> <b>Password: </b> <i>");
 		body.append(request.getPassword());
-		body.append("<br> <b>Please change your account password immediately to ensure the security of your account</b> <br>"); 
+		body.append("</i> <br> <br> Please change your account password immediately to ensure the security of your account. <br>"); 
+		body.append("Thank you.");
 		
-		mailSenderService.sendEmail(email, subject, body.toString());
+		mailSenderService.sendEmail(request.getEmail(), subject, body.toString());
 	}
 	
 	/**
@@ -613,7 +616,7 @@ public class UserService {
 	 * @param request
 	 * @return
 	 */
-	public UserAdminCreatedDTO updateUser(UserAdminCreatedDTO request) {
+	public UserDTO updateUser(UserDTO request) {
 
 		User user = findById(request.getId());
 
@@ -629,7 +632,7 @@ public class UserService {
 		user.setRole(request.getRole());
 			
 		persistent(user);	
-		return new UserAdminCreatedDTO(user);
+		return new UserDTO(user);
 	}
 	
 	/**
@@ -638,7 +641,7 @@ public class UserService {
 	 * @param request
 	 * @return
 	 */
-	public UserAdminCreatedDTO markStatus(UserAdminCreatedDTO request) {
+	public UserDTO markStatus(UserDTO request) {
 
 		User user = findById(request.getId());
 		user.setStatus(request.getStatus());
@@ -649,7 +652,7 @@ public class UserService {
 			user.setTimeAdminModified(new Date());
 		}		
 		persistent(user);	
-		return new UserAdminCreatedDTO(user);
+		return new UserDTO(user);
 	}
 	
 	/**
@@ -658,11 +661,11 @@ public class UserService {
 	 * @param request
 	 * @return
 	 */
-	public List<UserAdminCreatedDTO> getAll(Pageable pageable) {
+	public List<UserDTO> getAll(Pageable pageable) {
 
 		List<User> users = userDAO.findByRoleNot(EnumRole.ADMIN.getValue(), pageable);	
 		return users.stream()
-				.map(u -> new UserAdminCreatedDTO(u))
+				.map(u -> new UserDTO(u))
 				.collect(Collectors.toList());
 	}
 	
@@ -672,14 +675,14 @@ public class UserService {
 	 * @param id
 	 * @return
 	 */
-	public UserAdminCreatedDTO adminDeleteById(Integer id) {
+	public UserDTO adminDeleteById(Integer id) {
 		
 		User user = userDAO.findById(id).orElseThrow(
 				() -> new NotFoundValueException("Not Found the user to delete", "UserService->adminDeleteById"));
 		// Delete All Files of User
 		userDAO.delete(user);
 
-		return new UserAdminCreatedDTO(user);
+		return new UserDTO(user);
 	}
 	
 	/**
@@ -700,6 +703,15 @@ public class UserService {
 		soundConcentrationService.deleteAllSoundsConcentrationOfUser(user);
 		soundDoneService.deleteAllSoundsDoneOfUser(user);;
 		filesService.deleteAllFilesUser(user);
+	}
+	/**
+	 * Count Users by role not
+	 * 
+	 * @param role
+	 * @return
+	 */
+	public Integer countByRoleNot(String role) {
+		return userDAO.countByRoleNot(role);
 	}
 	
 }
