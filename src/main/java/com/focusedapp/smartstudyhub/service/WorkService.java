@@ -4,6 +4,7 @@ package com.focusedapp.smartstudyhub.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -27,6 +28,7 @@ import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.TagDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
+import com.focusedapp.smartstudyhub.model.custom.WorkGroupByDateDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
@@ -471,14 +473,30 @@ public class WorkService {
 	 * @param userId
 	 * @return
 	 */
-	public List<WorkDTO> getWorkCompletedOfUser(Integer userId) {
+	public List<WorkGroupByDateDTO> getWorkCompletedOfUser(Integer userId) {
 		
-		List<Work> works = workDAO.findByUserIdAndStatus(userId, EnumStatus.COMPLETED.getValue());
+		List<Work> worksDb = workDAO.findByUserIdAndStatus(userId, EnumStatus.COMPLETED.getValue());
 		
-		return works.stream()
-				.map(w -> new WorkDTO(w))
-				.collect(Collectors.toList());	
-		
+		Map<Long, List<WorkDTO>> mapWork = worksDb.stream()	
+				.map(work -> new WorkDTO(work))				
+				.collect(Collectors.groupingBy(w -> { 
+						Date date = new Date(w.getEndTime());
+						// Get date at time 00:00:00
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(date);
+						calendar.set(Calendar.HOUR_OF_DAY, 0);
+						calendar.set(Calendar.MINUTE, 0);
+				        calendar.set(Calendar.SECOND, 0);
+				        calendar.set(Calendar.MILLISECOND, 0);
+				        date = calendar.getTime();
+						return date.getTime();
+					}, Collectors.toList()));
+		mapWork.values().forEach(list -> list.sort(Comparator.comparing(WorkDTO::getEndTime).reversed()));
+		List<WorkGroupByDateDTO> works = new ArrayList<>();
+		for (Map.Entry<Long, List<WorkDTO>> entry : mapWork.entrySet()) {
+			works.add(new WorkGroupByDateDTO(entry.getKey(), entry.getValue()));
+		}
+		return works;
 	}
 	
 	/**

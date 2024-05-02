@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
+import com.focusedapp.smartstudyhub.model.custom.WorkGroupByDateDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
 import com.focusedapp.smartstudyhub.service.WorkService;
@@ -335,9 +336,9 @@ public class WorkController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/get-work-completed")
-	public ResponseEntity<Result<List<WorkDTO>>> getWorkCompletedOfUser(@RequestParam Integer userId) {
+	public ResponseEntity<Result<List<WorkGroupByDateDTO>>> getWorkCompletedOfUser(@RequestParam Integer userId) {
 		
-		Result<List<WorkDTO>> result = new Result<>();
+		Result<List<WorkGroupByDateDTO>> result = new Result<>();
 		
 		if (userId == null || userId < 1) {
 			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
@@ -346,7 +347,7 @@ public class WorkController extends BaseController {
 			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 		
-		List<WorkDTO> workCompleted = workService.getWorkCompletedOfUser(userId);
+		List<WorkGroupByDateDTO> workCompleted = workService.getWorkCompletedOfUser(userId);
 		
 		result.setData(workCompleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

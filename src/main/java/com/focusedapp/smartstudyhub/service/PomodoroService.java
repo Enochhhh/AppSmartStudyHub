@@ -121,7 +121,7 @@ public class PomodoroService {
 				        date = calendar.getTime();
 						return date.getTime();
 					}, Collectors.toList()));
-		mapPomodoro.values().forEach(list -> list.sort(Comparator.comparing(PomodoroDTO::getEndTime)));
+		mapPomodoro.values().forEach(list -> list.sort(Comparator.comparing(PomodoroDTO::getEndTime).reversed()));
 		List<PomorodoGroupByDateDTO> pomodoros = new ArrayList<>();
 		for (Map.Entry<Long, List<PomodoroDTO>> entry : mapPomodoro.entrySet()) {
 			pomodoros.add(new PomorodoGroupByDateDTO(entry.getKey(), entry.getValue()));
@@ -162,4 +162,5 @@ public class PomodoroService {
 	public void deleteAllPomodorosOfUser(User user) {
 		pomodoroDAO.deleteByUser(user);
 	}
+	
 }

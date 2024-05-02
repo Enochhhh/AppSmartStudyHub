@@ -66,6 +66,10 @@ public class Project implements Serializable {
 	@Column(name = "old_status")
 	private String oldStatus;
 	
+	@Column(name = "end_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date endTime;
+	
 	@OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Work> works;
 	

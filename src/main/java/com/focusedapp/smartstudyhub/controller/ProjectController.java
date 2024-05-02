@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
+import com.focusedapp.smartstudyhub.model.custom.ProjectGroupByDateDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.ProjectService;
@@ -403,4 +404,28 @@ public class ProjectController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Get Projects completed of User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping("/get-project-completed")
+	public ResponseEntity<Result<List<ProjectGroupByDateDTO>>> getProjectsCompletedOfUser(@RequestParam Integer userId) {
+		Result<List<ProjectGroupByDateDTO>> result = new Result<>();
+		
+		if (userId == null || userId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid !");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<ProjectGroupByDateDTO> projects = projectService.getProjectsCompletedOfUser(userId);
+		
+		result.setData(projects);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
 }

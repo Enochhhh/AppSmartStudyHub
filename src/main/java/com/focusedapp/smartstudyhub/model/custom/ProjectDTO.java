@@ -38,6 +38,7 @@ public class ProjectDTO implements Serializable {
 	private List<WorkDTO> listWorkCompleted;
 	private Long createdDate;
 	private List<WorkDTO> listWorkDeleted;
+	private Long endTime;
 	
 	public ProjectDTO(Project project) {
 		this.id = project.getId();
@@ -49,6 +50,9 @@ public class ProjectDTO implements Serializable {
 		this.colorCode = project.getColorCode();
 		this.iconUrl = project.getIconUrl();
 		this.status = project.getStatus();
+		if (project.getEndTime() != null) {
+			this.endTime = project.getEndTime().getTime();
+		}
 		this.totalTimeWork = 0;
 		this.totalWorkActive = 0;
 		this.totalWorkCompleted = 0;

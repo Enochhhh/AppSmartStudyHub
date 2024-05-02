@@ -122,6 +122,7 @@ create table project(
     created_date datetime,
     status text,
     old_status text,
+    end_time datetime,
     constraint ProjectPrimaryKey primary key(id),
     constraint ProjectFolderId foreign key(folder_id) references folder(id),
     constraint ProjectUserIdForeignKey foreign key(user_id) references users(id)

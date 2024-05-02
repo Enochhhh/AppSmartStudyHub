@@ -34,11 +34,11 @@ insert into folder values(2, 2, N'Folder 1 Nam Do', '#000000', null, '2023-11-28
 insert into folder values(3, 1, N'Folder 3 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE');
 
 -- Project
-insert into project values(1, 1, 1, N'Project 1 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
-insert into project values(2, 1, 1, N'Project 2 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
-insert into project values(3, 2, 2, N'Project 1 Nam Do', '#000000', null, '2023-11-28 00:00:00','ACTIVE', null);
-insert into project values(4, 1, 1, N'Project 3 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
-insert into project values(5, 1, 1, N'Project 4 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null);
+insert into project values(1, 1, 1, N'Project 1 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null, null);
+insert into project values(2, 1, 1, N'Project 2 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null, null);
+insert into project values(3, 2, 2, N'Project 1 Nam Do', '#000000', null, '2023-11-28 00:00:00','ACTIVE', null, null);
+insert into project values(4, 1, 1, N'Project 3 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null, null);
+insert into project values(5, 1, 1, N'Project 4 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE', null, null);
 
 -- Theme
 insert into theme values(1, null, N'Sunflower Garden', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1702954116/SmartStudyHub/THEME/DEFAULT/bg_focus_1_ntjiwe.jpg',
