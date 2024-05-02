@@ -30,6 +30,7 @@ public class AuthenticationDTO implements Serializable {
 		this.createdAt = user.getCreatedAt().getTime();
 		this.imageUrl = user.getImageUrl();
 		this.isTwoFactor = user.getIsTwoFactor();
+		this.dueDatePremium = 0L;
 	}
 	
 	private Integer id;
@@ -45,5 +46,6 @@ public class AuthenticationDTO implements Serializable {
 	private String imageUrl;
 	private Integer guestId;
 	private Boolean isTwoFactor;
+	private Long dueDatePremium;
 	
 }

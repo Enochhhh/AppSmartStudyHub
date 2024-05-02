@@ -102,6 +102,9 @@ public class User implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeLastUse;
 	
+	@Column(name = "due_date_premium")
+	private Date dueDatePremium;
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Report> reports;
 	

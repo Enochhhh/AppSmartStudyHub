@@ -52,6 +52,13 @@ public class UserDTO implements Serializable {
 		if (user.getTimeLastUse() != null) {
 			this.timeLastUse = user.getTimeLastUse().getTime();
 		}
+		this.dueDatePremium = 0L;
+		if (user.getDueDatePremium() != null) {
+			LocalDateTime dueDateTimeZone = MethodUtils.convertoToLocalDateTime(user.getDueDatePremium());
+			LocalDateTime nowDateTimeZone = MethodUtils.convertoToLocalDateTime(new Date());
+			this.dueDatePremium = MethodUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
+					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
+		}
 	}
 	
 	public UserDTO(Integer rank, User user) {
@@ -93,4 +100,5 @@ public class UserDTO implements Serializable {
 	private Integer totalWorks;
 	private Integer totalPomodoros;
 	private Long timeLastUse;
+	private Long dueDatePremium;
 }

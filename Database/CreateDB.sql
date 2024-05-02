@@ -36,6 +36,7 @@ create table users(
     total_works int,
     total_pomodoros int,
     time_last_use datetime,
+    due_date_premium datetime,
     constraint UserPrimaryKey primary key(id)
 );
 

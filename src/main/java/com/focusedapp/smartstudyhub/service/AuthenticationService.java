@@ -1,5 +1,7 @@
 package com.focusedapp.smartstudyhub.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +24,11 @@ import com.focusedapp.smartstudyhub.model.OtpCode;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 import com.focusedapp.smartstudyhub.util.enumerate.Provider;
 
 @Service
@@ -114,11 +118,20 @@ public class AuthenticationService {
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 		user.setTimeLastUse(new Date());
 		userService.persistent(user);
+		
+		Long dueDatePremium = 0L;
+		if (user.getDueDatePremium() != null) {
+			LocalDateTime dueDateTimeZone = MethodUtils.convertoToLocalDateTime(user.getDueDatePremium());
+			LocalDateTime nowDateTimeZone = MethodUtils.convertoToLocalDateTime(new Date());
+			dueDatePremium = MethodUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
+					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
+		}
 
 		return AuthenticationDTO.builder().email(user.getEmail()).firstName(user.getFirstName())
 				.lastName(user.getLastName()).role(user.getRole()).createdAt(user.getCreatedAt().getTime())
 				.imageUrl(user.getImageUrl())
 				.isTwoFactor(user.getIsTwoFactor())
+				.dueDatePremium(dueDatePremium)
 				.token(jwtService.generateToken(new JwtUser(user))).build();
 	}
 	
