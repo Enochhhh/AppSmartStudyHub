@@ -700,11 +700,22 @@ public class UserService {
 		workService.deleteAllWorksOfUser(user);
 		pomodoroService.deleteAllPomodorosOfUser(user);
 		tagService.deleteAllTagsOfUser(user);
-		themeService.deleteAllThemesOfUser(user);
-		soundConcentrationService.deleteAllSoundsConcentrationOfUser(user);
-		soundDoneService.deleteAllSoundsDoneOfUser(user);;
-		filesService.deleteAllFilesUser(user);
+		
+		threadService.deleteAllThemesOfUser(user);
+		threadService.deleteAllSoundsConcentrationOfUser(user);
+		threadService.deleteAllSoundsDoneOfUser(user);;
+		threadService.deleteAllFilesUser(user);
+		threadService.clearInfo(user);
 	}
+	
+	public void clearInfo(User user) {
+		user.setTotalWorks(null);
+		user.setIsTwoFactor(false);
+		user.setTotalPomodoros(null);
+		user.setTotalTimeFocus(null);
+		persistent(user);
+	}
+	
 	/**
 	 * Count Users by role not
 	 * 

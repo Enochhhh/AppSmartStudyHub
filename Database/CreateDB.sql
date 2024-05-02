@@ -55,18 +55,6 @@ create table report(
     constraint ReportUserIdForeignKey foreign key(user_id) references users(id)
 );
 
-create table vote(
-	id int auto_increment,
-    user_id int,
-    title nvarchar(100),
-    content nvarchar(300),
-    created_date datetime,
-    number_star int,
-    status text,
-	constraint VotePrimaryKey primary key(id),
-    constraint VoteUserIdForeignKey foreign key(user_id) references users(id)
-);
-
 create table study_group(
 	id int auto_increment,
     codes text,

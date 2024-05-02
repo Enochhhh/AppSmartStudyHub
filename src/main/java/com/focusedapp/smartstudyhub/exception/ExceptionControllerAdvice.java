@@ -225,4 +225,34 @@ public class ExceptionControllerAdvice {
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.UNAUTHORIZED);
 	}
 	
+	@ExceptionHandler(value = ISException.class)
+	public ResponseEntity<Result<JSONObject>> iSException(ISException exception, HttpServletRequest req) {
+		
+		Logger logger = LoggerFactory.getLogger(ExceptionControllerAdvice.class);
+		logger.error(exception.getMessage());
+		exception.printStackTrace();
+		
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.SYSTEM_FAILURE.getCode());
+		result.getMeta().setMessage(StatusCode.SYSTEM_FAILURE.getMessage());
+		
+		ErrorLog errorLog = ErrorLog.builder()
+				.className(exception.getE().getClass().getCanonicalName())
+				.error(exception.getE().getClass().getClass().getSimpleName())
+				.message(exception.getE().getMessage())
+				.path(req.getRequestURI())
+				.stackTrace(Arrays.stream(exception.getE().getStackTrace())
+		                .map(s->s.toString())
+		                .collect(Collectors.joining("\n")))
+				.createdDate(new Date()).build();
+		errorLog = errorLogDAO.save(errorLog);
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "System Failure - Unknown Error");
+		jsonObject.put("logId", errorLog.getId());
+		result.setData(jsonObject);
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+	} 
+	
 }
