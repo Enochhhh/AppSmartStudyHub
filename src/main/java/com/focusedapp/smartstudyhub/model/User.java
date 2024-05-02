@@ -95,6 +95,10 @@ public class User implements Serializable {
 	@Column(name = "total_works")
 	private Integer totalWorks;
 	
+	@Column(name = "time_last_use")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timeLastUse;
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Report> reports;
 	

@@ -34,6 +34,7 @@ create table users(
     time_admin_modified datetime,
     is_two_factor boolean,
     total_works int,
+    time_last_use datetime,
     constraint UserPrimaryKey primary key(id)
 );
 

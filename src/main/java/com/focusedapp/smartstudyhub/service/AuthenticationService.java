@@ -112,6 +112,8 @@ public class AuthenticationService {
 			
 		authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+		user.setTimeLastUse(new Date());
+		userService.persistent(user);
 
 		return AuthenticationDTO.builder().email(user.getEmail()).firstName(user.getFirstName())
 				.lastName(user.getLastName()).role(user.getRole()).createdAt(user.getCreatedAt().getTime())

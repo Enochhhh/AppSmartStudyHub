@@ -188,6 +188,7 @@ public class UserService {
 					.imageUrl(ConstantUrl.DEFAULT_IMAGE).build();	
 		user = persistent(user);
 		user.setFirstName(user.getId().toString());
+		user.setTimeLastUse(new Date());
 		user = persistent(user);
 		return UserDTO.builder().firstName(user.getFirstName()).lastName(user.getLastName()).id(user.getId())
 				.role(user.getRole()).createdAt(user.getCreatedAt().getTime())
@@ -714,4 +715,19 @@ public class UserService {
 		return userDAO.countByRoleNot(role);
 	}
 	
+	/**
+	 * Update time last use of Guest
+	 * 
+	 * @param guestId
+	 * @return
+	 */
+	public Boolean updateTimeLastUseOfGuest(Integer guestId) {
+		User user = findByIdAndStatus(guestId, EnumStatus.ACTIVE.getValue());
+		if (!user.getRole().equals(EnumRole.GUEST.getValue())) {
+			return false;
+		}
+		user.setTimeLastUse(new Date());
+		persistent(user);
+		return true;
+	}
 }

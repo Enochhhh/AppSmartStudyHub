@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.model.User;
+import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
@@ -138,6 +139,33 @@ public class UserController extends BaseController {
 
 		return createResponseEntity(result);
 
+	}
+	
+	/**
+	 * Update time last use of Guest
+	 * 
+	 * @param guestId
+	 * @return
+	 */
+	@PutMapping("/update-time-last-use")
+	public ResponseEntity<Result<AllResponseTypeDTO>> updateTimeLastUseOfGuest(@RequestParam Integer guestId) {
+		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		Boolean isUpdated = userService.updateTimeLastUseOfGuest(guestId);
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
+		if (isUpdated) {
+			data.setStringType("Updated Success!");
+			result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+			result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		} else {
+			data.setStringType("Updated Failure! Don't have permission to update this account.");
+			result.getMeta().setStatusCode(StatusCode.UNAUTHORIZED.getCode());
+			result.getMeta().setMessage(StatusCode.UNAUTHORIZED.getMessage());
+		}
+		data.setBooleanType(isUpdated);
+		result.setData(data);
+		
+		return createResponseEntity(result);
 	}
 
 }
