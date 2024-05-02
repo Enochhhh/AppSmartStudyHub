@@ -34,6 +34,7 @@ create table users(
     time_admin_modified datetime,
     is_two_factor boolean,
     total_works int,
+    total_pomodoros int,
     time_last_use datetime,
     constraint UserPrimaryKey primary key(id)
 );
@@ -283,7 +284,8 @@ on pomodoros for each row
 begin 
 	if new.is_end_pomo = false then
 		update users 
-				set total_time_focus  = ifnull(total_time_focus, 0) + new.time_of_pomodoro
+				set total_time_focus  = ifnull(total_time_focus, 0) + new.time_of_pomodoro,
+					total_pomodoros = ifnull(total_pomodoros, 0) + 1
 				where id = new.user_id;
 	end if;
 	if new.work_id is not null then

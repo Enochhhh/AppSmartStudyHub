@@ -48,6 +48,7 @@ public class UserDTO implements Serializable {
 					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
 		}
 		this.totalWorks = user.getTotalWorks();
+		this.totalPomodoros = user.getTotalPomodoros();
 		if (user.getTimeLastUse() != null) {
 			this.timeLastUse = user.getTimeLastUse().getTime();
 		}
@@ -90,5 +91,6 @@ public class UserDTO implements Serializable {
 	private Long totalDateDeletedOrBanned;
 	private String password;
 	private Integer totalWorks;
+	private Integer totalPomodoros;
 	private Long timeLastUse;
 }

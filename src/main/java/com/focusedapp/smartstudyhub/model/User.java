@@ -95,6 +95,9 @@ public class User implements Serializable {
 	@Column(name = "total_works")
 	private Integer totalWorks;
 	
+	@Column(name = "total_pomodoros")
+	private Integer totalPomodoros;
+	
 	@Column(name = "time_last_use")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeLastUse;
