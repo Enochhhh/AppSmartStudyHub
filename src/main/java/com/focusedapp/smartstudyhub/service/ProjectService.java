@@ -307,6 +307,7 @@ public class ProjectService {
 		
 		if (project.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
 			project.setStatus(EnumStatus.ACTIVE.getValue());
+			project = projectDAO.save(project);
 						
 			works.stream()
 				.forEach(w -> {
@@ -315,9 +316,12 @@ public class ProjectService {
 					}
 				});					
 		} else if (project.getStatus().equals(EnumStatus.DELETED.getValue())) {
-			project.setStatus(project.getOldStatus());
+			project.setStatus(project.getOldStatus() == null ? EnumStatus.ACTIVE.getValue() : project.getOldStatus());
 			project.setOldStatus(null);
-			
+			if (project.getFolder() != null && project.getFolder().getStatus().equals(EnumStatus.DELETED.getValue())) {
+				project.setFolder(null);
+			}
+			project = projectDAO.save(project);
 			works.stream()
 				.forEach(w -> {
 					if (w.getStatus().equals(EnumStatus.DELETED.getValue())) {
@@ -325,8 +329,6 @@ public class ProjectService {
 					}
 				});
 		}
-		
-		project = projectDAO.save(project);
 		
 		return new ProjectDTO(project);
 	}	

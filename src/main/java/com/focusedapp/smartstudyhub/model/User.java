@@ -92,6 +92,9 @@ public class User implements Serializable {
 	@Column(name = "is_two_factor")
 	private Boolean isTwoFactor;
 	
+	@Column(name = "total_works")
+	private Integer totalWorks;
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Report> reports;
 	

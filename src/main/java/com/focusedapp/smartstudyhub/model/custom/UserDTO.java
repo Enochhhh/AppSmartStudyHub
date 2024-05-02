@@ -47,6 +47,7 @@ public class UserDTO implements Serializable {
 			this.totalDateDeletedOrBanned = MethodUtils.distanceDaysBetweenTwoDate(timeAdminModified, nowDate, 
 					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
 		}
+		this.totalWorks = user.getTotalWorks();
 	}
 	
 	public UserDTO(Integer rank, User user) {
@@ -64,6 +65,7 @@ public class UserDTO implements Serializable {
 		this.imageUrl = user.getImageUrl();
 		this.isTwoFactor = user.getIsTwoFactor();
 		this.totalTimeFocus = user.getTotalTimeFocus();
+		this.totalWorks = user.getTotalWorks();
 	}
 	
 	private Integer rank;
@@ -84,5 +86,5 @@ public class UserDTO implements Serializable {
 	private String status;
 	private Long totalDateDeletedOrBanned;
 	private String password;
-
+	private Integer totalWorks;
 }

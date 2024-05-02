@@ -33,6 +33,7 @@ create table users(
     status text, -- It have 2 value: ACTIVE, BANNED and DELETED
     time_admin_modified datetime,
     is_two_factor boolean,
+    total_works int,
     constraint UserPrimaryKey primary key(id)
 );
 

@@ -295,6 +295,10 @@ public class WorkService {
 				.endTime(new Date().getTime())
 				.isEndPomo(true)
 				.build();
+		User user = workDb.getUser();
+		Integer totalWorks = user.getTotalWorks() == null ? 0 : user.getTotalWorks();
+		user.setTotalWorks(totalWorks + 1);
+		workDb.setUser(user);
 		workDb = workDAO.save(workDb);
 		pomodoroService.createPomodoro(pomodoroRequest);
 
@@ -317,6 +321,11 @@ public class WorkService {
 		if (work.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
 			work.setEndTime(null);
 			work.setStatus(EnumStatus.ACTIVE.getValue());
+			User user = work.getUser();
+			Integer totalWorks = user.getTotalWorks() == null ? 0 : user.getTotalWorks() - 1;
+			if (totalWorks < 0) { totalWorks = 0; }
+			user.setTotalWorks(totalWorks);
+			work.setUser(user);
 			
 			List<ExtraWork> extraWorks = work.getExtraWorks() == null ? new ArrayList<>() : work.getExtraWorks();
 			extraWorks.stream()
@@ -326,9 +335,11 @@ public class WorkService {
 					}
 				});					
 		} else if (work.getStatus().equals(EnumStatus.DELETED.getValue())) {
-			work.setStatus(work.getOldStatus());
+			work.setStatus(work.getOldStatus() == null ? EnumStatus.ACTIVE.getValue() : work.getOldStatus());
 			work.setOldStatus(null);
-			
+			if (work.getProject() != null && work.getProject().getStatus().equals(EnumStatus.DELETED.getValue())) {
+				work.setProject(null);
+			}
 			List<ExtraWork> extraWorks = work.getExtraWorks() == null ? new ArrayList<>() : work.getExtraWorks();
 			extraWorks.stream()
 				.forEach(ew -> {
