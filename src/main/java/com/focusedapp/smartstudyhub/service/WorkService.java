@@ -38,6 +38,7 @@ import com.focusedapp.smartstudyhub.util.enumerate.EnumPriority;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumSortType;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeRepeat;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
@@ -121,8 +122,6 @@ public class WorkService {
 				.tags(tags)
 				.createdDate(new Date())
 				.status(EnumStatus.ACTIVE.getValue())
-				.assignee(dataCreate.getAssigneeId() == null ? null : 
-					userService.findByIdAndStatus(dataCreate.getAssigneeId(), EnumStatus.ACTIVE.getValue()))
 				.note(dataCreate.getNote())
 				.build();
 				
@@ -168,8 +167,6 @@ public class WorkService {
 		workDb.setIsRemindered(dataUpdate.getIsRemindered());
 		workDb.setIsRepeated(dataUpdate.getIsRepeated());
 		workDb.setNote(dataUpdate.getNote());	
-		workDb.setAssignee(dataUpdate.getAssigneeId() == null ? null : 
-					userService.findByIdAndStatus(dataUpdate.getAssigneeId(), EnumStatus.ACTIVE.getValue()));
 		// workDb.setNumberOfPomodorosDone(dataUpdate.getNumberOfPomodorosDone());
 		if (dataUpdate.getStartTime() != null) {
 			workDb.setStartTime(new Date(dataUpdate.getStartTime()));
@@ -627,5 +624,70 @@ public class WorkService {
 	 */
 	public List<Work> persistentAll(List<Work> works) {
 		return workDAO.saveAll(works);
+	}
+	
+	/**
+	 * Repeat Work Service
+	 * 
+	 * @return
+	 */
+	public WorkDTO repeat(WorkDTO data, User user) {
+		Optional<Work> workOpt = workDAO.findByIdAndUserIdAndStatus(data.getId(), user.getId(), EnumStatus.ACTIVE.getValue());
+		if (workOpt.isEmpty()) {
+			return null;
+		}
+		Work workDb = workOpt.get();
+		
+		List<ExtraWork> extraWorks = workDb.getExtraWorks();
+		for (ExtraWork ew : extraWorks) {
+			if (ew.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
+				Boolean isSuccess = extraWorkService.repeat(ew.getId());
+				if (!isSuccess) {
+					return null;
+				}
+			}
+		}
+		workDb.setIsRepeated(false);
+		workDb.setEndTime(new Date());
+		if (workDb.getStartTime() == null) {
+			workDb.setStartTime(new Date());
+		}
+		
+		PomodoroDTO pomodoroRequest = PomodoroDTO.builder()
+				.userId(workDb.getUser().getId())
+				.workId(workDb.getId())
+				.endTime(new Date().getTime())
+				.isEndPomo(true)
+				.build();
+		Integer totalWorks = user.getTotalWorks() == null ? 0 : user.getTotalWorks();
+		user.setTotalWorks(totalWorks + 1);
+		workDb.setUser(user);
+		workDb = workDAO.save(workDb);
+		pomodoroService.createPomodoro(pomodoroRequest);
+		
+		// Update time repeat of work
+		EnumTypeRepeat enumTypeRepeat = EnumTypeRepeat.getByValue(data.getTypeRepeat());
+		switch(enumTypeRepeat) {
+			case DAILY:
+				break;
+			case ORDINARY_DAY:
+				break;
+			case WEEKEND:
+				break;
+			case WEEKLY:
+				break;
+			case ONCE_EVERY_TWO_WEEKS:
+				break;
+			case MONTHLY:
+				break;
+			case EVERY_THREE_MONTH:
+				break;
+			case EVERY_SIX_MONTH:
+				break;
+			default:
+				
+		}
+
+		return new WorkDTO(workDb);
 	}
 }

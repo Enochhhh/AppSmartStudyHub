@@ -183,5 +183,30 @@ public class ExtraWorkService {
 		
 		return new ExtraWorkDTO(extraWork);
 	}	
+	
+	/**
+	 * Repeat extra work
+	 * 
+	 * @param extraWorkId
+	 * @return
+	 */
+	public Boolean repeat(Integer extraWorkId) {
+
+		Optional<ExtraWork> extraWorkOpt = extraWorkDAO.findByIdAndStatus(extraWorkId, EnumStatus.ACTIVE.getValue());
+		ExtraWork extraWorkDb = extraWorkOpt.get();		
+		if (extraWorkOpt.isEmpty()) {
+			return false;
+		}
+		
+		PomodoroDTO pomodoroRequest = PomodoroDTO.builder()
+				.userId(extraWorkDb.getWork().getUser().getId())
+				.extraWorkId(extraWorkDb.getId())
+				.endTime(new Date().getTime())
+				.isEndPomo(true)
+				.build();
+		extraWorkDb = extraWorkDAO.save(extraWorkDb);
+		pomodoroService.createPomodoro(pomodoroRequest);
+		return true;
+	}
 		
 }

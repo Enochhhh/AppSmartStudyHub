@@ -17,6 +17,8 @@ public interface WorkDAO extends JpaRepository<Work, Integer> {
 	
 	Optional<Work> findByIdAndStatus(Integer workId, String status);
 	
+	Optional<Work> findByIdAndUserIdAndStatus(Integer workId, Integer userId, String status);
+	
 	List<Work> findByProjectIdAndStatus(Integer projectid, String status);
 	
 	List<Work> findByProjectIdAndUserIdAndStatus(Integer projectid, Integer userId, String status);

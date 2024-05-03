@@ -136,15 +136,19 @@ create table works(
     is_remindered boolean,
     is_repeated boolean,
     note nvarchar(300),
-    assignee_id int,
     created_date datetime,
     time_will_announce datetime,
+    -- Field support feature repeat Work
+    time_repeat datetime,
+    type_repeat text,
+    unit_repeat text, -- it will be days, weeks, months, years
+    amount_repeat int,
+    days_of_week_repeat text, -- This is String split by comma. It only use for unit repeat is WEEK
     status text,
     old_status text,
     constraint WorksPrimaryKey primary key(id),
     constraint WorksUserIdForeignKey foreign key(user_id) references users(id),
-    constraint WorksProjectIdForeignKey foreign key(project_id) references project(id),
-    constraint WorksAssigneeIdForeignKey foreign key(assignee_id) references users(id)
+    constraint WorksProjectIdForeignKey foreign key(project_id) references project(id)
 );
 
 create table extra_work(

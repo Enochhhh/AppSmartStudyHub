@@ -89,6 +89,22 @@ public class Work implements Serializable {
 	@Column(name = "time_will_announce")
 	private Date timeWillAnnounce;
 	
+	@Column(name = "time_repeat")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timeRepeat;
+	
+	@Column(name = "type_repeat")
+	private String typeRepeat;
+	
+	@Column(name = "unit_repeat")
+	private String unitRepeat;
+	
+	@Column(name = "amount_repeat")
+	private Integer amountRepeat;
+	
+	@Column(name = "days_of_week_repeat")
+	private String daysOfWeekRepeat;
+	
 	private String status;
 	
 	@Column(name = "old_status")

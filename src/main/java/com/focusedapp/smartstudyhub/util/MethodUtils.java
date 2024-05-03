@@ -33,4 +33,8 @@ public class MethodUtils {
 		
 		return localDateTime;
 	}
+
+	public static Date addDaysForDate(Date date, Integer numberDays) {
+		return null;
+	}
 }
