@@ -86,10 +86,6 @@ public class Work implements Serializable {
 	@Column(name = "note", length = 300)
 	private String note;
 	
-	@ManyToOne
-	@JoinColumn(name = "assignee_id")
-	private User assignee;
-	
 	@Column(name = "time_will_announce")
 	private Date timeWillAnnounce;
 	
