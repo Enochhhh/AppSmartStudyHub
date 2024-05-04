@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -35,6 +36,34 @@ public class MethodUtils {
 	}
 
 	public static Date addDaysForDate(Date date, Integer numberDays) {
-		return null;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, numberDays);
+        date = calendar.getTime();
+		return date;
+	}
+	
+	public static Date addWeeksForDate(Date date, Integer numberWeeks) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.WEEK_OF_YEAR, numberWeeks);
+        date = calendar.getTime();
+		return date;
+	}
+	
+	public static Date addMonthsForDate(Date date, Integer numberMonths) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, numberMonths);
+        date = calendar.getTime();
+		return date;
+	}
+	
+	public static Date addYearsForDate(Date date, Integer numberYears) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.YEAR, numberYears);
+        date = calendar.getTime();
+		return date;
 	}
 }

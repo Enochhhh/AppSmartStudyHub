@@ -6,7 +6,7 @@ public enum EnumTypeRepeat {
 	ORDINARY_DAY("ORDINARY DAY"),
 	WEEKEND("WEEKEND"),
 	WEEKLY("WEEKLY"),
-	ONCE_EVERY_TWO_WEEKS("ONE EVERY TWO WEEKS"),
+	ONCE_EVERY_TWO_WEEKS("ONCE EVERY TWO WEEKS"),
 	MONTHLY("MONTHLY"),
 	EVERY_THREE_MONTH("EVERY THREE MONTH"),
 	EVERY_SIX_MONTH("EVERY SIX MONTH"),
@@ -22,7 +22,12 @@ public enum EnumTypeRepeat {
 		return this.value;
 	}
 	
-	public static EnumTypeRepeat getByValue(String value) {
-		return EnumTypeRepeat.valueOf(value);
+	public static EnumTypeRepeat getByValue (String value) {
+		for (EnumTypeRepeat enumTypeRepeat : EnumTypeRepeat.values()) {
+			if (enumTypeRepeat.getValue().equals(value)) {
+				return enumTypeRepeat;
+			}
+		}
+		return null;
 	}
 }

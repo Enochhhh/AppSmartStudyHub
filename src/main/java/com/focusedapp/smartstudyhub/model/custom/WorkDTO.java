@@ -53,7 +53,6 @@ public class WorkDTO implements Serializable {
 	private String note;
 	private Integer assigneeId;
 	private Long timeWillAnnounce;
-	private Long timeRepeat;
 	private String typeRepeat;
 	private String unitRepeat;
 	private Integer amountRepeat;
@@ -95,7 +94,6 @@ public class WorkDTO implements Serializable {
 		}
 		
 		this.isRemindered = work.getIsRemindered();
-		this.isRepeated = work.getIsRepeated();
 		this.note = work.getNote();
 		this.status = work.getStatus();
 		
@@ -168,9 +166,6 @@ public class WorkDTO implements Serializable {
 							.collect(Collectors.toList());
 		}
 		
-		if (work.getTimeRepeat() != null) {
-			this.timeRepeat = work.getTimeRepeat().getTime();
-		}
 		this.typeRepeat = work.getTypeRepeat();
 		this.unitRepeat = work.getUnitRepeat();
 		this.amountRepeat = work.getAmountRepeat();

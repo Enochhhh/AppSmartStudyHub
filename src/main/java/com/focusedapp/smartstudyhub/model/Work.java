@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -80,18 +81,11 @@ public class Work implements Serializable {
 	@Column(name = "is_remindered")
 	private Boolean isRemindered;
 	
-	@Column(name = "is_repeated")
-	private Boolean isRepeated;
-	
 	@Column(name = "note", length = 300)
 	private String note;
 	
 	@Column(name = "time_will_announce")
 	private Date timeWillAnnounce;
-	
-	@Column(name = "time_repeat")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date timeRepeat;
 	
 	@Column(name = "type_repeat")
 	private String typeRepeat;
@@ -120,7 +114,7 @@ public class Work implements Serializable {
 	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ExtraWork> extraWorks;
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "work_tag",
 			joinColumns = @JoinColumn(name = "work_id", nullable = false),
@@ -130,4 +124,31 @@ public class Work implements Serializable {
 	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Pomodoro> pomorodos;
 	
+	public Work(Work work) {
+		this.user = work.getUser();
+		this.project = work.getProject();
+		this.dueDate = work.getDueDate();
+		this.workName = work.getWorkName();
+		this.priority = work.getPriority();
+		this.numberOfPomodoros = work.getNumberOfPomodoros();
+		this.timeOfPomodoro = work.getTimeOfPomodoro();
+		this.isRemindered = work.getIsRemindered();
+		this.note = work.getNote();
+		this.timeWillAnnounce = work.getTimeWillAnnounce();
+		this.typeRepeat = work.getTypeRepeat();
+		this.unitRepeat = work.getUnitRepeat();
+		this.amountRepeat = work.getAmountRepeat();
+		this.daysOfWeekRepeat = work.getDaysOfWeekRepeat();
+		this.status = work.getStatus();
+		this.createdDate = work.getCreatedDate();
+		this.tags  = new ArrayList<>(work.getTags());
+	}
+	
+	public void setDataInRelationship(Work work) {
+		List<ExtraWork> extraWorks = new ArrayList<>(work.getExtraWorks());
+		extraWorks.stream().forEach(e -> {
+			e.setWork(this);
+		});
+		this.extraWorks = extraWorks;
+	}
 }

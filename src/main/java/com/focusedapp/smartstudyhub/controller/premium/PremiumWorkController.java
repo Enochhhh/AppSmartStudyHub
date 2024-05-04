@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,17 +31,17 @@ public class PremiumWorkController extends BaseController {
 	 * @return
 	 */
 	@PutMapping("/repeat")
-	public ResponseEntity<Result<WorkDTO>> repeatWork(@RequestBody WorkDTO workDTO) {
+	public ResponseEntity<Result<WorkDTO>> repeatWork(@RequestParam Integer workId) {
 		Result<WorkDTO> result = new Result<>();
 		
-		if (workDTO == null || workDTO.getId() != null || workDTO.getId() < 1) {
+		if (workId == null || workId < 1) {
 			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
 			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
 			result.getMeta().setDetails("Data Invalid!");
 			return createResponseEntity(result);
 		}
 		User user = getAuthenticatedUser();
-		WorkDTO data = workService.repeat(workDTO, user);
+		WorkDTO data = workService.repeat(workId, user);
 		
 		if (data == null) {
 			result.getMeta().setStatusCode(StatusCode.REPEAT_WORK_FAILURE.getCode());

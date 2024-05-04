@@ -134,12 +134,10 @@ create table works(
     start_time datetime,
     end_time datetime,
     is_remindered boolean,
-    is_repeated boolean,
     note nvarchar(300),
     created_date datetime,
     time_will_announce datetime,
     -- Field support feature repeat Work
-    time_repeat datetime,
     type_repeat text,
     unit_repeat text, -- it will be days, weeks, months, years
     amount_repeat int,

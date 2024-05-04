@@ -39,6 +39,7 @@ import com.focusedapp.smartstudyhub.util.enumerate.EnumSortType;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeRepeat;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumUnitRepeat;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
@@ -116,7 +117,6 @@ public class WorkService {
 				.numberOfPomodoros(dataCreate.getNumberOfPomodoros() == null ? 0 : dataCreate.getNumberOfPomodoros())
 				.timeOfPomodoro(dataCreate.getTimeOfPomodoro() == null ? 25 : dataCreate.getTimeOfPomodoro())
 				.isRemindered(Boolean.FALSE)
-				.isRepeated(Boolean.FALSE)
 				.numberOfPomodorosDone(dataCreate.getNumberOfPomodorosDone() == null ? 0 : dataCreate.getNumberOfPomodorosDone())
 				.timePassed(dataCreate.getTimePassed() == null ? 0 : dataCreate.getTimePassed())
 				.tags(tags)
@@ -165,7 +165,6 @@ public class WorkService {
 		workDb.setNumberOfPomodoros(dataUpdate.getNumberOfPomodoros());
 		workDb.setTimeOfPomodoro(dataUpdate.getTimeOfPomodoro());
 		workDb.setIsRemindered(dataUpdate.getIsRemindered());
-		workDb.setIsRepeated(dataUpdate.getIsRepeated());
 		workDb.setNote(dataUpdate.getNote());	
 		// workDb.setNumberOfPomodorosDone(dataUpdate.getNumberOfPomodorosDone());
 		if (dataUpdate.getStartTime() != null) {
@@ -176,6 +175,13 @@ public class WorkService {
 		}		
 		workDb.setTags(tagService.findByIds(tagIds));
 		workDb.setStatus(dataUpdate.getStatus() == null ? EnumStatus.ACTIVE.getValue() : dataUpdate.getStatus());
+		if (dataUpdate.getTimeWillAnnounce() != null) {
+			workDb.setTimeWillAnnounce(new Date(dataUpdate.getTimeWillAnnounce()));
+		}
+		workDb.setTypeRepeat(dataUpdate.getTypeRepeat());
+		workDb.setUnitRepeat(dataUpdate.getUnitRepeat());
+		workDb.setAmountRepeat(dataUpdate.getAmountRepeat());
+		workDb.setDaysOfWeekRepeat(dataUpdate.getDaysOfWeekRepeat());
 				
 		workDb = workDAO.save(workDb);
 
@@ -280,11 +286,16 @@ public class WorkService {
 				});
 		}
 		workDb.setStatus(EnumStatus.COMPLETED.getValue());
-		workDb.setIsRepeated(false);
 		workDb.setEndTime(new Date());
 		if (workDb.getStartTime() == null) {
 			workDb.setStartTime(new Date());
 		}
+		
+		// Set information repeat to null, it will ensure when uncomplete this work. This work won't be repeated
+		workDb.setTypeRepeat(null);
+		workDb.setUnitRepeat(null);
+		workDb.setAmountRepeat(null);
+		workDb.setDaysOfWeekRepeat(null);
 		
 		PomodoroDTO pomodoroRequest = PomodoroDTO.builder()
 				.userId(workDb.getUser().getId())
@@ -631,63 +642,115 @@ public class WorkService {
 	 * 
 	 * @return
 	 */
-	public WorkDTO repeat(WorkDTO data, User user) {
-		Optional<Work> workOpt = workDAO.findByIdAndUserIdAndStatus(data.getId(), user.getId(), EnumStatus.ACTIVE.getValue());
-		if (workOpt.isEmpty()) {
-			return null;
-		}
-		Work workDb = workOpt.get();
+	public WorkDTO repeat(Integer workId, User user) {
+		Work work = findById(workId);
+		Work newWork = new Work(work);
+		workDAO.save(newWork);
+		newWork.setDataInRelationship(work);
+		markCompleted(workId);
+		EnumTypeRepeat enumTypeRepeat = EnumTypeRepeat.getByValue(newWork.getTypeRepeat());
 		
-		List<ExtraWork> extraWorks = workDb.getExtraWorks();
-		for (ExtraWork ew : extraWorks) {
-			if (ew.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-				Boolean isSuccess = extraWorkService.repeat(ew.getId());
-				if (!isSuccess) {
-					return null;
-				}
-			}
-		}
-		workDb.setIsRepeated(false);
-		workDb.setEndTime(new Date());
-		if (workDb.getStartTime() == null) {
-			workDb.setStartTime(new Date());
-		}
-		
-		PomodoroDTO pomodoroRequest = PomodoroDTO.builder()
-				.userId(workDb.getUser().getId())
-				.workId(workDb.getId())
-				.endTime(new Date().getTime())
-				.isEndPomo(true)
-				.build();
-		Integer totalWorks = user.getTotalWorks() == null ? 0 : user.getTotalWorks();
-		user.setTotalWorks(totalWorks + 1);
-		workDb.setUser(user);
-		workDb = workDAO.save(workDb);
-		pomodoroService.createPomodoro(pomodoroRequest);
-		
-		// Update time repeat of work
-		EnumTypeRepeat enumTypeRepeat = EnumTypeRepeat.getByValue(data.getTypeRepeat());
+		Date timeRepeat = newWork.getDueDate();
+		Date nowDate = new Date();
+		int dayOfWeek = 0;
+		LocalDateTime dateTimeZone = null;
 		switch(enumTypeRepeat) {
 			case DAILY:
+				timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+					timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			case ORDINARY_DAY:
+				timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
+				dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
+				// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
+				dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1 &&
+						dayOfWeek < 7)) {
+					timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
+					dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
+					// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
+					dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			case WEEKEND:
+				timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
+				dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
+				// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
+				dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1 &&
+						dayOfWeek >= 7)) {
+					timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
+					dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
+					// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
+					dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			case WEEKLY:
+				timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 1);
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+					timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 1);
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			case ONCE_EVERY_TWO_WEEKS:
+				timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 2);
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+					timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 2);
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			case MONTHLY:
+				timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 1);
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+					timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 1);
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			case EVERY_THREE_MONTH:
+				timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 3);
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+					timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 3);
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			case EVERY_SIX_MONTH:
+				timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 6);
+				while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+					timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 6);
+				}
+				newWork.setDueDate(timeRepeat);
 				break;
 			default:
+				if (newWork.getUnitRepeat().equals(EnumUnitRepeat.DAY.getValue())) {
+					timeRepeat = MethodUtils.addDaysForDate(timeRepeat, newWork.getAmountRepeat());
+					while (!(timeRepeat.getTime() > nowDate.getTime() &&
+							(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+						timeRepeat = MethodUtils.addDaysForDate(timeRepeat, newWork.getAmountRepeat());
+					}
+					newWork.setDueDate(timeRepeat);
+				} else if (newWork.getUnitRepeat().equals(EnumUnitRepeat.WEEK.getValue())) {
+					
+				} else if (newWork.getUnitRepeat().equals(EnumUnitRepeat.MONTH.getValue())) {
+					
+				} else {
+					
+				}
 				
 		}
-
-		return new WorkDTO(workDb);
+		workDAO.save(newWork);
+		return new WorkDTO(newWork);
 	}
 }
