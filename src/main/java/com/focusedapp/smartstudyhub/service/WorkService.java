@@ -4,6 +4,7 @@ package com.focusedapp.smartstudyhub.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -654,83 +655,71 @@ public class WorkService {
 		Date nowDate = new Date();
 		int dayOfWeek = 0;
 		LocalDateTime dateTimeZone = null;
+		int indexDayOfWeek = 0;
 		switch(enumTypeRepeat) {
 			case DAILY:
-				timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+				do {
 					timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				newWork.setDueDate(timeRepeat);
 				break;
-			case ORDINARY_DAY:
-				timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
-				dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
-				// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
-				dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1 &&
-						dayOfWeek < 7)) {
+			case ORDINARY_DAY:		
+				do {
 					timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
 					dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
 					// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
 					dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1 &&
+						dayOfWeek < 7));
 				newWork.setDueDate(timeRepeat);
 				break;
 			case WEEKEND:
-				timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
-				dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
-				// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
-				dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1 &&
-						dayOfWeek >= 7)) {
+				do {
 					timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 1);
 					dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);
 					// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
 					dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1 &&
+						dayOfWeek >= 7));
 				newWork.setDueDate(timeRepeat);
 				break;
 			case WEEKLY:
-				timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 1);
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+				do {
 					timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 1);
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				newWork.setDueDate(timeRepeat);
 				break;
 			case ONCE_EVERY_TWO_WEEKS:
-				timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 2);
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+				do {
 					timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, 2);
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				newWork.setDueDate(timeRepeat);
 				break;
-			case MONTHLY:
-				timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 1);
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+			case MONTHLY:		
+				do {
 					timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 1);
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				newWork.setDueDate(timeRepeat);
 				break;
 			case EVERY_THREE_MONTH:
-				timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 3);
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+				do {
 					timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 3);
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				newWork.setDueDate(timeRepeat);
 				break;
 			case EVERY_SIX_MONTH:
 				timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 6);
-				while (!(timeRepeat.getTime() > nowDate.getTime() &&
-						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
+				do {
 					timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, 6);
-				}
+				} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+						(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				newWork.setDueDate(timeRepeat);
 				break;
 			default:
@@ -740,15 +729,56 @@ public class WorkService {
 							(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1)) {
 						timeRepeat = MethodUtils.addDaysForDate(timeRepeat, newWork.getAmountRepeat());
 					}
-					newWork.setDueDate(timeRepeat);
 				} else if (newWork.getUnitRepeat().equals(EnumUnitRepeat.WEEK.getValue())) {
-					
+					List<String> daysOfWeekList = new ArrayList<>();
+					if (newWork.getDaysOfWeekRepeat() != null) {
+						daysOfWeekList = Arrays.asList(newWork.getDaysOfWeekRepeat().split(", "));
+					}
+					dateTimeZone = MethodUtils.convertoToLocalDateTime(timeRepeat);					
+					do {
+						dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
+						indexDayOfWeek = daysOfWeekList.indexOf(String.valueOf(dayOfWeek));
+						if (daysOfWeekList.size() == 0) {
+							timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, newWork.getAmountRepeat());
+						} else if (indexDayOfWeek == -1) {
+							int index = -1;
+							for (int i = 0; i < daysOfWeekList.size(); i++) {
+								if (Integer.valueOf(dayOfWeek) < Integer.valueOf(daysOfWeekList.get(i))) {
+									index = i;
+									break;
+								}
+							}
+							if (index == -1) {
+								timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, newWork.getAmountRepeat());
+								timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 
+										Integer.valueOf(daysOfWeekList.get(0)) - Integer.valueOf(dayOfWeek));
+							} else {
+								timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 
+										Integer.valueOf(daysOfWeekList.get(index)) - Integer.valueOf(dayOfWeek));
+							}
+						}
+						else if (indexDayOfWeek == daysOfWeekList.size() - 1) {
+							timeRepeat = MethodUtils.addWeeksForDate(timeRepeat, newWork.getAmountRepeat());
+							timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 
+									Integer.valueOf(daysOfWeekList.get(0)) - Integer.valueOf(daysOfWeekList.get(indexDayOfWeek)));
+						} else {
+							timeRepeat = MethodUtils.addDaysForDate(timeRepeat, 
+									Integer.valueOf(daysOfWeekList.get(indexDayOfWeek + 1)) - Integer.valueOf(daysOfWeekList.get(indexDayOfWeek)));
+						}
+					} while(!(timeRepeat.getTime() > nowDate.getTime() &&
+							(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				} else if (newWork.getUnitRepeat().equals(EnumUnitRepeat.MONTH.getValue())) {
-					
+					do {
+						timeRepeat = MethodUtils.addMonthsForDate(timeRepeat, newWork.getAmountRepeat());
+					} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+							(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				} else {
-					
+					do {
+						timeRepeat = MethodUtils.addYearsForDate(timeRepeat, newWork.getAmountRepeat());
+					} while (!(timeRepeat.getTime() > nowDate.getTime() &&
+							(timeRepeat.getTime() - nowDate.getTime()) / (60 * 60 * 1000) >= 1));
 				}
-				
+				newWork.setDueDate(timeRepeat);
 		}
 		workDAO.save(newWork);
 		return new WorkDTO(newWork);
