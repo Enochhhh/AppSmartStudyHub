@@ -30,7 +30,17 @@ public class ReportDTO implements Serializable {
 	
 	private String title;
 	
-	private String content;
+	private String whereProblemOccur;
+	
+	private String descriptionDetail;
+	
+	private String whatHelp;
+	
+	private String howProblemAffect;
+	
+	private String thingMostSatisfy;
+	
+	private String thingToImprove;
 	
 	private String statusReport;
 	
@@ -48,7 +58,12 @@ public class ReportDTO implements Serializable {
 		this.email = report.getEmail();
 		this.phoneNumber = report.getPhoneNumber();
 		this.title = report.getTitle();
-		this.content = report.getContent();
+		this.whereProblemOccur = report.getWhereProblemOccur();
+		this.descriptionDetail = report.getDescriptionDetail();		
+		this.whatHelp = report.getWhatHelp();
+		this.howProblemAffect = report.getHowProblemAffect();	
+		this.thingMostSatisfy = report.getThingMostSatisfy();
+		this.thingToImprove = report.getThingToImprove();
 		this.statusReport = report.getStatusReport();
 		this.createdDate = report.getCreatedDate().getTime();
 		this.typeReport = report.getTypeReport();

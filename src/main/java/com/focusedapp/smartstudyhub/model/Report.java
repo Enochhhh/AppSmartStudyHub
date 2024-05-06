@@ -42,11 +42,26 @@ public class Report implements Serializable {
 	@Column(name = "phone_number", length = 11)
 	private String phoneNumber;
 	
-	@Column(name = "title", length = 100)
+	@Column(name = "title", length = 300)
 	private String title;
 	
-	@Column(name = "content", length = 300)
-	private String content;
+	@Column(name = "where_problem_occur", length = 1000)
+	private String whereProblemOccur;
+	
+	@Column(name = "description_detail", length = 1000)
+	private String descriptionDetail;
+	
+	@Column(name = "what_help", length = 1000)
+	private String whatHelp;
+	
+	@Column(name = "how_problem_affect", length = 1000)
+	private String howProblemAffect;
+	
+	@Column(name = "thing_most_satisfy", length = 1000)
+	private String thingMostSatisfy;
+	
+	@Column(name = "thing_to_improve", length = 1000)
+	private String thingToImprove;
 	
 	@Column(name = "status_report")
 	private String statusReport;
