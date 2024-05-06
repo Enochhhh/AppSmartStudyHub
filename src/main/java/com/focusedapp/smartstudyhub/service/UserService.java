@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -759,11 +760,35 @@ public class UserService {
 		if (!CollectionUtils.isEmpty(users)) {
 			users.stream().forEach(user -> {
 				if (user.getDueDatePremium().getTime() <= nowDate.getTime()) {
+					sendNotificationDueDatePremiumToEmailUser(user);
 					user.setRole(EnumRole.CUSTOMER.getValue());
 					user.setDueDatePremium(null);
 				}
 			});
 			persistentAll(users);
 		}
+	}
+	/**
+	 * Send notification due date premium to Email User
+	 * 
+	 * @param userId
+	 * @param dateExpired
+	 */
+	public void sendNotificationDueDatePremiumToEmailUser(User user) {
+		SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss");
+		
+		String subject = "Notice that the account has expired subscription to the Premium package";
+		StringBuilder body = new StringBuilder();
+		body.append("<i>Dear ");
+		body.append(user.getLastName());
+		body.append(" "); body.append(user.getFirstName());
+		body.append(", </i><br>"); 
+		body.append("<i>We regret to inform you that your Premium subscription expired on ");
+		body.append(formatter.format(user.getDueDatePremium()));
+		body.append(". Please renew at the app if you want to continue using the service.</i><br>");
+		body.append("<i>Thank you and wish you good health.</i><br><br>");
+		body.append("<i>From SmartStudyHub</i>");
+		
+		mailSenderService.sendEmail(user.getEmail(), subject, body.toString());
 	}
 }
