@@ -16,8 +16,7 @@ public class ScheduledTasks {
 	 * 
 	 */
 	// @Scheduled(cron = "@daily", zone = "Asia/Ho_Chi_Minh")
-	//@Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Ho_Chi_Minh")
-	@Scheduled(cron = "0 52 14 * * ?", zone = "Asia/Ho_Chi_Minh")
+	@Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Ho_Chi_Minh")
 	public void resetDueDatePremium() {
 		userService.resetDueDatePremium();
 	}
