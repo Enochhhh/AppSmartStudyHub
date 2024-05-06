@@ -874,4 +874,26 @@ public class UserService {
 		}
 		return statisticUsers;
 	}
+	
+	/**
+	 * Search User
+	 * 
+	 * @param fullName
+	 * @param email
+	 * @param user
+	 * @return
+	 */
+	public List<UserDTO> searchUserForAdmin(String key) {
+		List<User> users = userDAO.findByRoleNot(EnumRole.ADMIN.getValue());
+		if (!CollectionUtils.isEmpty(users)) {
+			return users.stream()
+					.filter(u -> u.getId().toString().contains(key) 
+							|| (StringUtils.isNotBlank(u.getEmail()) && u.getEmail().contains(key))
+							|| (u.getLastName() != null && u.getFirstName() != null 
+							&& u.getLastName().concat(" ").concat(u.getFirstName()).strip().contains(key)))
+					.map(u -> new UserDTO(u))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
+	}
 }

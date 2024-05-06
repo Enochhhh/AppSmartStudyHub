@@ -58,7 +58,8 @@ public enum StatusCode {
 	MISSING_FILE("10_1_f", "Missing file when upload!"),
 	
 	// Admin - featureCode: 10
-	CREATE_USER_FAILURE("11_1_f", "Create User Failure!");
+	CREATE_USER_FAILURE("11_1_f", "Create User Failure!"),
+	SEARCH_USER_FAILURE("11_2_f", "Search User Failure!");
 	
 	private final String code;
 	private final String message;
