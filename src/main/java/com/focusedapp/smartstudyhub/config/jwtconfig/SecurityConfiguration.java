@@ -113,8 +113,8 @@ public class SecurityConfiguration {
 			.rememberMe(r -> r.tokenRepository(persistentTokenRepository()))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))	
 			.authenticationProvider(authenticationProvider)
-			//.exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler())
-					//.authenticationEntryPoint(authenticationEntryPoint()))
+			.exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler())
+					.authenticationEntryPoint(authenticationEntryPoint()))
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();

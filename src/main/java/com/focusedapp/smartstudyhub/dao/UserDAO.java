@@ -62,6 +62,11 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 			"group by u.id ", nativeQuery = true)
 	List<RankUsersProjectionInterface> rankByTimeFocusPreviousMonth(@Param("date") Date date, Pageable pageable);
 	
+	@Query(value = "select * from users u "
+			+ "where u.created_at >= :dateFrom and u.created_at <= :dateTo "
+			+ "and u.roles != 'ADMIN'", nativeQuery = true)
+	List<User> statisticUserByDateRangeForAdmin(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo);
+	
 	Integer countByRoleNot(String role);
 	
 	List<User> findByRole(String role);

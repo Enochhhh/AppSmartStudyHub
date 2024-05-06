@@ -2,9 +2,13 @@ package com.focusedapp.smartstudyhub.service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,8 +33,10 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
 import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
+import com.focusedapp.smartstudyhub.model.custom.StatisticUsers;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.model.projectioninterface.RankUsersProjectionInterface;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -790,5 +796,82 @@ public class UserService {
 		body.append("<i>From SmartStudyHub</i>");
 		
 		mailSenderService.sendEmail(user.getEmail(), subject, body.toString());
+	}
+	
+	/**
+	 * Statistic User By Date Range For Admin
+	 * 
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<StatisticUsers> statisticUserByDateRangeForAdmin(Long dateFrom, Long dateTo) {
+		List<User> users = userDAO.statisticUserByDateRangeForAdmin(new Date(dateFrom), new Date(dateTo));
+		Map<Long, Long> mapTotalUsers = new HashMap<>();
+		if (!CollectionUtils.isEmpty(users)) {
+			mapTotalUsers = users.stream()
+					.collect(Collectors.groupingBy(u -> {
+						Date date = u.getCreatedAt();
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(date);
+						calendar.set(Calendar.HOUR_OF_DAY, 0);
+						calendar.set(Calendar.MINUTE, 0);
+				        calendar.set(Calendar.SECOND, 0);
+				        calendar.set(Calendar.MILLISECOND, 0);
+				        date = calendar.getTime();
+						return date.getTime();
+					}, Collectors.counting()));
+		}
+		List<StatisticUsers> statisticUsers = new ArrayList<>();
+		for (Map.Entry<Long, Long> entry : mapTotalUsers.entrySet()) {
+			statisticUsers.add(new StatisticUsers(entry.getKey(), entry.getValue()));
+		}
+		return statisticUsers;
+	}
+	
+	/**
+	 * Statistic User By Month Range For Admin
+	 * 
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<StatisticUsers> statisticUserByMonthRangeForAdmin(Long dateFromMili, Long dateToMili) {
+		Date dateFrom = new Date(dateFromMili);
+		Date dateTo = new Date(dateToMili);
+		List<User> users = userDAO.statisticUserByDateRangeForAdmin(dateFrom, dateTo);
+		
+		List<String> keyGroup = new ArrayList<>();
+		Date currentDate = dateFrom;
+		do {
+			String key = String.valueOf(currentDate.getTime()).concat(", ");
+			LocalDateTime currentDateTimeZone = MethodUtils.convertoToLocalDateTime(currentDate);
+			int dayOfWeek = currentDateTimeZone.getDayOfWeek().getValue() + 1;
+			int distanceWillAdd = 8 - dayOfWeek;
+			Date newDate = MethodUtils.addDaysForDate(currentDate, distanceWillAdd);
+			if (newDate.getTime() <= dateTo.getTime()) {
+				key = key.concat(String.valueOf(newDate.getTime()));
+				currentDate = MethodUtils.addDaysForDate(newDate, 1);
+			} else {
+				currentDate = dateTo;
+				key = key.concat(String.valueOf(currentDate.getTime()));
+			}			
+			keyGroup.add(key);
+		} while(currentDate.getTime() < dateTo.getTime());
+		
+		List<StatisticUsers> statisticUsers = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(users)) {
+			for (String dateRange : keyGroup) {
+				Long from = Long.valueOf(dateRange.split(", ")[0]);
+				Long to = Long.valueOf(dateRange.split(", ")[1]);
+				Long toValueForFilter = to + 24 * 60 * 60 * 1000;
+				
+				Long countingUser = users.stream()
+						.filter(u -> u.getCreatedAt().getTime() >= from && u.getCreatedAt().getTime() < toValueForFilter)
+						.collect(Collectors.counting());
+				statisticUsers.add(new StatisticUsers(from, to, countingUser));
+			}
+		}
+		return statisticUsers;
 	}
 }

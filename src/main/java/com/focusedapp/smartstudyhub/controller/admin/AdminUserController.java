@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.controller.BaseController;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.Result;
+import com.focusedapp.smartstudyhub.model.custom.StatisticUsers;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.service.UserService;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
@@ -156,6 +158,86 @@ public class AdminUserController extends BaseController {
 		UserDTO data = userService.adminDeleteById(id);
 	
 		result.setData(data);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Get Detail User Information
+	 * 
+	 * @return
+	 */
+	@GetMapping("/get/{userId}")
+	public ResponseEntity<Result<UserDTO>> getDetailUserById(@PathVariable Integer userId) {
+		Result<UserDTO> result = new Result<>();
+		if (userId == null || userId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		User data = userService.findById(userId);
+		
+		result.setData(new UserDTO(data));
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * API Statistic User By Date Range For Admin
+	 * 
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param pageable
+	 * @return
+	 */
+	@GetMapping("/statistic/registered-by-date-range")
+	public ResponseEntity<Result<List<StatisticUsers>>> statisticUserByDateRangeForAdmin(@RequestParam Long dateFrom, 
+			@RequestParam Long dateTo) {
+		Result<List<StatisticUsers>> result = new Result<>();
+		if (dateFrom == null || dateTo == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<StatisticUsers> users = userService.statisticUserByDateRangeForAdmin(dateFrom, dateTo);
+		
+		result.setData(users);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * API Statistic User By Month Range For Admin
+	 * 
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param pageable
+	 * @return
+	 */
+	@GetMapping("/statistic/registered-by-month-range")
+	public ResponseEntity<Result<List<StatisticUsers>>> statisticUserByMonthRangeForAdmin(@RequestParam Long dateFrom, 
+			@RequestParam Long dateTo) {
+		Result<List<StatisticUsers>> result = new Result<>();
+		if (dateFrom == null || dateTo == null) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<StatisticUsers> users = userService.statisticUserByMonthRangeForAdmin(dateFrom, dateTo);
+		
+		result.setData(users);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 
