@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtService;
 import com.focusedapp.smartstudyhub.config.jwtconfig.JwtUser;
 import com.focusedapp.smartstudyhub.dao.UserDAO;
@@ -740,5 +742,28 @@ public class UserService {
 		user.setTimeLastUse(new Date());
 		persistent(user);
 		return true;
+	}
+	
+	public void persistentAll(List<User> users) {
+		userDAO.saveAll(users);
+	}
+	
+	/**
+	 * Check and reset due date premium of users have registed
+	 * 
+	 */
+	public void resetDueDatePremium() {
+		List<User> users = userDAO.findByRole(EnumRole.PREMIUM.getValue());
+		
+		Date nowDate = new Date();
+		if (!CollectionUtils.isEmpty(users)) {
+			users.stream().forEach(user -> {
+				if (user.getDueDatePremium().getTime() <= nowDate.getTime()) {
+					user.setRole(EnumRole.CUSTOMER.getValue());
+					user.setDueDatePremium(null);
+				}
+			});
+			persistentAll(users);
+		}
 	}
 }

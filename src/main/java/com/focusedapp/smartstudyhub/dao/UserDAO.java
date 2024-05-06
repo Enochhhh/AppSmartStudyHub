@@ -64,4 +64,6 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 	
 	Integer countByRoleNot(String role);
 	
+	List<User> findByRole(String role);
+	
 }
