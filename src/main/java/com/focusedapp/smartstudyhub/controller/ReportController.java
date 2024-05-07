@@ -3,6 +3,7 @@ package com.focusedapp.smartstudyhub.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -61,7 +62,7 @@ public class ReportController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/get-by-user/{userId}")
-	public ResponseEntity<Result<List<ReportDTO>>> getReportsOfUser(@PathVariable Integer userId) {
+	public ResponseEntity<Result<List<ReportDTO>>> getReportsOfUser(@PathVariable Integer userId, Pageable pageable) {
 		Result<List<ReportDTO>> result = new Result<>();
 		
 		if (userId == null || userId < 1) {
@@ -71,7 +72,7 @@ public class ReportController extends BaseController {
 			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 		
-		List<ReportDTO> reports = reportService.getByUserId(userId);
+		List<ReportDTO> reports = reportService.getByUserId(userId, pageable);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		if (CollectionUtils.isEmpty(reports)) {

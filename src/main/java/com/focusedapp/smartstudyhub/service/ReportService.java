@@ -75,8 +75,8 @@ public class ReportService {
 	 * @param userId
 	 * @return
 	 */
-	public List<ReportDTO> getByUserId(Integer userId) {
-		List<Report> reports = reportDAO.findByUserIdOrderByCreatedDateDesc(userId);
+	public List<ReportDTO> getByUserId(Integer userId, Pageable pageable) {
+		List<Report> reports = reportDAO.findByUserIdOrderByCreatedDateDesc(userId, pageable);
 		if (!CollectionUtils.isEmpty(reports)) {
 			return reports.stream()
 					.map(r -> new ReportDTO(r))
