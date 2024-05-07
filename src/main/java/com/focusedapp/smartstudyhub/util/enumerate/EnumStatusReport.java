@@ -2,7 +2,7 @@ package com.focusedapp.smartstudyhub.util.enumerate;
 
 public enum EnumStatusReport {
 	SEEN("SEEN"),
-	NOT_SEEN("NOT_SEEN");
+	NOT_SEEN("NOT SEEN");
 	
 	private final String value;
 	

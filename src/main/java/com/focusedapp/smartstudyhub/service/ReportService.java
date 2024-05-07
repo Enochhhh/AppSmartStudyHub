@@ -1,13 +1,16 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.comparator.Comparators;
 
 import com.focusedapp.smartstudyhub.dao.ReportDAO;
 import com.focusedapp.smartstudyhub.model.Report;
@@ -96,5 +99,51 @@ public class ReportService {
 			return null;
 		}
 		return new ReportDTO(reportOpt.get());
+	}
+	
+	/**
+	 * Get Reports for Admin
+	 * 
+	 * @return
+	 */
+	public List<ReportDTO> getAllReportsForAdmin(Pageable pageable) {
+		List<Report> reports = reportDAO.findAllReports(pageable);
+		if (CollectionUtils.isEmpty(reports)) {
+			return new ArrayList<>();
+		}
+		return reports.stream()
+				.map(r -> new ReportDTO(r))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Delete report by id
+	 * 
+	 * @param reportId
+	 * @return
+	 */
+	public Boolean deleteById(Integer reportId) {
+		Optional<Report> report = reportDAO.findById(reportId);
+		if (report.isEmpty()) {
+			return false;
+		}
+		reportDAO.delete(report.get());
+		return true;
+	}
+	
+	/**
+	 * Update status report by id
+	 * 
+	 * @param reportId
+	 * @return
+	 */
+	public Boolean updateStatus(Integer reportId) {
+		Optional<Report> report = reportDAO.findById(reportId);
+		if (report.isEmpty()) {
+			return false;
+		}
+		report.get().setStatusReport(EnumStatusReport.SEEN.getValue());
+		reportDAO.save(report.get());
+		return true;
 	}
 }
