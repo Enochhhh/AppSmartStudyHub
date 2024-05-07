@@ -71,4 +71,15 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 	
 	List<User> findByRole(String role);
 	
+	@Query(value = "select * from users u "
+			+ "where u.total_works_today != 0 "
+			+ "or u.total_pomodoros_today != 0 "
+			+ "or u.total_time_focus_today != 0 ", nativeQuery = true)
+	List<User> findUsersToResetDataDaily();
+	
+	@Query(value = "select * from users u "
+			+ "where u.total_works_weekly != 0 "
+			+ "or u.total_works_weekly != 0 "
+			+ "or u.total_works_weekly != 0 ", nativeQuery = true)
+	List<User> findUsersToResetDataWeekly();
 }

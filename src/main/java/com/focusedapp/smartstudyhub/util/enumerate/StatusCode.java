@@ -56,15 +56,16 @@ public enum StatusCode {
 	DELETE_TAG_FAILURE("9_1_f", "Mark Deleted Tag Failure!"),
 	/* UPLOAD FILE */
 	MISSING_FILE("10_1_f", "Missing file when upload!"),
-	/* REPORT */
-	GET_REPORTS_FAILURE("12_1_f", "Get Reports Failure!"),
-	GET_DETAIL_REPORT_FAILURE("12_2_f", "Get Detail Report Failure!"),
 	
 	// Admin - featureCode: 11
 	CREATE_USER_FAILURE("11_1_f", "Create User Failure!"),
 	SEARCH_USER_FAILURE("11_2_f", "Search User Failure!"),
 	ADMIN_GET_REPORTS_FAILURE("11_3_f", "Get Reports Failure!"),
-	ADMIN_DELETE_REPORT_FAILURE("11_4_f", "Delete Report Failure!");
+	ADMIN_DELETE_REPORT_FAILURE("11_4_f", "Delete Report Failure!"),
+	
+	/* REPORT */
+	GET_REPORTS_FAILURE("12_1_f", "Get Reports Failure!"),
+	GET_DETAIL_REPORT_FAILURE("12_2_f", "Get Detail Report Failure!");
 	
 	private final String code;
 	private final String message;

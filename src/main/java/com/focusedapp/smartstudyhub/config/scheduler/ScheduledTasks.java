@@ -11,13 +11,15 @@ public class ScheduledTasks {
 	
 	@Autowired UserService userService;
 	
-	/**
-	 * It will auto run at midnight every day
-	 * 
-	 */
-	// @Scheduled(cron = "@daily", zone = "Asia/Ho_Chi_Minh")
 	@Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Ho_Chi_Minh")
-	public void resetDueDatePremium() {
+	public void taskRunOnMidnightEveryday() {
+		userService.resetDataOfUserDaily();
 		userService.resetDueDatePremium();
+	}
+	
+	@Scheduled(cron = "0 0 0 ? * Mon", zone = "Asia/Ho_Chi_Minh")
+	public void taskRunOnWeekly() {
+		userService.resetDataOfUserDaily();
+		userService.resetDataOfUserWeekly();
 	}
 }

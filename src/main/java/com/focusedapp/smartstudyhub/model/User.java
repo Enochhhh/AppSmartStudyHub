@@ -98,6 +98,24 @@ public class User implements Serializable {
 	@Column(name = "total_pomodoros")
 	private Integer totalPomodoros;
 	
+	@Column(name = "total_works_today")
+	private Integer totalWorksToday;
+	
+	@Column(name = "total_pomodoros_today")
+	private Integer totalPomodorosToday;
+	
+	@Column(name = "total_time_focus_today")
+	private Integer totalTimeFocusToday;
+	
+	@Column(name = "total_works_weekly")
+	private Integer totalWorksWeekly;
+	
+	@Column(name = "total_pomodoros_weekly")
+	private Integer totalPomodorosWeekly;
+	
+	@Column(name = "total_time_focus_weekly")
+	private Integer totalTimeFocusWeekly;
+	
 	@Column(name = "time_last_use")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeLastUse;

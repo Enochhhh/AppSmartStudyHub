@@ -167,5 +167,27 @@ public class UserController extends BaseController {
 		
 		return createResponseEntity(result);
 	}
+	
+	/**
+	 * Get Data of User
+	 * 
+	 * @return
+	 */
+	@GetMapping("/get-data/{id}")
+	public ResponseEntity<Result<UserDTO>> getDataOfUser(@PathVariable Integer id) {
+		Result<UserDTO> result = new Result<>();
+		if (id == null || id < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+			
+		UserDTO user = userService.getById(id);		
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		result.setData(user);
+		return createResponseEntity(result);
+	}
 
 }

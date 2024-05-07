@@ -306,7 +306,11 @@ public class WorkService {
 				.build();
 		User user = workDb.getUser();
 		Integer totalWorks = user.getTotalWorks() == null ? 0 : user.getTotalWorks();
+		Integer totalWorksToday = user.getTotalWorksToday() == null ? 0 : user.getTotalWorksToday();
+		Integer totalWorksWeekly = user.getTotalWorksWeekly() == null ? 0 : user.getTotalWorksWeekly();
 		user.setTotalWorks(totalWorks + 1);
+		user.setTotalWorksToday(totalWorksToday + 1);
+		user.setTotalWorksWeekly(totalWorksWeekly + 1);
 		workDb.setUser(user);
 		workDb = workDAO.save(workDb);
 		pomodoroService.createPomodoro(pomodoroRequest);
@@ -331,9 +335,17 @@ public class WorkService {
 			work.setEndTime(null);
 			work.setStatus(EnumStatus.ACTIVE.getValue());
 			User user = work.getUser();
+			
 			Integer totalWorks = user.getTotalWorks() == null ? 0 : user.getTotalWorks() - 1;
 			if (totalWorks < 0) { totalWorks = 0; }
+			Integer totalWorksToday = user.getTotalWorksToday() == null ? 0 : user.getTotalWorksToday() - 1;
+			if (totalWorksToday < 0) { totalWorksToday = 0; }
+			Integer totalWorksWeekly = user.getTotalWorksWeekly() == null ? 0 : user.getTotalWorksWeekly() - 1;
+			if (totalWorksWeekly < 0) { totalWorksWeekly = 0; }
+		
 			user.setTotalWorks(totalWorks);
+			user.setTotalWorksToday(totalWorksToday);
+			user.setTotalWorksWeekly(totalWorksWeekly);
 			work.setUser(user);
 			
 			List<ExtraWork> extraWorks = work.getExtraWorks() == null ? new ArrayList<>() : work.getExtraWorks();

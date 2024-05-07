@@ -35,6 +35,12 @@ create table users(
     is_two_factor boolean,
     total_works int,
     total_pomodoros int,
+    total_works_today int,
+    total_pomodoros_today int,
+    total_time_focus_today int,
+    total_works_weekly int,
+    total_pomodoros_weekly int,
+    total_time_focus_weekly int,
     time_last_use datetime,
     due_date_premium datetime,
     constraint UserPrimaryKey primary key(id)
@@ -281,7 +287,11 @@ begin
 	if new.is_end_pomo = false then
 		update users 
 				set total_time_focus  = ifnull(total_time_focus, 0) + new.time_of_pomodoro,
-					total_pomodoros = ifnull(total_pomodoros, 0) + 1
+					total_pomodoros = ifnull(total_pomodoros, 0) + 1,
+                    total_time_focus_today  = ifnull(total_time_focus_today, 0) + new.time_of_pomodoro,
+					total_pomodoros_today = ifnull(total_pomodoros_today, 0) + 1,
+                    total_time_focus_weekly  = ifnull(total_time_focus_weekly, 0) + new.time_of_pomodoro,
+					total_pomodoros_weekly = ifnull(total_pomodoros_weekly, 0) + 1
 				where id = new.user_id;
 	end if;
 	if new.work_id is not null then

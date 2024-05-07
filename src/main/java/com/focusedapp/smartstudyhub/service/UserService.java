@@ -896,4 +896,47 @@ public class UserService {
 		}
 		return new ArrayList<>();
 	}
+	
+	/**
+	 * Get UserDTO by User Id
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public UserDTO getById(Integer userId) {
+		User user = findById(userId);
+		return new UserDTO(user);
+	}
+	
+	/**
+	 * Reset data of User Daily
+	 * 
+	 */
+	public void resetDataOfUserDaily() {
+		List<User> users = userDAO.findUsersToResetDataDaily();
+		if (!CollectionUtils.isEmpty(users)) {
+			users.stream().forEach(u -> {
+				u.setTotalWorksToday(null);
+				u.setTotalPomodorosToday(null);
+				u.setTotalTimeFocusToday(null);
+			});
+			userDAO.saveAll(users);
+		}
+	}
+	
+	/**
+	 * Reset data of User Weekly
+	 * 
+	 */
+	public void resetDataOfUserWeekly() {
+		List<User> users = userDAO.findUsersToResetDataWeekly();
+		if (!CollectionUtils.isEmpty(users)) {
+			users.stream().forEach(u -> {
+				u.setTotalWorksWeekly(null);
+				u.setTotalPomodorosWeekly(null);
+				u.setTotalTimeFocusWeekly(null);
+			});
+			userDAO.saveAll(users);
+		}
+	}
 }

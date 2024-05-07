@@ -53,6 +53,7 @@ public class AdminUserController extends BaseController {
 		if (request == null) {
 			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
 			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
 			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 		UserDTO data = userService.createUser(request);

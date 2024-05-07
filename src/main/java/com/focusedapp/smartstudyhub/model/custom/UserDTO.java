@@ -59,6 +59,12 @@ public class UserDTO implements Serializable {
 			this.dueDatePremium = MethodUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
 					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
 		}
+		this.totalWorksToday = user.getTotalWorksToday();
+		this.totalPomodorosToday = user.getTotalPomodorosToday();
+		this.totalTimeFocusToday = user.getTotalTimeFocusToday();
+		this.totalWorksWeekly = user.getTotalWorksWeekly();
+		this.totalPomodorosWeekly = user.getTotalPomodorosWeekly();
+		this.totalTimeFocusWeekly = user.getTotalTimeFocusWeekly();
 	}
 	
 	public UserDTO(Integer rank, User user) {
@@ -99,6 +105,12 @@ public class UserDTO implements Serializable {
 	private String password;
 	private Integer totalWorks;
 	private Integer totalPomodoros;
+	private Integer totalWorksToday;
+	private Integer totalPomodorosToday;
+	private Integer totalTimeFocusToday;
+	private Integer totalWorksWeekly;
+	private Integer totalPomodorosWeekly;
+	private Integer totalTimeFocusWeekly;
 	private Long timeLastUse;
 	private Long dueDatePremium;
 }
