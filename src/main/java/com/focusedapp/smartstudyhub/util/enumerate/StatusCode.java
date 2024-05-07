@@ -56,8 +56,11 @@ public enum StatusCode {
 	DELETE_TAG_FAILURE("9_1_f", "Mark Deleted Tag Failure!"),
 	/* UPLOAD FILE */
 	MISSING_FILE("10_1_f", "Missing file when upload!"),
+	/* REPORT */
+	GET_REPORTS_FAILURE("12_1_f", "Get Reports Failure!"),
+	GET_DETAIL_REPORT_FAILURE("12_2_f", "Get Detail Report Failure!"),
 	
-	// Admin - featureCode: 10
+	// Admin - featureCode: 11
 	CREATE_USER_FAILURE("11_1_f", "Create User Failure!"),
 	SEARCH_USER_FAILURE("11_2_f", "Search User Failure!");
 	

@@ -1,6 +1,10 @@
 package com.focusedapp.smartstudyhub.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.ReportDTO;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusReport;
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
 public class ReportService {
@@ -61,5 +66,35 @@ public class ReportService {
 		reportDAO.save(report);
 		
 		return new ReportDTO(report);
+	}
+	
+	/**
+	 * Get Reports by UserId
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<ReportDTO> getByUserId(Integer userId) {
+		List<Report> reports = reportDAO.findByUserIdOrderByCreatedDateDesc(userId);
+		if (!CollectionUtils.isEmpty(reports)) {
+			return reports.stream()
+					.map(r -> new ReportDTO(r))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
+	}
+	
+	/**
+	 * Get Detail Report by id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public ReportDTO getById(Integer id) {
+		Optional<Report> reportOpt = reportDAO.findById(id);
+		if (reportOpt.isEmpty()) {
+			return null;
+		}
+		return new ReportDTO(reportOpt.get());
 	}
 }
