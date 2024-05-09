@@ -2,7 +2,6 @@ package com.focusedapp.smartstudyhub.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -13,9 +12,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,38 +36,48 @@ public class EventSchedule implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "event_id_group")
-	private Integer eventIdGroup;
+	@Column(name = "event_name")
+	private String eventName;
 	
-	@Column(name = "type_event")
-	private String typeEvent;
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 	
-	private String location;
+	@Column(name = "start_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date startTime;
+
+	@Column(name = "end_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date endTime;
 	
 	@Column(name = "is_all_day")
 	private Boolean isAllDay;
+
+	@Column(name = "total_days")
+	private Integer totalDays;
 	
+	@Column(name = "place", length = 200)
+	private String place;
+
+	@Column(name = "typeRemindered")
+	private String typeRemindered;
+
+	@Column(name = "date_remindered")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateRemindered;
+
 	@Column(name = "color_code")
 	private String colorCode;
 
-	@Column(name = "announce_date")
-	private Date announceDate;
-	
+	@Column(name = "descriptions", length = 1000)
 	private String descriptions;
-	
-	@Column(name = "url_attach_file")
-	private String urlAttachFile;
-	
+
 	@Column(name = "created_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 	
-	private String status;
-	
-	@ManyToMany
-	@JoinTable(
-			name = "assignee_event_schedule",
-			joinColumns = @JoinColumn(name = "event_id", nullable = false),
-			inverseJoinColumns = @JoinColumn(name = "assignee_id", nullable = false))
-	List<User> users;
-	
+	@Column(name = "is_present")
+	private Boolean isPresent;
+
 }

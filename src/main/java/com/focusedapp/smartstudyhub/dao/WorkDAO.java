@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.dao;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +45,7 @@ public interface WorkDAO extends JpaRepository<Work, Integer> {
 			@Param("statusSecond") String statusSecond);
 	
 	void deleteByUser(User user);
+	
+	List<Work> findByDueDateBetweenAndStatusNotAndUser(Date startDate, Date endDate, String status, User user);
 
 }

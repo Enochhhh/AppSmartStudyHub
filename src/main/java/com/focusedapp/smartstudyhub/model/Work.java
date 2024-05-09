@@ -85,6 +85,7 @@ public class Work implements Serializable {
 	private String note;
 	
 	@Column(name = "time_will_announce")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeWillAnnounce;
 	
 	@Column(name = "type_repeat")

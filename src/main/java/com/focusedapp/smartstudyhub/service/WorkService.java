@@ -5,7 +5,6 @@ package com.focusedapp.smartstudyhub.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -117,11 +116,16 @@ public class WorkService {
 				.priority(dataCreate.getPriority() == null ? EnumPriority.NONE.getValue() : dataCreate.getPriority())
 				.numberOfPomodoros(dataCreate.getNumberOfPomodoros() == null ? 0 : dataCreate.getNumberOfPomodoros())
 				.timeOfPomodoro(dataCreate.getTimeOfPomodoro() == null ? 25 : dataCreate.getTimeOfPomodoro())
-				.isRemindered(Boolean.FALSE)
-				.numberOfPomodorosDone(dataCreate.getNumberOfPomodorosDone() == null ? 0 : dataCreate.getNumberOfPomodorosDone())
-				.timePassed(dataCreate.getTimePassed() == null ? 0 : dataCreate.getTimePassed())
+				.isRemindered(dataCreate.getIsRemindered() == null ? false : dataCreate.getIsRemindered())
+				.numberOfPomodorosDone(0)
+				.timePassed(0)
 				.tags(tags)
 				.createdDate(new Date())
+				.timeWillAnnounce(dataCreate.getTimeWillAnnounce() == null ? null : new Date(dataCreate.getTimeWillAnnounce()))
+				.typeRepeat(dataCreate.getTypeRepeat())
+				.unitRepeat(dataCreate.getUnitRepeat())
+				.amountRepeat(dataCreate.getAmountRepeat())
+				.daysOfWeekRepeat(dataCreate.getDaysOfWeekRepeat())
 				.status(EnumStatus.ACTIVE.getValue())
 				.note(dataCreate.getNote())
 				.build();
@@ -511,17 +515,8 @@ public class WorkService {
 		
 		Map<Long, List<WorkDTO>> mapWork = worksDb.stream()	
 				.map(work -> new WorkDTO(work))				
-				.collect(Collectors.groupingBy(w -> { 
-						Date date = new Date(w.getEndTime());
-						// Get date at time 00:00:00
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(date);
-						calendar.set(Calendar.HOUR_OF_DAY, 0);
-						calendar.set(Calendar.MINUTE, 0);
-				        calendar.set(Calendar.SECOND, 0);
-				        calendar.set(Calendar.MILLISECOND, 0);
-				        date = calendar.getTime();
-						return date.getTime();
+				.collect(Collectors.groupingBy(w -> { 					
+						return MethodUtils.setTimeOfDateToMidnight(w.getEndTime()).getTime();
 					}, Collectors.toList()));
 		mapWork.values().forEach(list -> list.sort(Comparator.comparing(WorkDTO::getEndTime).reversed()));
 		List<WorkGroupByDateDTO> works = new ArrayList<>();
@@ -794,6 +789,17 @@ public class WorkService {
 		}
 		workDAO.save(newWork);
 		return new WorkDTO(newWork);
+	}
+	
+	/**
+	 * Find Works by due date between
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Work> findByDueDateBetweenAndStatusNotAndUser(Date startDate, Date endDate, String status, User user) {
+		return workDAO.findByDueDateBetweenAndStatusNotAndUser(startDate, endDate, status, user);
 	}
 	
 }

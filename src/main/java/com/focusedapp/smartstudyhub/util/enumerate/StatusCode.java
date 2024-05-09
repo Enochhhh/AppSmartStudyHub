@@ -65,7 +65,14 @@ public enum StatusCode {
 	
 	/* REPORT */
 	GET_REPORTS_FAILURE("12_1_f", "Get Reports Failure!"),
-	GET_DETAIL_REPORT_FAILURE("12_2_f", "Get Detail Report Failure!");
+	GET_DETAIL_REPORT_FAILURE("12_2_f", "Get Detail Report Failure!"),
+	
+	/* EVENT */
+	CREATE_EVENT_FAILURE("13_1_f", "Create Event Failure!"),
+	GET_DETAIL_EVENT_FAILURE("13_2_f", "Get Detail Event Failure!"),
+	UPDATE_EVENT_FAILURE("13_3_f", "Update Event Failure!"),
+	DELETE_EVENT_FAILURE("13_4_f", "Delete Event Failure!"),
+	GET_TIME_LINE_EVENT_FAILURE("13_5_f", "Get Time Line Event Failure!");
 	
 	private final String code;
 	private final String message;

@@ -66,4 +66,26 @@ public class MethodUtils {
         date = calendar.getTime();
 		return date;
 	}
+	
+	public static Date setTimeOfDateToMidnight(Long dateMili) {
+		Date date = new Date(dateMili + 7 * 60 * 60 * 1000);
+		// Get date at time 00:00:00
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        dateMili = calendar.getTime().getTime() - 7 * 60 * 60 * 1000;
+		return new Date(dateMili);
+	}
+	
+	public static Long distanceDaysBetweenTwoDateNotLocalDateTime(Date dateFirst, Date dateSecond, ZoneId zoneId) {
+		LocalDateTime dateFirstTimeZone = convertoToLocalDateTime(dateFirst);
+		LocalDateTime dateSecondTimeZone = convertoToLocalDateTime(dateSecond);
+		ZonedDateTime zonedDateTime1 = dateFirstTimeZone.atZone(zoneId);
+        ZonedDateTime zonedDateTime2 = dateSecondTimeZone.atZone(zoneId);
+
+	    return ChronoUnit.DAYS.between(zonedDateTime1.toLocalDate(), zonedDateTime2.toLocalDate());
+	}
 }

@@ -2,7 +2,6 @@ package com.focusedapp.smartstudyhub.service;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +22,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
 import com.focusedapp.smartstudyhub.model.custom.ProjectGroupByDateDTO;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -371,16 +371,7 @@ public class ProjectService {
 		
 		Map<Long, List<ProjectDTO>> mapProject = projectsDb.stream()				
 				.collect(Collectors.groupingBy(p -> { 
-						Date date = new Date(p.getEndTime());
-						// Get date at time 00:00:00
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(date);
-						calendar.set(Calendar.HOUR_OF_DAY, 0);
-						calendar.set(Calendar.MINUTE, 0);
-				        calendar.set(Calendar.SECOND, 0);
-				        calendar.set(Calendar.MILLISECOND, 0);
-				        date = calendar.getTime();
-						return date.getTime();
+						return MethodUtils.setTimeOfDateToMidnight(p.getEndTime()).getTime();
 					}, Collectors.toList()));
 		mapProject.values().forEach(list -> list.sort(Comparator.comparing(ProjectDTO::getEndTime).reversed()));
 		List<ProjectGroupByDateDTO> projects = new ArrayList<>();

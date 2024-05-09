@@ -27,6 +27,9 @@ insert into users values(7, null, null, null,
 insert into users values(8, 'phanhongson234@gmail.com', 'phanhongson234@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Son', N'Phan', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'ADMIN', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
     null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+insert into users values(9, 'nmt2002vn@gmail.com', 'nmt2002vn@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
+	null, N'Toan', N'Nguyen', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'ADMIN', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
     
 -- Folder
 insert into folder values(1, 1, N'Folder 1 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE');

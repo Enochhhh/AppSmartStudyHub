@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -811,15 +810,7 @@ public class UserService {
 		if (!CollectionUtils.isEmpty(users)) {
 			mapTotalUsers = users.stream()
 					.collect(Collectors.groupingBy(u -> {
-						Date date = u.getCreatedAt();
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(date);
-						calendar.set(Calendar.HOUR_OF_DAY, 0);
-						calendar.set(Calendar.MINUTE, 0);
-				        calendar.set(Calendar.SECOND, 0);
-				        calendar.set(Calendar.MILLISECOND, 0);
-				        date = calendar.getTime();
-						return date.getTime();
+						return MethodUtils.setTimeOfDateToMidnight(u.getCreatedAt().getTime()).getTime();
 					}, Collectors.counting()));
 		}
 		List<StatisticUsers> statisticUsers = new ArrayList<>();

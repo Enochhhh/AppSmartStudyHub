@@ -1,7 +1,6 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +21,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.PomorodoGroupByDateDTO;
+import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumModePomo;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -110,16 +110,7 @@ public class PomodoroService {
 		Map<Long, List<PomodoroDTO>> mapPomodoro = pomorosDb.stream()	
 				.map(pomo -> new PomodoroDTO(pomo))				
 				.collect(Collectors.groupingBy(p -> { 
-						Date date = new Date(p.getEndTime());
-						// Get date at time 00:00:00
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(date);
-						calendar.set(Calendar.HOUR_OF_DAY, 0);
-						calendar.set(Calendar.MINUTE, 0);
-				        calendar.set(Calendar.SECOND, 0);
-				        calendar.set(Calendar.MILLISECOND, 0);
-				        date = calendar.getTime();
-						return date.getTime();
+						return MethodUtils.setTimeOfDateToMidnight(p.getEndTime()).getTime();
 					}, Collectors.toList()));
 		mapPomodoro.values().forEach(list -> list.sort(Comparator.comparing(PomodoroDTO::getEndTime).reversed()));
 		List<PomorodoGroupByDateDTO> pomodoros = new ArrayList<>();

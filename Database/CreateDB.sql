@@ -264,6 +264,25 @@ create table files(
     constraint FilesUserIdForeignKey foreign key(user_id) references users(id)
 );
 
+create table event_schedule(
+	id int auto_increment,
+    event_name nvarchar(100),
+    user_id int,
+    start_time datetime,
+    end_time datetime,
+    is_all_day boolean,
+    total_days int,
+    place nvarchar(200),
+    type_remindered text, -- It consists of EMAIL and SYSTEM and null
+    date_remindered datetime,
+    color_code text,
+    descriptions nvarchar(1000),
+    created_date datetime,
+    is_present boolean,
+    constraint EventSchedulePrimaryKey primary key(id),
+    constraint EventScheduleUserIdForeignKey foreign key(user_id) references users(id)
+);
+
 -- TRIGGER auto update time focus of user when update time passed of work
 -- DELIMITER $$
 -- create trigger after_update_works
