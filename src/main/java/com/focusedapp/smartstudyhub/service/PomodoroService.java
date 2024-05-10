@@ -24,6 +24,7 @@ import com.focusedapp.smartstudyhub.model.custom.PomorodoGroupByDateDTO;
 import com.focusedapp.smartstudyhub.util.MethodUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumModePomo;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
 public class PomodoroService {
@@ -152,6 +153,45 @@ public class PomodoroService {
 	 */
 	public void deleteAllPomodorosOfUser(User user) {
 		pomodoroDAO.deleteByUser(user);
+	}
+	
+	/**
+	 * Find Pomodoros by list id for history activity
+	 * 
+	 * @param workIds
+	 * @return
+	 */
+	public List<PomodoroDTO> getByIdInForHistoryActivity(List<Integer> pomodoroIds) {
+		List<Pomodoro> pomodoros = pomodoroDAO.findByIdIn(pomodoroIds);
+		List<PomodoroDTO> pomodorosResponse = new ArrayList<>();
+		if (CollectionUtils.isEmpty(pomodoros)) {
+			pomodoroIds.stream().forEach(id -> {
+				pomodorosResponse.add(new PomodoroDTO("This pomodoro has been deleted !"));
+			});
+		} else {
+			pomodoroIds.stream().forEach(id -> {
+				Optional<Pomodoro> pomodoroOpt = pomodoros.stream().filter(p -> p.getId().equals(id)).findFirst();
+				if (pomodoroOpt.isEmpty()) {
+					pomodorosResponse.add(new PomodoroDTO("This pomodoro has been deleted !"));
+				} else {
+					pomodorosResponse.add(new PomodoroDTO(pomodoroOpt.get()));
+				}				
+			});
+		}
+		return pomodorosResponse;
+	}
+	
+	/**
+	 * Find Pomodoro by UserId and CreatedDate
+	 * 
+	 * @param userId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Pomodoro> findByUserIdAndCreatedDateGreaterThanEqualAndCreatedDateLessThan(Integer userId, Date startDate, 
+			Date endDate) {
+		return pomodoroDAO.findByUserIdAndCreatedDateGreaterThanEqualAndCreatedDateLessThan(userId, startDate, endDate);
 	}
 	
 }

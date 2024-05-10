@@ -69,5 +69,9 @@ public class PomodoroDTO implements Serializable {
 		this.pomodoroName = pomodoro.getPomodoroName();
 		this.createdDate = pomodoro.getCreatedDate().getTime();
 	}
+	
+	public PomodoroDTO(String pomoName) {
+		this.pomodoroName = pomoName;
+	}
 
 }

@@ -930,4 +930,8 @@ public class UserService {
 			userDAO.saveAll(users);
 		}
 	}
+	
+	public List<User> findUsersToResetDataDaily() {
+		return userDAO.findUsersToResetDataDaily();
+	}
 }

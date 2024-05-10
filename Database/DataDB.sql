@@ -8,7 +8,7 @@ insert into users values(1, 'enochphann@gmail.com', 'enochphann@gmail.com', '$2a
     null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
 insert into users values(2, 'namdo@gmail.com', 'namdo@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Nam', N'Do', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'PREMIUM', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, '2025-12-05 00:00:00');
 insert into users values(3, 'chienpham@gmail.com', 'chienpham@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Chien', N'Pham', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
     null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
@@ -101,8 +101,8 @@ insert into sound_concentration values(12, null, N'White Noise', 'https://res.cl
 
 -- Work
 insert into works values(1, 1, 1, '2023-12-05 00:00:00', N'Son Phan Work 1', N'HIGH', 6, 25, 48, 0, '2023-11-28 00:00:00', 
-	null, false, null, null, '2023-11-28 00:00:00', null,  null, null, null, 'ACTIVE', null);
+	null, false, null, null, '2023-11-28 00:00:00', null,  null, null, null, 'ACTIVE', null, null);
 insert into works values(2, 1, 1, '2023-12-05 00:00:00', N'Son Phan Work 2', N'LOW', 6, 25, 59, 0, '2023-11-28 00:00:00', 
-	null, false, null, null, '2023-11-28 00:00:00', null,  null, null, null, 'ACTIVE', null);
+	null, false, null, null, '2023-11-28 00:00:00', null,  null, null, null, 'ACTIVE', null, null);
 insert into works values(3, 1, null, '2023-12-05 00:00:00', N'Son Phan Work 3', N'HIGH', 6, 25, 78, 0, '2023-11-28 00:00:00', 
-	null, false, null, null, '2023-11-28 00:00:00', null, null, null, null, 'ACTIVE', null);
+	null, false, null, null, '2023-11-28 00:00:00', null, null, null, null, 'ACTIVE', null, null);

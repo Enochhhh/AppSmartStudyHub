@@ -155,6 +155,7 @@ create table works(
     days_of_week_repeat text, -- This is String split by comma. It only use for unit repeat is WEEK
     status text,
     old_status text,
+    date_mark_completed datetime,
     constraint WorksPrimaryKey primary key(id),
     constraint WorksUserIdForeignKey foreign key(user_id) references users(id),
     constraint WorksProjectIdForeignKey foreign key(project_id) references project(id)
@@ -281,6 +282,19 @@ create table event_schedule(
     is_present boolean,
     constraint EventSchedulePrimaryKey primary key(id),
     constraint EventScheduleUserIdForeignKey foreign key(user_id) references users(id)
+);
+
+create table history_daily(
+	id int auto_increment,
+    user_id int,
+    dates datetime,
+    work_ids text,
+    pomodoro_ids text,
+    total_works_done int,
+    total_pomodoros_done int,
+    total_time_focus int,
+    constraint HistoryDailyPrimaryKey primary key(id),
+    constraint HistoryDailyUserIdForeignKey foreign key(user_id) references users(id)
 );
 
 -- TRIGGER auto update time focus of user when update time passed of work

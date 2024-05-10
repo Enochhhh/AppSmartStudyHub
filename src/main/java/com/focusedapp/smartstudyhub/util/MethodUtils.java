@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.util;
 
 
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -87,5 +88,27 @@ public class MethodUtils {
         ZonedDateTime zonedDateTime2 = dateSecondTimeZone.atZone(zoneId);
 
 	    return ChronoUnit.DAYS.between(zonedDateTime1.toLocalDate(), zonedDateTime2.toLocalDate());
+	}
+	
+	public static Date getAnyDayOfWeekFromDateSpecified(Date date, Integer day, ZoneId zoneId) {
+		LocalDateTime dateLocal = convertoToLocalDateTime(date);
+		switch(day) {
+			case 2:
+				return Date.from(dateLocal.with(DayOfWeek.MONDAY).atZone(ZoneId.systemDefault()).toInstant());
+			case 3:
+				return Date.from(dateLocal.with(DayOfWeek.TUESDAY).atZone(ZoneId.systemDefault()).toInstant());
+			case 4:
+				return Date.from(dateLocal.with(DayOfWeek.WEDNESDAY).atZone(ZoneId.systemDefault()).toInstant());
+			case 5:
+				return Date.from(dateLocal.with(DayOfWeek.THURSDAY).atZone(ZoneId.systemDefault()).toInstant());
+			case 6:
+				return Date.from(dateLocal.with(DayOfWeek.FRIDAY).atZone(ZoneId.systemDefault()).toInstant());
+			case 7:
+				return Date.from(dateLocal.with(DayOfWeek.SATURDAY).atZone(ZoneId.systemDefault()).toInstant());
+			case 8:
+				return Date.from(dateLocal.with(DayOfWeek.SUNDAY).atZone(ZoneId.systemDefault()).toInstant());
+			default:
+				return null;
+		}
 	}
 }

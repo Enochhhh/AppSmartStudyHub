@@ -171,5 +171,9 @@ public class WorkDTO implements Serializable {
 		this.amountRepeat = work.getAmountRepeat();
 		this.daysOfWeekRepeat = work.getDaysOfWeekRepeat();
 	}
+	
+	public WorkDTO(String workName) {
+		this.workName = workName;
+	}
 
 }

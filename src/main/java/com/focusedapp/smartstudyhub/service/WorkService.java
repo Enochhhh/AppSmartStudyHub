@@ -3,6 +3,7 @@ package com.focusedapp.smartstudyhub.service;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -40,6 +41,7 @@ import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeRepeat;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumUnitRepeat;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
@@ -295,6 +297,7 @@ public class WorkService {
 		if (workDb.getStartTime() == null) {
 			workDb.setStartTime(new Date());
 		}
+		workDb.setDateMarkCompleted(new Date());
 		
 		// Set information repeat to null, it will ensure when uncomplete this work. This work won't be repeated
 		workDb.setTypeRepeat(null);
@@ -340,16 +343,32 @@ public class WorkService {
 			work.setStatus(EnumStatus.ACTIVE.getValue());
 			User user = work.getUser();
 			
+			Date nowDate = new Date();
+			Date startDayOfWeek = MethodUtils.getAnyDayOfWeekFromDateSpecified(nowDate, 2, 
+					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
+			startDayOfWeek = MethodUtils.setTimeOfDateToMidnight(startDayOfWeek.getTime());
+			Date endDayOfWeek = MethodUtils.getAnyDayOfWeekFromDateSpecified(nowDate, 8, 
+					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
+			endDayOfWeek = MethodUtils.addDaysForDate(endDayOfWeek, 1);
+			endDayOfWeek = MethodUtils.setTimeOfDateToMidnight(endDayOfWeek.getTime());
 			Integer totalWorks = user.getTotalWorks() == null ? 0 : user.getTotalWorks() - 1;
 			if (totalWorks < 0) { totalWorks = 0; }
-			Integer totalWorksToday = user.getTotalWorksToday() == null ? 0 : user.getTotalWorksToday() - 1;
-			if (totalWorksToday < 0) { totalWorksToday = 0; }
-			Integer totalWorksWeekly = user.getTotalWorksWeekly() == null ? 0 : user.getTotalWorksWeekly() - 1;
-			if (totalWorksWeekly < 0) { totalWorksWeekly = 0; }
-		
 			user.setTotalWorks(totalWorks);
-			user.setTotalWorksToday(totalWorksToday);
-			user.setTotalWorksWeekly(totalWorksWeekly);
+			if (MethodUtils.setTimeOfDateToMidnight(work.getDateMarkCompleted().getTime()).getTime() 
+					== MethodUtils.setTimeOfDateToMidnight(nowDate.getTime()).getTime()) {
+				Integer totalWorksToday = user.getTotalWorksToday() == null ? 0 : user.getTotalWorksToday() - 1;
+				if (totalWorksToday < 0) { totalWorksToday = 0; }
+				Integer totalWorksWeekly = user.getTotalWorksWeekly() == null ? 0 : user.getTotalWorksWeekly() - 1;
+				if (totalWorksWeekly < 0) { totalWorksWeekly = 0; }
+				user.setTotalWorksToday(totalWorksToday);
+				user.setTotalWorksWeekly(totalWorksWeekly);
+			} else if (work.getDateMarkCompleted().getTime() >= startDayOfWeek.getTime() 
+					&& work.getDateMarkCompleted().getTime() < endDayOfWeek.getTime()) {
+				Integer totalWorksWeekly = user.getTotalWorksWeekly() == null ? 0 : user.getTotalWorksWeekly() - 1;
+				if (totalWorksWeekly < 0) { totalWorksWeekly = 0; }
+				user.setTotalWorksWeekly(totalWorksWeekly);
+			}
+		
 			work.setUser(user);
 			
 			List<ExtraWork> extraWorks = work.getExtraWorks() == null ? new ArrayList<>() : work.getExtraWorks();
@@ -802,4 +821,44 @@ public class WorkService {
 		return workDAO.findByDueDateBetweenAndStatusNotAndUser(startDate, endDate, status, user);
 	}
 	
+	/**
+	 * Find Works by list id for history activity
+	 * 
+	 * @param workIds
+	 * @return
+	 */
+	public List<WorkDTO> getByIdInAndStatusForHistoryActivity(List<Integer> workIds, String status) {
+		List<Work> works = workDAO.findByIdInAndStatus(workIds, status);
+		List<WorkDTO> worksResponse = new ArrayList<>();
+		if (CollectionUtils.isEmpty(works)) {
+			workIds.stream().forEach(id -> {
+				worksResponse.add(new WorkDTO("This work has been deleted !"));
+			});
+		} else {
+			workIds.stream().forEach(id -> {
+				Optional<Work> workOpt = works.stream().filter(w -> w.getId().equals(id)).findFirst();
+				if (workOpt.isEmpty()) {
+					worksResponse.add(new WorkDTO("This work has been deleted !"));
+				} else {
+					worksResponse.add(new WorkDTO(workOpt.get()));
+				}				
+			});
+		}
+		return worksResponse;
+	}
+	
+	/**
+	 * Find Work by userid and status and date mark completed
+	 * 
+	 * @param userId
+	 * @param status
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Work> findByUserIdAndStatusAndDateMarkCompletedGreaterThanEqualAndDateMarkCompletedLessThan(
+			Integer userId, String status, Date startDate, Date endDate) {
+		return workDAO.findByUserIdAndStatusAndDateMarkCompletedGreaterThanEqualAndDateMarkCompletedLessThan(userId, 
+				status, startDate, endDate);
+	}
 }

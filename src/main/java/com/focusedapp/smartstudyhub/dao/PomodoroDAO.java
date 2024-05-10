@@ -22,4 +22,8 @@ public interface PomodoroDAO extends JpaRepository<Pomodoro, Integer> {
 	Integer calculateTotalTimeFocusPreviousMonth(@Param("user") User user, @Param("date") Date date);
 	
 	void deleteByUser(User user);
+	
+	List<Pomodoro> findByIdIn(List<Integer> ids);
+	
+	List<Pomodoro> findByUserIdAndCreatedDateGreaterThanEqualAndCreatedDateLessThan(Integer userId, Date startDate, Date endDate);
 }

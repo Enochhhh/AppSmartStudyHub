@@ -47,5 +47,10 @@ public interface WorkDAO extends JpaRepository<Work, Integer> {
 	void deleteByUser(User user);
 	
 	List<Work> findByDueDateBetweenAndStatusNotAndUser(Date startDate, Date endDate, String status, User user);
+	
+	List<Work> findByIdInAndStatus(List<Integer> workIds, String status);
+	
+	List<Work> findByUserIdAndStatusAndDateMarkCompletedGreaterThanEqualAndDateMarkCompletedLessThan(Integer userId, String status,
+			Date startDate, Date endDate);
 
 }
