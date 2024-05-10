@@ -900,6 +900,17 @@ public class UserService {
 	}
 	
 	/**
+	 * Get UserDTO by UserId and Status
+	 * 
+	 * @param userId
+	 * @param status
+	 * @return
+	 */
+	public UserDTO getByIdAndStatus(Integer userId, String status) {
+		return new UserDTO(findByIdAndStatus(userId, status));
+	}
+	
+	/**
 	 * Reset data of User Daily
 	 * 
 	 */
