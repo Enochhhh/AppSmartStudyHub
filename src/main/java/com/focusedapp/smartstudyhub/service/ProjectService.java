@@ -22,7 +22,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.ProjectDTO;
 import com.focusedapp.smartstudyhub.model.custom.ProjectGroupByDateDTO;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 
@@ -371,7 +371,7 @@ public class ProjectService {
 		
 		Map<Long, List<ProjectDTO>> mapProject = projectsDb.stream()				
 				.collect(Collectors.groupingBy(p -> { 
-						return MethodUtils.setTimeOfDateToMidnight(p.getEndTime()).getTime();
+						return DateUtils.setTimeOfDateToMidnight(p.getEndTime()).getTime();
 					}, Collectors.toList()));
 		mapProject.values().forEach(list -> list.sort(Comparator.comparing(ProjectDTO::getEndTime).reversed()));
 		List<ProjectGroupByDateDTO> projects = new ArrayList<>();

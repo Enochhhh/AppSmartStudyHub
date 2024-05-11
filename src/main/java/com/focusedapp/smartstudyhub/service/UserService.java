@@ -35,7 +35,7 @@ import com.focusedapp.smartstudyhub.model.custom.RankUserFocusDTO;
 import com.focusedapp.smartstudyhub.model.custom.StatisticUsers;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.model.projectioninterface.RankUsersProjectionInterface;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -810,7 +810,7 @@ public class UserService {
 		if (!CollectionUtils.isEmpty(users)) {
 			mapTotalUsers = users.stream()
 					.collect(Collectors.groupingBy(u -> {
-						return MethodUtils.setTimeOfDateToMidnight(u.getCreatedAt().getTime()).getTime();
+						return DateUtils.setTimeOfDateToMidnight(u.getCreatedAt().getTime()).getTime();
 					}, Collectors.counting()));
 		}
 		List<StatisticUsers> statisticUsers = new ArrayList<>();
@@ -836,13 +836,13 @@ public class UserService {
 		Date currentDate = dateFrom;
 		do {
 			String key = String.valueOf(currentDate.getTime()).concat(", ");
-			LocalDateTime currentDateTimeZone = MethodUtils.convertoToLocalDateTime(currentDate);
+			LocalDateTime currentDateTimeZone = DateUtils.convertoToLocalDateTime(currentDate);
 			int dayOfWeek = currentDateTimeZone.getDayOfWeek().getValue() + 1;
 			int distanceWillAdd = 8 - dayOfWeek;
-			Date newDate = MethodUtils.addDaysForDate(currentDate, distanceWillAdd);
+			Date newDate = DateUtils.addDaysForDate(currentDate, distanceWillAdd);
 			if (newDate.getTime() <= dateTo.getTime()) {
 				key = key.concat(String.valueOf(newDate.getTime()));
-				currentDate = MethodUtils.addDaysForDate(newDate, 1);
+				currentDate = DateUtils.addDaysForDate(newDate, 1);
 			} else {
 				currentDate = dateTo;
 				key = key.concat(String.valueOf(currentDate.getTime()));

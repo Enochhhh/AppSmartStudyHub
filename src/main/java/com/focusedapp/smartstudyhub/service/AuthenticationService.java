@@ -24,7 +24,7 @@ import com.focusedapp.smartstudyhub.model.OtpCode;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
@@ -121,9 +121,9 @@ public class AuthenticationService {
 		
 		Long dueDatePremium = 0L;
 		if (user.getDueDatePremium() != null) {
-			LocalDateTime dueDateTimeZone = MethodUtils.convertoToLocalDateTime(user.getDueDatePremium());
-			LocalDateTime nowDateTimeZone = MethodUtils.convertoToLocalDateTime(new Date());
-			dueDatePremium = MethodUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
+			LocalDateTime dueDateTimeZone = DateUtils.convertoToLocalDateTime(user.getDueDatePremium());
+			LocalDateTime nowDateTimeZone = DateUtils.convertoToLocalDateTime(new Date());
+			dueDatePremium = DateUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
 					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
 		}
 

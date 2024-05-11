@@ -15,7 +15,7 @@ import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.Tag;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusWork;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
@@ -103,13 +103,13 @@ public class WorkDTO implements Serializable {
 		} else {			
 			this.dueDate = work.getDueDate().getTime();
 			Date nowDate = new Date();
-			LocalDateTime dueDateTimeZone = MethodUtils.convertoToLocalDateTime(work.getDueDate());
-			LocalDateTime nowDateTimeZone = MethodUtils.convertoToLocalDateTime(nowDate);
-			Long distanceOfTwoDate = MethodUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
+			LocalDateTime dueDateTimeZone = DateUtils.convertoToLocalDateTime(work.getDueDate());
+			LocalDateTime nowDateTimeZone = DateUtils.convertoToLocalDateTime(nowDate);
+			Long distanceOfTwoDate = DateUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
 					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));		
 			
 			// Convert to LocalDate Timezone VietNam to get DayOfWeek Exactly
-			LocalDateTime dateTimeZone = MethodUtils.convertoToLocalDateTime(nowDate);
+			LocalDateTime dateTimeZone = DateUtils.convertoToLocalDateTime(nowDate);
 			// DayOfWeek in Local Date represent 1 = Monday, 2 = Tuesday
 			int dayOfWeek = dateTimeZone.getDayOfWeek().getValue() + 1;
 			if (distanceOfTwoDate < 0) {

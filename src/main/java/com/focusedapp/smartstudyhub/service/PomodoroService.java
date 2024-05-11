@@ -21,7 +21,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.PomorodoGroupByDateDTO;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumModePomo;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
@@ -111,7 +111,7 @@ public class PomodoroService {
 		Map<Long, List<PomodoroDTO>> mapPomodoro = pomorosDb.stream()	
 				.map(pomo -> new PomodoroDTO(pomo))				
 				.collect(Collectors.groupingBy(p -> { 
-						return MethodUtils.setTimeOfDateToMidnight(p.getEndTime()).getTime();
+						return DateUtils.setTimeOfDateToMidnight(p.getEndTime()).getTime();
 					}, Collectors.toList()));
 		mapPomodoro.values().forEach(list -> list.sort(Comparator.comparing(PomodoroDTO::getEndTime).reversed()));
 		List<PomorodoGroupByDateDTO> pomodoros = new ArrayList<>();

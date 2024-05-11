@@ -8,7 +8,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.focusedapp.smartstudyhub.model.User;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 
 import lombok.AllArgsConstructor;
@@ -42,9 +42,9 @@ public class UserDTO implements Serializable {
 		this.status = user.getStatus();
 		this.totalDateDeletedOrBanned = 0L;
 		if (user.getTimeAdminModified() != null) {
-			LocalDateTime timeAdminModified = MethodUtils.convertoToLocalDateTime(user.getTimeAdminModified());
-			LocalDateTime nowDate = MethodUtils.convertoToLocalDateTime(new Date());
-			this.totalDateDeletedOrBanned = MethodUtils.distanceDaysBetweenTwoDate(timeAdminModified, nowDate, 
+			LocalDateTime timeAdminModified = DateUtils.convertoToLocalDateTime(user.getTimeAdminModified());
+			LocalDateTime nowDate = DateUtils.convertoToLocalDateTime(new Date());
+			this.totalDateDeletedOrBanned = DateUtils.distanceDaysBetweenTwoDate(timeAdminModified, nowDate, 
 					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
 		}
 		this.totalWorks = user.getTotalWorks();
@@ -54,9 +54,9 @@ public class UserDTO implements Serializable {
 		}
 		this.dueDatePremium = 0L;
 		if (user.getDueDatePremium() != null) {
-			LocalDateTime dueDateTimeZone = MethodUtils.convertoToLocalDateTime(user.getDueDatePremium());
-			LocalDateTime nowDateTimeZone = MethodUtils.convertoToLocalDateTime(new Date());
-			this.dueDatePremium = MethodUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
+			LocalDateTime dueDateTimeZone = DateUtils.convertoToLocalDateTime(user.getDueDatePremium());
+			LocalDateTime nowDateTimeZone = DateUtils.convertoToLocalDateTime(new Date());
+			this.dueDatePremium = DateUtils.distanceDaysBetweenTwoDate(nowDateTimeZone, dueDateTimeZone, 
 					ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
 		}
 		this.totalWorksToday = user.getTotalWorksToday();

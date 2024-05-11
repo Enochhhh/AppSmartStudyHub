@@ -21,7 +21,7 @@ import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.HistoryDailyDTO;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
@@ -35,8 +35,8 @@ public class HistoryDailyService {
 	
 	public void createHistoryDaily() {
 		Date nowDate = new Date();	
-		Date endOfDate = MethodUtils.setTimeOfDateToMidnight(nowDate.getTime());
-		Date startDate = MethodUtils.addDaysForDate(endOfDate, -1);
+		Date endOfDate = DateUtils.setTimeOfDateToMidnight(nowDate.getTime());
+		Date startDate = DateUtils.addDaysForDate(endOfDate, -1);
 		List<User> users = userService.findUsersToResetDataDaily();
 		List<HistoryDaily> historyList = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(users)) {

@@ -19,7 +19,7 @@ import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.EventScheduleDTO;
 import com.focusedapp.smartstudyhub.model.custom.TimeLineEventDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
-import com.focusedapp.smartstudyhub.util.MethodUtils;
+import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
@@ -40,11 +40,11 @@ public class EventScheduleService {
 	public EventScheduleDTO createEvent(EventScheduleDTO eventData) {
 		User user = userService.findByIdAndStatus(eventData.getUserId(), EnumStatus.ACTIVE.getValue());
 		
-		LocalDateTime startTime = MethodUtils.convertoToLocalDateTime(new Date(eventData.getStartTime()));
-		LocalDateTime endTime = MethodUtils.convertoToLocalDateTime(new Date(eventData.getEndTime()));
-		Long totalDays = MethodUtils.distanceDaysBetweenTwoDate(startTime, endTime, 
+		LocalDateTime startTime = DateUtils.convertoToLocalDateTime(new Date(eventData.getStartTime()));
+		LocalDateTime endTime = DateUtils.convertoToLocalDateTime(new Date(eventData.getEndTime()));
+		Long totalDays = DateUtils.distanceDaysBetweenTwoDate(startTime, endTime, 
 				ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())) + 1;
-		if (eventData.getEndTime() == MethodUtils.setTimeOfDateToMidnight(eventData.getEndTime()).getTime()) {
+		if (eventData.getEndTime() == DateUtils.setTimeOfDateToMidnight(eventData.getEndTime()).getTime()) {
 			totalDays -= 1;
 		}
 
@@ -92,11 +92,11 @@ public class EventScheduleService {
 		if (eventScheduleOpt.isEmpty()) {
 			return null;
 		}
-		LocalDateTime startTime = MethodUtils.convertoToLocalDateTime(new Date(eventData.getStartTime()));
-		LocalDateTime endTime = MethodUtils.convertoToLocalDateTime(new Date(eventData.getEndTime()));
-		Long totalDays = MethodUtils.distanceDaysBetweenTwoDate(startTime, endTime, 
+		LocalDateTime startTime = DateUtils.convertoToLocalDateTime(new Date(eventData.getStartTime()));
+		LocalDateTime endTime = DateUtils.convertoToLocalDateTime(new Date(eventData.getEndTime()));
+		Long totalDays = DateUtils.distanceDaysBetweenTwoDate(startTime, endTime, 
 				ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())) + 1;
-		if (eventData.getEndTime() == MethodUtils.setTimeOfDateToMidnight(eventData.getEndTime()).getTime()) {
+		if (eventData.getEndTime() == DateUtils.setTimeOfDateToMidnight(eventData.getEndTime()).getTime()) {
 			totalDays -= 1;
 		}
 		
@@ -153,19 +153,19 @@ public class EventScheduleService {
 		Date tempEndDate = new Date(endDate.getTime());
 		while (tempStartDate.getTime() <= tempEndDate.getTime()) {
 			mapTimeLine.put(tempStartDate.getTime(), new TimeLineEventDTO(tempStartDate.getTime()));
-			tempStartDate = MethodUtils.addDaysForDate(tempStartDate, 1);
+			tempStartDate = DateUtils.addDaysForDate(tempStartDate, 1);
 		}
 		if (!CollectionUtils.isEmpty(works)) {
 			works.stream().forEach(w -> {
 				for (Map.Entry<Long, TimeLineEventDTO> entry : mapTimeLine.entrySet()) {
 					Date dateStart = new Date(entry.getKey());
-					Date dateEnd = MethodUtils.addDaysForDate(dateStart, 1);
+					Date dateEnd = DateUtils.addDaysForDate(dateStart, 1);
 					Long nowDateMili = new Date().getTime();
 					if (w.getDueDate().getTime() <= nowDateMili 
 							&& w.getStatus().equals(EnumStatus.ACTIVE.getValue())
-							&& MethodUtils.distanceDaysBetweenTwoDateNotLocalDateTime(dateStart, new Date(nowDateMili), 
+							&& DateUtils.distanceDaysBetweenTwoDateNotLocalDateTime(dateStart, new Date(nowDateMili), 
 									ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())) == 0) {
-						System.out.println(MethodUtils.distanceDaysBetweenTwoDateNotLocalDateTime(dateStart, new Date(nowDateMili), 
+						System.out.println(DateUtils.distanceDaysBetweenTwoDateNotLocalDateTime(dateStart, new Date(nowDateMili), 
 								ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())));
 						entry.getValue().getWorksDueDate().add(new WorkDTO(w));
 					} else if (w.getDueDate().getTime() >= dateStart.getTime() 
@@ -177,13 +177,13 @@ public class EventScheduleService {
 		}
 		if (!CollectionUtils.isEmpty(eventSchedules)) {
 			eventSchedules.stream().forEach(e -> {
-				Date tempStartTimeEvent = MethodUtils.setTimeOfDateToMidnight(e.getStartTime().getTime());
+				Date tempStartTimeEvent = DateUtils.setTimeOfDateToMidnight(e.getStartTime().getTime());
 				Date tempEndTimeEvent = new Date(e.getEndTime().getTime());
 				for (Map.Entry<Long, TimeLineEventDTO> entry : mapTimeLine.entrySet()) {
 					if (entry.getKey() >= tempStartTimeEvent.getTime() && entry.getKey() < tempEndTimeEvent.getTime()) {
 						if (e.getIsAllDay() || e.getTotalDays() > 1) {
 							EventScheduleDTO eventScheduleDTO = new EventScheduleDTO(e);
-							Long dayOutOfTotalDays = MethodUtils.distanceDaysBetweenTwoDateNotLocalDateTime(
+							Long dayOutOfTotalDays = DateUtils.distanceDaysBetweenTwoDateNotLocalDateTime(
 									tempStartTimeEvent, new Date(entry.getKey()), 
 									ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())) + 1;
 							eventScheduleDTO.setNowDateOutOfTotalDays(dayOutOfTotalDays.intValue());

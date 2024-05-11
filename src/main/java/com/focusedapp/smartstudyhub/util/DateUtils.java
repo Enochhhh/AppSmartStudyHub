@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class MethodUtils {
+public class DateUtils {
 
 	/**
 	 * Calculate the distance of two dates
