@@ -64,6 +64,10 @@ public class ReportService {
 				.urlFile(request.getUrlFile())
 				.status(EnumStatus.ACTIVE.getValue())
 				.build();
+		if (request.getUserWasReportedId() != null) {
+			User userWasReported = userService.findById(request.getUserWasReportedId());
+			report.setUserWasReported(userWasReported);
+		}
 		reportDAO.save(report);
 		
 		return new ReportDTO(report);

@@ -49,6 +49,7 @@ create table users(
 create table report(
 	id int auto_increment,
     user_id int not null,
+    user_was_reported_id int,
     email varchar(50), 
     phone_number varchar(11),
     title nvarchar(300),
@@ -64,7 +65,8 @@ create table report(
     url_file text,
     status text,
 	constraint ReportPrimaryKey primary key(id),
-    constraint ReportUserIdForeignKey foreign key(user_id) references users(id)
+    constraint ReportUserIdForeignKey foreign key(user_id) references users(id),
+    constraint ReportUserWasReportedIdForeignKey foreign key(user_was_reported_id) references users(id)
 );
 
 create table study_group(

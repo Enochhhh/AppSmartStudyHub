@@ -77,6 +77,10 @@ public class Report implements Serializable {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
+	@ManyToOne
+	@JoinColumn(name = "user_was_reported_id")
+	private User userWasReported;
+	
 	@Column(name = "url_file")
 	private String urlFile;
 	

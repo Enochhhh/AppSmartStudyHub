@@ -24,6 +24,10 @@ public class ReportDTO implements Serializable {
 	
 	private Integer userId;
 	
+	private Integer userWasReportedId;
+	
+	private String userWasReportedName;
+	
 	private String email;
 	
 	private String phoneNumber;
@@ -55,6 +59,11 @@ public class ReportDTO implements Serializable {
 	public ReportDTO(Report report) {
 		this.id = report.getId();
 		this.userId = report.getUser().getId();
+		if (report.getUserWasReported() != null) {
+			this.userWasReportedId = report.getUserWasReported().getId();
+			this.userWasReportedName = report.getUserWasReported().getLastName().concat(" ")
+					.concat(report.getUserWasReported().getFirstName()).trim();
+		}
 		this.email = report.getEmail();
 		this.phoneNumber = report.getPhoneNumber();
 		this.title = report.getTitle();
