@@ -122,6 +122,9 @@ public class User implements Serializable {
 	@Column(name = "due_date_premium")
 	private Date dueDatePremium;
 	
+	@Column(name = "cover_image")
+	private String coverImage;
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Report> reports;
 	

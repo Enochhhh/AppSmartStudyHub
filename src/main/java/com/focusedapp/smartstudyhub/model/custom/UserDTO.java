@@ -65,6 +65,7 @@ public class UserDTO implements Serializable {
 		this.totalWorksWeekly = user.getTotalWorksWeekly();
 		this.totalPomodorosWeekly = user.getTotalPomodorosWeekly();
 		this.totalTimeFocusWeekly = user.getTotalTimeFocusWeekly();
+		this.coverImage = user.getCoverImage();
 	}
 	
 	public UserDTO(Integer rank, User user) {
@@ -113,4 +114,5 @@ public class UserDTO implements Serializable {
 	private Integer totalTimeFocusWeekly;
 	private Long timeLastUse;
 	private Long dueDatePremium;
+	private String coverImage;
 }

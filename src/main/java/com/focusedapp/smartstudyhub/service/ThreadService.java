@@ -1,11 +1,13 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.focusedapp.smartstudyhub.exception.ISException;
+import com.focusedapp.smartstudyhub.model.HistoryDaily;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 
@@ -17,6 +19,7 @@ public class ThreadService {
 	@Autowired SoundConcentrationService soundConcentrationService;
 	@Autowired SoundDoneService soundDoneService;
 	@Autowired FilesService filesService;
+	@Autowired HistoryDailyService historyDailyService;
 
 	/**
 	 * Thread send new account info to Email User
@@ -113,6 +116,20 @@ public class ThreadService {
 		Thread thread = new Thread() {
 			public void run() {
 				userService.clearInfo(user);
+			}
+		};
+		thread.start();
+	}
+	
+	/**
+	 * Thread delete all history dailies of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllHistoryDailiesOfUser(List<HistoryDaily> historyDailies) {
+		Thread thread = new Thread() {
+			public void run() {
+				historyDailyService.deleteAll(historyDailies);
 			}
 		};
 		thread.start();

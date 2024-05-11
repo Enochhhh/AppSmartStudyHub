@@ -75,7 +75,8 @@ public enum StatusCode {
 	GET_TIME_LINE_EVENT_FAILURE("13_5_f", "Get Time Line Event Failure!"),
 	
 	/* HISTORY DAILY */
-	GET_HISTORY_DAILY_FAILURE("14_1_f", "Get History Daily Failure!"),;
+	GET_HISTORY_DAILY_FAILURE("14_1_f", "Get History Daily Failure!"),
+	DELETE_HISTORY_DAILY_FAILURE("14_2_f", "Delete History Daily Failure!");
 	
 	private final String code;
 	private final String message;

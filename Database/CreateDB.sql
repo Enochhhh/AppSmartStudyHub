@@ -43,6 +43,7 @@ create table users(
     total_time_focus_weekly int,
     time_last_use datetime,
     due_date_premium datetime,
+    cover_image text,
     constraint UserPrimaryKey primary key(id)
 );
 

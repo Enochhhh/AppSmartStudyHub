@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +33,7 @@ public class HistoryDailyService {
 	@Autowired UserService userService;
 	@Autowired WorkService workService;
 	@Autowired PomodoroService pomodoroService;
+	@Autowired ThreadService threadService;
 	
 	public void createHistoryDaily() {
 		Date nowDate = new Date();	
@@ -102,5 +104,40 @@ public class HistoryDailyService {
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();
+	}
+	
+	/**
+	 * Delete History Daily
+	 * 
+	 * @param historyDailyId
+	 * @return
+	 */
+	public Boolean deleteHistoryDaily(Integer historyDailyId) {
+		Optional<HistoryDaily> historyDaily = historyDailyDAO.findById(historyDailyId);
+		if (historyDaily.isEmpty()) {
+			return false;
+		}
+		historyDailyDAO.delete(historyDaily.get());
+		return true;
+	}
+	
+	public void deleteAll(List<HistoryDaily> historyDailies) {
+		historyDailyDAO.deleteAll(historyDailies);
+	}
+	
+	/**
+	 * Delete all history dailies of User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Boolean deleteAllHistoryDailyOfUser(Integer userId) {
+		User user = userService.findById(userId);
+		List<HistoryDaily> historyDailies = historyDailyDAO.findByUser(user);
+		if (CollectionUtils.isEmpty(historyDailies)) {
+			return false;
+		}
+		threadService.deleteAllHistoryDailiesOfUser(historyDailies);
+		return true;
 	}
 }

@@ -5,31 +5,31 @@ use defaultdb;
 -- Users
 insert into users values(1, 'enochphann@gmail.com', 'enochphann@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Son', N'Phan', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
 insert into users values(2, 'namdo@gmail.com', 'namdo@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Nam', N'Do', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'PREMIUM', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, '2025-12-05 00:00:00');
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, '2025-12-05 00:00:00', null);
 insert into users values(3, 'chienpham@gmail.com', 'chienpham@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Chien', N'Pham', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
 insert into users values(4, 'thaihung@gmail.com', 'thaihung@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Hung', N'Thai', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
 insert into users values(5, 'baodo@gmail.com', 'baodo@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Bao', N'Do', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'CUSTOMER', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
 insert into users values(6, null, null, null,
 	null, N'1', N'#GUEST ', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'GUEST', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
 insert into users values(7, null, null, null,
 	null, N'2', N'#GUEST ', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'GUEST', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
 insert into users values(8, 'phanhongson234@gmail.com', 'phanhongson234@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Son', N'Phan', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'ADMIN', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
 insert into users values(9, 'nmt2002vn@gmail.com', 'nmt2002vn@gmail.com', '$2a$10$TODnUc7c4sAS/9xXVJIBreyaaYSyqXWFGPuZcaSQ4w05UN.a6ZMjm',
 	null, N'Toan', N'Nguyen', null, null, 'Viet Nam', '2023-11-28 22:31:05', 'ADMIN', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1701175788/SmartStudyHub/USER/default-avatar_c2ruot.png',
-    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null);
+    null, 'local', 'ACTIVE', null, false, null, null, null, null, null, null, null, null, null, null, null);
     
 -- Folder
 insert into folder values(1, 1, N'Folder 1 Son Phan', '#000000', null, '2023-11-28 00:00:00', 'ACTIVE');

@@ -5,7 +5,8 @@ public enum EnumTypeFile {
 	USER("USER"),
 	SOUNDCONCENTRATION("SOUNDCONCENTRATION"),
 	SOUNDDONE("SOUNDDONE"),
-	THEME("THEME");
+	THEME("THEME"),
+	COVERIMAGE("COVERIMAGE");
 	
 	private final String value;
 	
