@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.focusedapp.smartstudyhub.dao.SoundDoneDAO;
 import com.focusedapp.smartstudyhub.exception.NoRightToPerformException;
@@ -215,6 +217,7 @@ public class SoundDoneService {
 	 * @param user
 	 * @throws IOException
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	public void deleteAllSoundsDoneOfUser(User user) throws IOException {
 		filesService.deleteAllFilesByTypeOfUser(user, EnumTypeFile.SOUNDDONE.getValue());
 		soundDoneDAO.deleteByUser(user);

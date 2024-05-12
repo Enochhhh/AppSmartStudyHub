@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.focusedapp.smartstudyhub.dao.ProjectDAO;
 import com.focusedapp.smartstudyhub.dao.WorkDAO;
@@ -64,6 +66,9 @@ public class WorkService {
 	
 	@Autowired
 	TagService tagService;
+	
+	@Autowired 
+	ThreadService threadService;
 	
 	/**
 	 * Find Work By Id and Status
@@ -650,6 +655,7 @@ public class WorkService {
 	 * 
 	 * @param user
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	public void deleteAllWorksOfUser(User user) {
 		workDAO.deleteByUser(user);
 	}
@@ -860,5 +866,15 @@ public class WorkService {
 			Integer userId, String status, Date startDate, Date endDate) {
 		return workDAO.findByUserIdAndStatusAndDateMarkCompletedGreaterThanEqualAndDateMarkCompletedLessThan(userId, 
 				status, startDate, endDate);
+	}
+	
+	/** 
+	 * Delete All Works of User by thread
+	 * 
+	 * @param userId
+	 */
+	public Boolean deleteCompletelyAllWorksOfUser(Integer userId) {
+		threadService.deleteAllWorksOfUser(userId);
+		return true;
 	}
 }

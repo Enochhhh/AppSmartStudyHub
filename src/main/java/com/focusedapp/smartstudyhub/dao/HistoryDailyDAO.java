@@ -14,4 +14,6 @@ public interface HistoryDailyDAO extends JpaRepository<HistoryDaily, Integer> {
 	List<HistoryDaily> findByUser(User user, Pageable pageable);
 	
 	List<HistoryDaily> findByUser(User user);
+	
+	void deleteByUser(User user);
 }

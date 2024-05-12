@@ -297,4 +297,38 @@ public class FolderController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Delete Completyly All Folders of User Controller
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	@DeleteMapping("/delete-completely-all/{userId}")
+	public ResponseEntity<Result<AllResponseTypeDTO>> deleteCompletelyAllFolderOfUser(@PathVariable Integer userId) {
+		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		if (userId == null || userId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Request Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		Boolean isDeleted = folderService.deleteCompletelyAllFolderOfUser(userId);
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
+		data.setBooleanType(isDeleted);
+		data.setStringType("Deleted Successfully!");
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		if (!isDeleted) {
+			result.getMeta().setStatusCode(StatusCode.DELETE_ALL_FOLDERS_COMPLETELY_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.DELETE_ALL_FOLDERS_COMPLETELY_FAILURE.getMessage());
+			data.setStringType("Not found any folder to delete!");
+		}
+		
+		result.setData(data);
+		return createResponseEntity(result);
+	}
+	
 }

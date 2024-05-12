@@ -39,6 +39,7 @@ import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 import com.focusedapp.smartstudyhub.util.enumerate.Provider;
 
 @Service
@@ -707,14 +708,17 @@ public class UserService {
 		folderService.deleteAllFolderOfUser(user);
 		projectService.deleteAllProjectOfUser(user);
 		workService.deleteAllWorksOfUser(user);
-		pomodoroService.deleteAllPomodorosOfUser(user);
 		tagService.deleteAllTagsOfUser(user);
+		pomodoroService.deleteAllPomodorosOfUser(user);
 		
 		threadService.deleteAllThemesOfUser(user);
 		threadService.deleteAllSoundsConcentrationOfUser(user);
-		threadService.deleteAllSoundsDoneOfUser(user);;
-		threadService.deleteAllFilesUser(user);
+		threadService.deleteAllSoundsDoneOfUser(user);
+		threadService.deleteAllFilesOfUserByType(user, EnumTypeFile.USER.getValue());
+		threadService.deleteAllFilesOfUserByType(user, EnumTypeFile.COVERIMAGE.getValue());
 		threadService.clearInfo(user);
+		threadService.deleteAllHistoryDailiesOfUser(user);
+		threadService.deleteAllEventsOfUser(user);
 	}
 	
 	public void clearInfo(User user) {

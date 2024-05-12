@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.focusedapp.smartstudyhub.dao.EventScheduleDAO;
 import com.focusedapp.smartstudyhub.model.EventSchedule;
@@ -203,6 +205,11 @@ public class EventScheduleService {
 					return t;
 				})
 				.collect(Collectors.toList());
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	public void deleteAllEventsOfUser(User user) {
+		eventScheduleDAO.deleteByUser(user);
 	}
 	
 }

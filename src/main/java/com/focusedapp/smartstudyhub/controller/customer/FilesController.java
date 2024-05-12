@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +28,9 @@ import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.service.CloudinaryService;
 import com.focusedapp.smartstudyhub.service.FilesService;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
+import com.nimbusds.oauth2.sdk.util.StringUtils;
 
 @RestController
 @RequestMapping("/mobile/v1/user")
@@ -156,6 +160,68 @@ public class FilesController extends BaseController {
 		result.setData(allResponseTypeDTO);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Delete Completyly All avatars or cover images of User Controller
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	@DeleteMapping("/customer/files/delete-completely-all")
+	public ResponseEntity<Result<AllResponseTypeDTO>> deleteCompletelyAllAvatarsOrCoverImagesOfUser(@RequestParam String type) {
+		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		if (StringUtils.isBlank(type) 
+				|| (!type.equals(EnumTypeFile.COVERIMAGE.getValue()) && !type.equals(EnumTypeFile.USER.getValue()))) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Request Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		User user = getAuthenticatedUser();
+		Boolean isDeleted = filesService.deleteAllFilesOfUserByTypeUsingThread(user, type);
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
+		data.setBooleanType(isDeleted);
+		data.setStringType("Deleted Successfully!");
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		
+		result.setData(data);
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Delete Completyly All Themes or sounds of User Controller
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	@DeleteMapping("/premium/files/delete-completely-all")
+	public ResponseEntity<Result<AllResponseTypeDTO>> deleteCompletelyAllThemesOrSoundsOfUser(@RequestParam String type) {
+		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		if (StringUtils.isBlank(type)
+				|| (!type.equals(EnumTypeFile.THEME.getValue())
+				&& !type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue())
+				&& !type.equals(EnumTypeFile.SOUNDDONE.getValue()))) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Request Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		User user = getAuthenticatedUser();
+		Boolean isDeleted = filesService.deleteAllThemesOrSoundsOfUserByUsingThread(user, type);
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
+		data.setBooleanType(isDeleted);
+		data.setStringType("Deleted Successfully!");
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		
+		result.setData(data);
 		return createResponseEntity(result);
 	}
 	

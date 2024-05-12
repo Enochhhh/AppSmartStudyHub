@@ -3,6 +3,7 @@ package com.focusedapp.smartstudyhub.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.PomodoroDTO;
 import com.focusedapp.smartstudyhub.model.custom.PomorodoGroupByDateDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
@@ -83,6 +85,33 @@ public class PomodoroController extends BaseController {
 		result.setData(pomodoroDeleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Delete Completyly All Pomodoros of User Controller
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	@DeleteMapping("/delete-completely-all/{userId}")
+	public ResponseEntity<Result<AllResponseTypeDTO>> deleteCompletelyAllPomodorosOfUser(@PathVariable Integer userId) {
+		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		if (userId == null || userId < 1) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Request Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		Boolean isDeleted = pomodoroService.deleteCompletelyAllPomodorosOfUserByThread(userId);
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
+		data.setBooleanType(isDeleted);
+		data.setStringType("Deleted Successfully!");
+		
+		result.setData(data);
 		return createResponseEntity(result);
 	}
 	

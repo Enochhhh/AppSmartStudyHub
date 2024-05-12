@@ -1,13 +1,11 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.focusedapp.smartstudyhub.exception.ISException;
-import com.focusedapp.smartstudyhub.model.HistoryDaily;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 
@@ -20,6 +18,11 @@ public class ThreadService {
 	@Autowired SoundDoneService soundDoneService;
 	@Autowired FilesService filesService;
 	@Autowired HistoryDailyService historyDailyService;
+	@Autowired FolderService folderService;
+	@Autowired EventScheduleService eventScheduleService;
+	@Autowired ProjectService projectService;
+	@Autowired WorkService workService;
+	@Autowired PomodoroService pomodoroService;
 
 	/**
 	 * Thread send new account info to Email User
@@ -94,11 +97,11 @@ public class ThreadService {
 	 * 
 	 * @param user
 	 */
-	public void deleteAllFilesUser(User user) {
+	public void deleteAllFilesOfUserByType(User user, String type) {
 		Thread thread = new Thread() {
 			public void run() {
 				try {
-					filesService.deleteAllFilesUser(user);
+					filesService.deleteAllFilesByTypeOfUser(user, type);
 				} catch (IOException e) {
 					throw new ISException(e);
 				}
@@ -126,12 +129,87 @@ public class ThreadService {
 	 * 
 	 * @param user
 	 */
-	public void deleteAllHistoryDailiesOfUser(List<HistoryDaily> historyDailies) {
+	public void deleteAllHistoryDailiesOfUser(User user) {
 		Thread thread = new Thread() {
 			public void run() {
-				historyDailyService.deleteAll(historyDailies);
+				historyDailyService.deleteByUser(user);
 			}
 		};
 		thread.start();
 	}
+	
+	/**
+	 * Thread delete all history folders of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllFoldersOfUser(Integer userId) {
+		Thread thread = new Thread() {
+			public void run() {
+				User user = userService.findById(userId);
+				folderService.deleteAllFolderOfUser(user);
+			}
+		};
+		thread.start();
+	}
+	
+	/**
+	 * Thread delete all events of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllEventsOfUser(User user) {
+		Thread thread = new Thread() {
+			public void run() {
+				eventScheduleService.deleteAllEventsOfUser(user);
+			}
+		};
+		thread.start();
+	}
+	
+	/**
+	 * Thread delete all projects of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllProjectsOfUser(Integer userId) {
+		Thread thread = new Thread() {
+			public void run() {
+				User user = userService.findById(userId);
+				projectService.deleteAllProjectOfUser(user);
+			}
+		};
+		thread.start();
+	}
+	
+	/**
+	 * Thread delete all works of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllWorksOfUser(Integer userId) {
+		Thread thread = new Thread() {
+			public void run() {
+				User user = userService.findById(userId);
+				workService.deleteAllWorksOfUser(user);
+			}
+		};
+		thread.start();
+	}
+	
+	/**
+	 * Thread delete all pomodoros of User
+	 * 
+	 * @param user
+	 */
+	public void deleteAllPomodorosOfUser(Integer userId) {
+		Thread thread = new Thread() {
+			public void run() {
+				User user = userService.findById(userId);
+				pomodoroService.deleteAllPomodorosOfUser(user);
+			}
+		};
+		thread.start();
+	}
+	
 }

@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.focusedapp.smartstudyhub.dao.HistoryDailyDAO;
 import com.focusedapp.smartstudyhub.model.HistoryDaily;
@@ -121,8 +123,9 @@ public class HistoryDailyService {
 		return true;
 	}
 	
-	public void deleteAll(List<HistoryDaily> historyDailies) {
-		historyDailyDAO.deleteAll(historyDailies);
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	public void deleteByUser(User user) {
+		historyDailyDAO.deleteByUser(user);
 	}
 	
 	/**
@@ -133,11 +136,7 @@ public class HistoryDailyService {
 	 */
 	public Boolean deleteAllHistoryDailyOfUser(Integer userId) {
 		User user = userService.findById(userId);
-		List<HistoryDaily> historyDailies = historyDailyDAO.findByUser(user);
-		if (CollectionUtils.isEmpty(historyDailies)) {
-			return false;
-		}
-		threadService.deleteAllHistoryDailiesOfUser(historyDailies);
+		threadService.deleteAllHistoryDailiesOfUser(user);
 		return true;
 	}
 }

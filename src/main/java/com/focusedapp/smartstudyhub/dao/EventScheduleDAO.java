@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.focusedapp.smartstudyhub.model.EventSchedule;
+import com.focusedapp.smartstudyhub.model.User;
 
 @Repository
 public interface EventScheduleDAO extends JpaRepository<EventSchedule, Integer> {
@@ -17,4 +18,6 @@ public interface EventScheduleDAO extends JpaRepository<EventSchedule, Integer> 
 			+ "where e.user_id = :userId and (e.end_time > :startDate or e.start_time <= :endDate)", nativeQuery = true)
 	List<EventSchedule> findByEndTimeGreaterThanOrStartTimeLessThanEqualAndUserId(@Param("startDate") Date startDate
 			, @Param("endDate") Date endDate, @Param("userId") Integer userId);
+	
+	void deleteByUser(User user);
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,7 +55,7 @@ public class Tag implements Serializable {
 	
 	private String status;
 	
-	@ManyToMany(mappedBy = "tags")
+	@ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
 	List<Work> works;
 	
 }

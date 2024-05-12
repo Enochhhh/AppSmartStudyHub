@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,6 +66,7 @@ public class HistoryDailyController extends BaseController {
 	 * @param userId
 	 * @return
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	@DeleteMapping("/delete/{historyDailyId}")
 	public ResponseEntity<Result<AllResponseTypeDTO>> deleteHistoryDaily(@PathVariable Integer historyDailyId) {
 		Result<AllResponseTypeDTO> result = new Result<>();
@@ -97,6 +100,7 @@ public class HistoryDailyController extends BaseController {
 	 * @param userId
 	 * @return
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	@DeleteMapping("/delete")
 	public ResponseEntity<Result<AllResponseTypeDTO>> deleteAllHistoryDailiesOfUser(@RequestParam Integer userId) {
 		Result<AllResponseTypeDTO> result = new Result<>();
@@ -115,8 +119,8 @@ public class HistoryDailyController extends BaseController {
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		if (!isDeleted) {
-			result.getMeta().setStatusCode(StatusCode.DELETE_HISTORY_DAILY_FAILURE.getCode());
-			result.getMeta().setMessage(StatusCode.DELETE_HISTORY_DAILY_FAILURE.getMessage());
+			result.getMeta().setStatusCode(StatusCode.DELETE_ALL_HISTORY_DAILIES_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.DELETE_ALL_HISTORY_DAILIES_FAILURE.getMessage());
 			data.setStringType("Not found any history daily to delete!");
 		}
 		

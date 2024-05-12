@@ -38,16 +38,19 @@ public enum StatusCode {
 	DELETE_FOLDER_COMPLETELY_FAILURE("5_1_f", "Delete Folder Completely Failure!"),
 	MARK_COMPLETED_FOLDER_FAILURE("5_2_f", "Mark Completed Folder Failure!"),
 	RECOVER_FOLDER_FAILURE("5_3_f", "Recover Folder Failure!"),
+	DELETE_ALL_FOLDERS_COMPLETELY_FAILURE("5_4_f", "Delete All Folders Completely Failure!"),
 	/* PROJECT */
 	DELETE_PROJECT_COMPLETELY_FAILURE("6_1_f", "Delete Project Completely Failure!"),
 	MARK_COMPLETED_PROJECT_FAILURE("6_2_f", "Mark Completed Project Failure!"),
 	RECOVER_PROJECT_FAILURE("6_3_f", "Recover Folder Failure!"),
 	MARK_DELETED_PROJECT_FAILURE("6_4_f", "Mark Deleted Project Failure!"),
+	DELETE_ALL_PROJECTS_COMPLETELY_FAILURE("6_5_f", "Delete All Projects Completely Failure!"),
 	/* WORK */
 	MARK_DELETED_WORK_FAILURE("7_1_f", "Mark Deleted Work Failure!"),
 	MARK_COMPLETED_WORK_FAILURE("7_2_f", "Mark Completed Work Failure!"),
 	RECOVER_WORK_FAILURE("7_3_f", "Recover Work Failure!"),
 	REPEAT_WORK_FAILURE("7_4_f", "Repeat Work Failure!"),
+	DELETE_ALL_WORKS_COMPLETELY_FAILURE("7_5_f", "Delete All Works Completely Failure!"),
 	/* EXTRA WORK */
 	MARK_DELETED_EXTRAWORK_FAILURE("8_1_f", "Mark Deleted Extra Work Failure!"),
 	MARK_COMPLETED_EXTRAWORK_FAILURE("8_2_f", "Mark Completed Extra Work Failure!"),
@@ -76,7 +79,8 @@ public enum StatusCode {
 	
 	/* HISTORY DAILY */
 	GET_HISTORY_DAILY_FAILURE("14_1_f", "Get History Daily Failure!"),
-	DELETE_HISTORY_DAILY_FAILURE("14_2_f", "Delete History Daily Failure!");
+	DELETE_HISTORY_DAILY_FAILURE("14_2_f", "Delete History Daily Failure!"),
+	DELETE_ALL_HISTORY_DAILIES_FAILURE("14_3_f", "Delete All History Dailies Failure!");
 	
 	private final String code;
 	private final String message;

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.focusedapp.smartstudyhub.dao.FolderDAO;
 import com.focusedapp.smartstudyhub.dao.ProjectDAO;
@@ -41,6 +43,8 @@ public class ProjectService {
 	WorkService workService;
 	@Autowired
 	ExtraWorkService extraWorkService;
+	@Autowired 
+	ThreadService threadService;
 	
 	/**
 	 * Find project by id
@@ -356,6 +360,7 @@ public class ProjectService {
 	 * 
 	 * @param user
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	public void deleteAllProjectOfUser(User user) {
 		projectDAO.deleteByUser(user);
 	}
@@ -379,6 +384,17 @@ public class ProjectService {
 			projects.add(new ProjectGroupByDateDTO(entry.getKey(), entry.getValue()));
 		}
 		return projects;
+	}
+	
+	/**
+	 * Delete Complete All Projects of User
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Boolean deleteCompletelyAllProjectsOfUser(Integer userId) {
+		threadService.deleteAllProjectsOfUser(userId);
+		return true;
 	}
 
 }

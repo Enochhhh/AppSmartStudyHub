@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.focusedapp.smartstudyhub.dao.FilesDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
@@ -13,6 +15,7 @@ import com.focusedapp.smartstudyhub.model.Files;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 
 @Service
 public class FilesService {
@@ -23,6 +26,8 @@ public class FilesService {
 	CloudinaryService cloudinaryService;
 	@Autowired
 	UserService userService;
+	@Autowired 
+	ThreadService threadService;
 	
 	/**
 	 * Get Files Uploaded of User
@@ -67,6 +72,10 @@ public class FilesService {
 			user.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
 			userService.persistent(user);
 		}
+		if (user.getCoverImage() != null && user.getCoverImage().equals(files.getSecureUrl())) {
+			user.setCoverImage(null);
+			userService.persistent(user);
+		}
 		
 		cloudinaryService.deleteFileInCloudinary(files.getPublicId());
 		return new FilesDTO(files);
@@ -94,12 +103,39 @@ public class FilesService {
 	 * @param type
 	 * @throws IOException
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	public void deleteAllFilesByTypeOfUser(User user, String type) throws IOException {
 		List<Files> files = filesDAO.findByUserIdAndType(user.getId(), type);
 		
 		for (Files file : files) {
 			deleteCompletelyFilesById(user, file.getId());
 		}
+	}
+	
+	/**
+	 * Delete All Files of User by type using Thread
+	 * 
+	 * @param userId
+	 */
+	public Boolean deleteAllFilesOfUserByTypeUsingThread(User user, String type) {
+		threadService.deleteAllFilesOfUserByType(user, type);
+		return true;
+	}
+	
+	/**
+	 * Delete All Themes or Sounds of User by type using Thread
+	 * 
+	 * @param userId
+	 */
+	public Boolean deleteAllThemesOrSoundsOfUserByUsingThread(User user, String type) {
+		if (type.equals(EnumTypeFile.THEME.getValue())) {
+			threadService.deleteAllThemesOfUser(user);
+		} else if (type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue())) {
+			threadService.deleteAllSoundsConcentrationOfUser(user);
+		} else {
+			threadService.deleteAllSoundsDoneOfUser(user);
+		}
+		return true;
 	}
 	
 }

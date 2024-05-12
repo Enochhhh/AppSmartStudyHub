@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.focusedapp.smartstudyhub.dao.ExtraWorkDAO;
 import com.focusedapp.smartstudyhub.dao.PomodoroDAO;
@@ -37,6 +39,8 @@ public class PomodoroService {
 	ExtraWorkDAO extraWorkDAO;
 	@Autowired
 	UserService userService;
+	@Autowired
+	ThreadService threadService;
 	
 	/**
 	 * Create Pomodoro
@@ -151,6 +155,7 @@ public class PomodoroService {
 	 * 
 	 * @param user
 	 */
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	public void deleteAllPomodorosOfUser(User user) {
 		pomodoroDAO.deleteByUser(user);
 	}
@@ -192,6 +197,16 @@ public class PomodoroService {
 	public List<Pomodoro> findByUserIdAndCreatedDateGreaterThanEqualAndCreatedDateLessThan(Integer userId, Date startDate, 
 			Date endDate) {
 		return pomodoroDAO.findByUserIdAndCreatedDateGreaterThanEqualAndCreatedDateLessThan(userId, startDate, endDate);
+	}
+	
+	/**
+	 * Delete All Pomodoros of User by thread
+	 * 
+	 * @param userId
+	 */
+	public Boolean deleteCompletelyAllPomodorosOfUserByThread(Integer userId) {
+		threadService.deleteAllPomodorosOfUser(userId);
+		return true;
 	}
 	
 }
