@@ -60,6 +60,7 @@ public class WorkDTO implements Serializable {
 	private String status;
 	private String statusWork;
 	private Long createdDate;
+	private Long dateEndRepeat;
 	private List<ExtraWorkDTO> extraWorks;
 	private List<ExtraWorkDTO> extraWorksDeleted;
 	private List<TagDTO> tags;
@@ -170,6 +171,9 @@ public class WorkDTO implements Serializable {
 		this.unitRepeat = work.getUnitRepeat();
 		this.amountRepeat = work.getAmountRepeat();
 		this.daysOfWeekRepeat = work.getDaysOfWeekRepeat();
+		if (work.getDateEndRepeat() != null) {
+			this.dateEndRepeat = work.getDateEndRepeat().getTime();	
+		}	
 	}
 	
 	public WorkDTO(String workName) {

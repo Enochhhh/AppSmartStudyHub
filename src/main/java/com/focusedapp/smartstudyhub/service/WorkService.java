@@ -135,6 +135,7 @@ public class WorkService {
 				.daysOfWeekRepeat(dataCreate.getDaysOfWeekRepeat())
 				.status(EnumStatus.ACTIVE.getValue())
 				.note(dataCreate.getNote())
+				.dateEndRepeat(dataCreate.getDateEndRepeat() == null ? null : new Date(dataCreate.getDateEndRepeat()))
 				.build();
 				
 		work = workDAO.save(work);
@@ -194,6 +195,9 @@ public class WorkService {
 		workDb.setUnitRepeat(dataUpdate.getUnitRepeat());
 		workDb.setAmountRepeat(dataUpdate.getAmountRepeat());
 		workDb.setDaysOfWeekRepeat(dataUpdate.getDaysOfWeekRepeat());
+		if (dataUpdate.getDateEndRepeat() != null) {
+			workDb.setDateEndRepeat(new Date(dataUpdate.getDateEndRepeat()));
+		}
 				
 		workDb = workDAO.save(workDb);
 
@@ -309,6 +313,7 @@ public class WorkService {
 		workDb.setUnitRepeat(null);
 		workDb.setAmountRepeat(null);
 		workDb.setDaysOfWeekRepeat(null);
+		workDb.setDateEndRepeat(null);
 		
 		PomodoroDTO pomodoroRequest = PomodoroDTO.builder()
 				.userId(workDb.getUser().getId())
@@ -676,15 +681,18 @@ public class WorkService {
 	 * @return
 	 */
 	public WorkDTO repeat(Integer workId, User user) {
+		Date nowDate = new Date();
 		Work work = findById(workId);
+		
+		// Check if now date is the date end repeat
+		if (work.getDateEndRepeat() != null && work.getDateEndRepeat().getTime() <= nowDate.getTime()){
+			return markCompleted(workId);
+		}
 		Work newWork = new Work(work);
-		workDAO.save(newWork);
-		newWork.setDataInRelationship(work);
-		markCompleted(workId);
+		
 		EnumTypeRepeat enumTypeRepeat = EnumTypeRepeat.getByValue(newWork.getTypeRepeat());
 		
 		Date timeRepeat = newWork.getDueDate();
-		Date nowDate = new Date();
 		int dayOfWeek = 0;
 		LocalDateTime dateTimeZone = null;
 		int indexDayOfWeek = 0;
@@ -812,6 +820,12 @@ public class WorkService {
 				}
 				newWork.setDueDate(timeRepeat);
 		}
+		if (newWork.getDueDate().getTime() > newWork.getDateEndRepeat().getTime()) {
+			return markCompleted(workId); 
+		}
+		workDAO.save(newWork);
+		newWork.setDataInRelationship(work);
+		markCompleted(workId);
 		workDAO.save(newWork);
 		return new WorkDTO(newWork);
 	}

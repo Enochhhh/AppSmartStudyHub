@@ -159,6 +159,7 @@ create table works(
     status text,
     old_status text,
     date_mark_completed datetime,
+    date_end_repeat datetime,
     constraint WorksPrimaryKey primary key(id),
     constraint WorksUserIdForeignKey foreign key(user_id) references users(id),
     constraint WorksProjectIdForeignKey foreign key(project_id) references project(id)

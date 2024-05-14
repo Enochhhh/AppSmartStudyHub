@@ -116,6 +116,10 @@ public class Work implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateMarkCompleted;
 	
+	@Column(name = "date_end_repeat")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEndRepeat;
+	
 	@OneToMany(mappedBy = "work", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ExtraWork> extraWorks;
 	
@@ -150,6 +154,7 @@ public class Work implements Serializable {
 		this.dateMarkCompleted = work.getDateMarkCompleted();
 		this.numberOfPomodorosDone = 0;
 		this.timePassed = 0;
+		this.dateEndRepeat = work.getDateEndRepeat();
 	}
 	
 	public void setDataInRelationship(Work work) {
