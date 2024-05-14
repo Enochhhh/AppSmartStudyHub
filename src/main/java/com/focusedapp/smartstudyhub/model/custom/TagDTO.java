@@ -56,7 +56,7 @@ public class TagDTO {
 			works.stream().forEach(w -> {				
 				Integer time = w.getNumberOfPomodoros() * w.getTimeOfPomodoro();
 				this.totalTimeWork += time;
-				this.totalTimePassed += w.getTimePassed();
+				this.totalTimePassed += w.getTimePassed() == null ? 0 : w.getTimePassed();
 				if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
 					this.listWorkActive.add(new WorkDTO(w));
 				} else if (w.getStatus().equals(EnumStatus.COMPLETED.getValue())) {
