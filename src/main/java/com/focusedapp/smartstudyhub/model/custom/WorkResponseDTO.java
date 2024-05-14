@@ -40,7 +40,8 @@ public class WorkResponseDTO {
 				
 				this.totalTimePassed += w.getTimePassed();
 				if (w.getStatus().equals(EnumStatus.ACTIVE.getValue())) {
-					Integer numberPomo = w.getNumberOfPomodoros() - w.getNumberOfPomodorosDone();
+					Integer numberPomosDone = w.getNumberOfPomodorosDone() == null ? 0 : w.getNumberOfPomodorosDone();
+					Integer numberPomo = w.getNumberOfPomodoros() - numberPomosDone;
 					Integer time = (numberPomo < 0 ? 0 : numberPomo) * w.getTimeOfPomodoro();
 					
 					this.listWorkActive.add(w);

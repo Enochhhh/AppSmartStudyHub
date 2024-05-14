@@ -148,6 +148,8 @@ public class Work implements Serializable {
 		this.createdDate = work.getCreatedDate();
 		this.tags  = new ArrayList<>(work.getTags());
 		this.dateMarkCompleted = work.getDateMarkCompleted();
+		this.numberOfPomodorosDone = 0;
+		this.timePassed = 0;
 	}
 	
 	public void setDataInRelationship(Work work) {

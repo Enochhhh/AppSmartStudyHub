@@ -130,7 +130,7 @@ public class WorkDTO implements Serializable {
 				this.statusWork = EnumStatusWork.PARTICULARDAY.getValue();
 			}
 		}
-		this.numberOfPomodorosDone = work.getNumberOfPomodorosDone();
+		this.numberOfPomodorosDone = work.getNumberOfPomodorosDone() == null ? 0 : work.getNumberOfPomodorosDone();
 		this.createdDate = work.getCreatedDate().getTime();
 		this.extraWorks = new ArrayList<>();
 		this.extraWorksDeleted = new ArrayList<>();
