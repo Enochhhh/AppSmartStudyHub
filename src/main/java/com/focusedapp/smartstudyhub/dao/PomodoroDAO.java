@@ -26,4 +26,7 @@ public interface PomodoroDAO extends JpaRepository<Pomodoro, Integer> {
 	List<Pomodoro> findByIdIn(List<Integer> ids);
 	
 	List<Pomodoro> findByUserIdAndCreatedDateGreaterThanEqualAndCreatedDateLessThan(Integer userId, Date startDate, Date endDate);
+	
+	List<Pomodoro> findByUserIdAndEndTimeGreaterThanEqualAndEndTimeLessThanAndIsEndPomoFalse(Integer userId, 
+			Date startDate, Date endDate);
 }

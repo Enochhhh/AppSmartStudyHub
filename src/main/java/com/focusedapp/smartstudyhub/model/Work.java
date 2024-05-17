@@ -37,6 +37,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "works")
 public class Work implements Serializable {
 
+	// Field endTime and field dateMarkCompleted is the same, you can use any of them
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id

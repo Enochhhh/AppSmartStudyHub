@@ -54,17 +54,21 @@ public class DateUtils {
 	
 	public static Date addMonthsForDate(Date date, Integer numberMonths) {
 		Calendar calendar = Calendar.getInstance();
+		date = new Date(date.getTime() + 7 * 60 * 60 * 1000);
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, numberMonths);
         date = calendar.getTime();
+        date = new Date(date.getTime() - 7 * 60 * 60 * 1000);
 		return date;
 	}
 	
 	public static Date addYearsForDate(Date date, Integer numberYears) {
 		Calendar calendar = Calendar.getInstance();
+		date = new Date(date.getTime() + 7 * 60 * 60 * 1000);
 		calendar.setTime(date);
 		calendar.add(Calendar.YEAR, numberYears);
         date = calendar.getTime();
+        date = new Date(date.getTime() - 7 * 60 * 60 * 1000);
 		return date;
 	}
 	

@@ -80,7 +80,11 @@ public enum StatusCode {
 	/* HISTORY DAILY */
 	GET_HISTORY_DAILY_FAILURE("14_1_f", "Get History Daily Failure!"),
 	DELETE_HISTORY_DAILY_FAILURE("14_2_f", "Delete History Daily Failure!"),
-	DELETE_ALL_HISTORY_DAILIES_FAILURE("14_3_f", "Delete All History Dailies Failure!");
+	DELETE_ALL_HISTORY_DAILIES_FAILURE("14_3_f", "Delete All History Dailies Failure!"),
+	
+	/* STATISTICAL */
+	STATISTICAL_TIME_FOCUS_FAILURE("15_1_f", "Statistical Time Focus Failure!"),
+	STATISTICAL_TIME_FOCUS_BY_WORK_FAILURE("15_2_f", "Statistical Time Focus By Work Failure!");
 	
 	private final String code;
 	private final String message;

@@ -209,4 +209,17 @@ public class PomodoroService {
 		return true;
 	}
 	
+	/**
+	 * Find Pomodoro by UserId and End Time and not Pomo Completed
+	 * 
+	 * @param userId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Pomodoro> findByUserIdAndEndTimeGreaterThanEqualAndEndTimeLessThanAndIsEndPomoFalse(Integer userId, Date startDate, 
+			Date endDate) {
+		return pomodoroDAO.findByUserIdAndEndTimeGreaterThanEqualAndEndTimeLessThanAndIsEndPomoFalse(userId, startDate, endDate);
+	}
+	
 }
