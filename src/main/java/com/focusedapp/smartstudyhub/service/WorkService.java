@@ -891,4 +891,5 @@ public class WorkService {
 		threadService.deleteAllWorksOfUser(userId);
 		return true;
 	}
+
 }

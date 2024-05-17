@@ -21,9 +21,9 @@ public class TimeLineStatisticalDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private List<StatisticalDTO> listDate;
-	private Integer totalDataHaveTimeFocus;
-	private Integer maxTimeFocus;
-	private Double averateTimeFocus;
-	private Integer sumTimeFocus;
+	private Integer totalDataHaveValue;
+	private Integer maxValue;
+	private Double averateValue;
+	private Integer sumValue;
 	
 }

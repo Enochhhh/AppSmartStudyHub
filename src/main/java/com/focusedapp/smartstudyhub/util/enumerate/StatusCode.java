@@ -84,7 +84,8 @@ public enum StatusCode {
 	
 	/* STATISTICAL */
 	STATISTICAL_TIME_FOCUS_FAILURE("15_1_f", "Statistical Time Focus Failure!"),
-	STATISTICAL_TIME_FOCUS_BY_WORK_FAILURE("15_2_f", "Statistical Time Focus By Work Failure!");
+	STATISTICAL_TIME_FOCUS_BY_WORK_FAILURE("15_2_f", "Statistical Time Focus By Work Failure!"),
+	STATISTICAL_WORK_FAILURE("15_3_f", "Statistical Work Failure!");
 	
 	private final String code;
 	private final String message;

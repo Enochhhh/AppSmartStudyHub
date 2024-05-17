@@ -24,22 +24,22 @@ public class StatisticalDTO implements Serializable {
 	private Long startDate;
 	private Long endDate;
 	private List<StatisticalByUnitDTO> listDataStatisticalByUnit;
-	private Integer totalTimeFocus;
+	private Integer totalValue;
 	
-	public StatisticalDTO(Long date, Integer totalTimeFocus) {
+	public StatisticalDTO(Long date, Integer totalValue) {
 		this.date = date;
-		this.totalTimeFocus = totalTimeFocus;
+		this.totalValue = totalValue;
 	}
 	
-	public StatisticalDTO(Long startDate, Long endDate, Integer totalTimeFocus) {
+	public StatisticalDTO(Long startDate, Long endDate, Integer totalValue) {
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.totalTimeFocus = totalTimeFocus;
+		this.totalValue = totalValue;
 	}
 	
-	public StatisticalDTO(List<StatisticalByUnitDTO> listDataStatisticalByUnit, Integer totalTimeFocus) {
+	public StatisticalDTO(List<StatisticalByUnitDTO> listDataStatisticalByUnit, Integer totalValue) {
 		this.listDataStatisticalByUnit = listDataStatisticalByUnit;
-		this.totalTimeFocus = totalTimeFocus;
+		this.totalValue = totalValue;
 	}
 	
 }

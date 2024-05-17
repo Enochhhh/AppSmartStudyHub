@@ -43,7 +43,7 @@ public class StatisticalController extends BaseController {
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		if (data == null) {
 			result.getMeta().setStatusCode(StatusCode.STATISTICAL_TIME_FOCUS_FAILURE.getCode());
-			result.getMeta().setStatusCode(StatusCode.STATISTICAL_TIME_FOCUS_FAILURE.getMessage());
+			result.getMeta().setMessage(StatusCode.STATISTICAL_TIME_FOCUS_FAILURE.getMessage());
 		}
 
 		result.setData(data);
@@ -68,7 +68,32 @@ public class StatisticalController extends BaseController {
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
 		if (data == null) {
 			result.getMeta().setStatusCode(StatusCode.STATISTICAL_TIME_FOCUS_BY_WORK_FAILURE.getCode());
-			result.getMeta().setStatusCode(StatusCode.STATISTICAL_TIME_FOCUS_BY_WORK_FAILURE.getMessage());
+			result.getMeta().setMessage(StatusCode.STATISTICAL_TIME_FOCUS_BY_WORK_FAILURE.getMessage());
+		}
+
+		result.setData(data);
+		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Statistical Time Focus
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping("/guest/statistical/work-completed")
+	public ResponseEntity<Result<TimeLineStatisticalDTO>> statisticalWork(@RequestParam Long startDate, @RequestParam Long endDate, 
+			@RequestParam Integer userId, @RequestParam String type) {
+		Result<TimeLineStatisticalDTO> result = new Result<>();
+		
+		TimeLineStatisticalDTO data = statisticalService.statisticalWork(startDate, endDate, userId, type);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		if (data == null) {
+			result.getMeta().setStatusCode(StatusCode.STATISTICAL_WORK_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.STATISTICAL_WORK_FAILURE.getMessage());
 		}
 
 		result.setData(data);

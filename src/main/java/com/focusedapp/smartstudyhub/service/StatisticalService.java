@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,16 +13,19 @@ import org.springframework.stereotype.Service;
 
 import com.focusedapp.smartstudyhub.model.Pomodoro;
 import com.focusedapp.smartstudyhub.model.Tag;
+import com.focusedapp.smartstudyhub.model.Work;
 import com.focusedapp.smartstudyhub.model.custom.StatisticalByUnitDTO;
 import com.focusedapp.smartstudyhub.model.custom.StatisticalDTO;
 import com.focusedapp.smartstudyhub.model.custom.TimeLineStatisticalDTO;
 import com.focusedapp.smartstudyhub.util.DateUtils;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
 public class StatisticalService {
 
 	@Autowired PomodoroService pomodoroService;
+	@Autowired WorkService workService;
 	
 	/**
 	 * Statistical Time Focus
@@ -63,9 +65,6 @@ public class StatisticalService {
 					.collect(Collectors.groupingBy(p -> {
 						return DateUtils.setTimeOfDateToMidnight(p.getEndTime().getTime()).getTime();
 					}, Collectors.toList()));
-			mapPomodoro = mapPomodoro.entrySet().stream()
-					.sorted(Map.Entry.<Long, List<Pomodoro>>comparingByKey())
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 			for (Map.Entry<Long, List<Pomodoro>> entry : mapPomodoro.entrySet()) {
 				Integer totalTimeFocus = entry.getValue().stream()
 						.collect(Collectors.summingInt(Pomodoro::getTimeOfPomodoro));
@@ -89,10 +88,13 @@ public class StatisticalService {
 
 		Integer sumTimeFocus = 0;
 		Integer maxTimeFocus = 0;
+		listDataStatistical = listDataStatistical.stream()
+				.sorted(Comparator.comparing(StatisticalDTO::getTotalValue).reversed())
+				.collect(Collectors.toList());
 		for (StatisticalDTO statisticalDTO : listDataStatistical) {
-			sumTimeFocus += statisticalDTO.getTotalTimeFocus();
-			if (statisticalDTO.getTotalTimeFocus() > maxTimeFocus) {
-				maxTimeFocus = statisticalDTO.getTotalTimeFocus();
+			sumTimeFocus += statisticalDTO.getTotalValue();
+			if (statisticalDTO.getTotalValue() > maxTimeFocus) {
+				maxTimeFocus = statisticalDTO.getTotalValue();
 			}
 		}
 		Double averageTimeFocus = sumTimeFocus.doubleValue() / listDataStatistical.size();
@@ -217,4 +219,82 @@ public class StatisticalService {
 		
 		return new StatisticalDTO(listDataResponse, totalTimeFocus);
 	}
+	
+	/**
+	 * Statistical Work
+	 * 
+	 * @param startDateMili
+	 * @param endDateMili
+	 * @param userId
+	 * @param type
+	 * @return
+	 */
+	public TimeLineStatisticalDTO statisticalWork(Long startDateMili, Long endDateMili, Integer userId, String type) {
+		Date startDate = new Date(startDateMili);
+		Date endDate = new Date(endDateMili + 60 * 1000);
+		
+		List<Work> works = workService
+				.findByUserIdAndStatusAndDateMarkCompletedGreaterThanEqualAndDateMarkCompletedLessThan(userId, 
+						EnumStatus.COMPLETED.getValue(), startDate, endDate);
+		if (CollectionUtils.isEmpty(works)) {
+			return null;
+		}
+		
+		List<StatisticalDTO> listDataStatistical = new ArrayList<>();
+		if (type.equals("WEEK")) {
+			do {
+				Date tempStartDate = startDate;
+				Date tempEndDate = DateUtils.addWeeksForDate(tempStartDate, 1);
+				Integer totalWorks = works.stream()
+						.filter(w -> w.getDateMarkCompleted().getTime() >= tempStartDate.getTime() 
+						&& w.getDateMarkCompleted().getTime() < tempEndDate.getTime())
+						.collect(Collectors.counting()).intValue();
+				if (totalWorks != 0) {
+					listDataStatistical.add(new StatisticalDTO(tempStartDate.getTime(), tempEndDate.getTime() - 60 * 1000, 
+							totalWorks));
+				}	
+				startDate = tempEndDate;
+			} while (startDate.getTime() < endDate.getTime());
+		} else if (type.equals("DAY")) {
+			Map<Long, List<Work>> mapWork= works.stream()
+					.collect(Collectors.groupingBy(w -> {
+						return DateUtils.setTimeOfDateToMidnight(w.getDateMarkCompleted().getTime()).getTime();
+					}, Collectors.toList()));
+
+			for (Map.Entry<Long, List<Work>> entry : mapWork.entrySet()) {
+				listDataStatistical.add(new StatisticalDTO(entry.getKey(), entry.getValue().size()));
+			}
+		} else if (type.equals("MONTH")) {
+			do {
+				Date tempStartDate = startDate;
+				Date tempEndDate = DateUtils.addMonthsForDate(tempStartDate, 1);
+				Integer totalWorks = works.stream()
+						.filter(w -> w.getDateMarkCompleted().getTime() >= tempStartDate.getTime() 
+						&& w.getDateMarkCompleted().getTime() < tempEndDate.getTime())
+						.collect(Collectors.counting()).intValue();
+				if (totalWorks != 0) {
+					listDataStatistical.add(new StatisticalDTO(tempStartDate.getTime(), 
+							tempEndDate.getTime() - 60 * 1000, totalWorks));
+				}	
+				startDate = tempEndDate;
+			} while (startDate.getTime() < endDate.getTime());
+		}
+		
+
+		Integer sumWorks = 0;
+		Integer maxWorks = 0;
+		listDataStatistical = listDataStatistical.stream()
+				.sorted(Comparator.comparing(StatisticalDTO::getTotalValue).reversed())
+				.collect(Collectors.toList());
+		for (StatisticalDTO statisticalDTO : listDataStatistical) {
+			sumWorks += statisticalDTO.getTotalValue();
+			if (statisticalDTO.getTotalValue() > maxWorks) {
+				maxWorks = statisticalDTO.getTotalValue();
+			}
+		}
+		Double averageWorks = sumWorks.doubleValue() / listDataStatistical.size();
+		return new TimeLineStatisticalDTO(listDataStatistical, listDataStatistical.size(), 
+				maxWorks, averageWorks, sumWorks);
+	}
+	
 }
