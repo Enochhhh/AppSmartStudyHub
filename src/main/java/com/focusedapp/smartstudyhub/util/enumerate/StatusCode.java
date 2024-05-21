@@ -85,7 +85,14 @@ public enum StatusCode {
 	/* STATISTICAL */
 	STATISTICAL_TIME_FOCUS_FAILURE("15_1_f", "Statistical Time Focus Failure!"),
 	STATISTICAL_TIME_FOCUS_BY_WORK_FAILURE("15_2_f", "Statistical Time Focus By Work Failure!"),
-	STATISTICAL_WORK_FAILURE("15_3_f", "Statistical Work Failure!");
+	STATISTICAL_WORK_FAILURE("15_3_f", "Statistical Work Failure!"),
+	
+	/* DEVICE */
+	CREATE_OR_UPDATE_DEVICE_FAILURE("16_1_f", "Create Or Update Device Failure!"),
+	REFRESH_REGISTRATION_TOKEN_DEVICE_FAILURE("16_2_f", "Refresh Registration Token Of Device Failure!"),
+	LOGOUT_DEVICES_FAILURE("16_3_f", "Logout Devices Failure!"),
+	DELETE_DEVICES_FAILURE("16_4_f", "Delete Devices Failure!"),
+	GET_DEVICES_FAILURE("16_5_f", "Get Devices Failure!");
 	
 	private final String code;
 	private final String message;

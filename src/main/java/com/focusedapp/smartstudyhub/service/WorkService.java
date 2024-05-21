@@ -114,7 +114,9 @@ public class WorkService {
 		}
 		
 		List<Tag> tags = tagService.findByIds(tagIds);
-		
+		Boolean isRemindered = dataCreate.getTimeWillAnnounce() == null 
+				|| (dataCreate.getTimeWillAnnounce() != null 
+				&& dataCreate.getTimeWillAnnounce() <= new Date().getTime()) ? false : true;
 		Work work = Work.builder()
 				.user(userService.findByIdAndStatus(dataCreate.getUserId(), EnumStatus.ACTIVE.getValue()))
 				.project(project)
@@ -123,7 +125,7 @@ public class WorkService {
 				.priority(dataCreate.getPriority() == null ? EnumPriority.NONE.getValue() : dataCreate.getPriority())
 				.numberOfPomodoros(dataCreate.getNumberOfPomodoros() == null ? 0 : dataCreate.getNumberOfPomodoros())
 				.timeOfPomodoro(dataCreate.getTimeOfPomodoro() == null ? 25 : dataCreate.getTimeOfPomodoro())
-				.isRemindered(dataCreate.getIsRemindered() == null ? false : dataCreate.getIsRemindered())
+				.isRemindered(isRemindered)
 				.numberOfPomodorosDone(0)
 				.timePassed(0)
 				.tags(tags)
@@ -169,7 +171,9 @@ public class WorkService {
 						.map(t -> t.getId())
 						.collect(Collectors.toList());
 		}
-		
+		Boolean isRemindered = dataUpdate.getTimeWillAnnounce() == null 
+				|| (dataUpdate.getTimeWillAnnounce() != null 
+				&& dataUpdate.getTimeWillAnnounce() <= new Date().getTime()) ? false : true;
 		workDb.setProject(project);
 		workDb.setWorkName(dataUpdate.getWorkName());
 		workDb.setDueDate(dataUpdate.getDueDate() == null ? null : new Date(dataUpdate.getDueDate()));
@@ -177,7 +181,7 @@ public class WorkService {
 		workDb.setPriority(dataUpdate.getPriority());
 		workDb.setNumberOfPomodoros(dataUpdate.getNumberOfPomodoros());
 		workDb.setTimeOfPomodoro(dataUpdate.getTimeOfPomodoro());
-		workDb.setIsRemindered(dataUpdate.getIsRemindered());
+		workDb.setIsRemindered(isRemindered);
 		workDb.setNote(dataUpdate.getNote());	
 		// workDb.setNumberOfPomodorosDone(dataUpdate.getNumberOfPomodorosDone());
 		if (dataUpdate.getStartTime() != null) {

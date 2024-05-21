@@ -301,6 +301,27 @@ create table history_daily(
     constraint HistoryDailyUserIdForeignKey foreign key(user_id) references users(id)
 );
 
+create table device (
+	id nvarchar(1000) not null,
+    registration_token text,
+    device_type text,
+    device_name nvarchar(100),
+    location nvarchar(300),
+    ip_address text,
+    mac_address text,
+    constraint DevicePrimaryKey primary key(id)
+);
+
+create table device_user(
+	device_id nvarchar(1000) not null,
+    user_id int not null,
+	status text, -- It consists of 2 values are LOGIN and LOGOUT
+    time_last_login datetime,
+    constraint DeviceUserPrimaryKey primary key(device_id, user_id),
+    constraint DeviceUserDeviceIdForeignKey foreign key(device_id) references device(id),
+    constraint  DeviceUserUserIdForeignKey foreign key(user_id) references users(id)
+); 
+
 -- TRIGGER auto update time focus of user when update time passed of work
 -- DELIMITER $$
 -- create trigger after_update_works

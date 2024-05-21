@@ -5,7 +5,9 @@ public enum EnumStatus {
 	ACTIVE("ACTIVE"),
 	DELETED("DELETED"),
 	BANNED("BANNED"),
-	COMPLETED("COMPLETED");
+	COMPLETED("COMPLETED"),
+	LOGIN("LOGIN"),
+	LOGOUT("LOGOUT");
 	
 	private final String value;
 	
