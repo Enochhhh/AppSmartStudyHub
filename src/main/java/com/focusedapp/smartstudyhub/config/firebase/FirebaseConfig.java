@@ -37,4 +37,5 @@ public class FirebaseConfig {
 		FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
 		return FirebaseMessaging.getInstance(app);
 	}
+	
 }
