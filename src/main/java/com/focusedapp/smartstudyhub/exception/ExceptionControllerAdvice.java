@@ -255,4 +255,19 @@ public class ExceptionControllerAdvice {
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 	} 
 	
+	@ExceptionHandler(value = EnvironmentVariableNotFoundException.class)
+	public ResponseEntity<Result<JSONObject>> environmentVariableNotFoundException(EnvironmentVariableNotFoundException exception) {
+			
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.ENVIRONMENT_VARIABLE_NOT_FOUND.getCode());
+		result.getMeta().setMessage(StatusCode.ENVIRONMENT_VARIABLE_NOT_FOUND.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Environment Variable not found");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.NOT_FOUND);
+	}
+	
 }

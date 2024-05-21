@@ -14,6 +14,7 @@ public enum StatusCode {
 	PARSE_ERROR("0_9_f", "Parse Error"),
 	UNAUTHORIZED("0_10_f", "Unauthorized"),
 	TOKEN_INVALID("0_11_f", "Token Invalid"),
+	ENVIRONMENT_VARIABLE_NOT_FOUND("0_12_f", "Environment Variable Not Found"),
 	
 	// User - featureCode: 1
 	/* Register */
