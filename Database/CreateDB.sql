@@ -322,6 +322,28 @@ create table device_user(
     constraint  DeviceUserUserIdForeignKey foreign key(user_id) references users(id)
 ); 
 
+create table transaction_payment(
+	id int auto_increment,
+    user_id int not null,
+    order_id text,
+    transaction_no text,
+    method_payment text, -- It consists of Paypal and VNPay
+    type_payment text, -- It consists of pay and refund
+    info nvarchar(300),
+    amount int,
+    bank_code text,
+    bank_tran_no text,
+    card_type text,
+    ip_address text,
+    pay_date datetime,
+    status text, -- It consists of SUCCESS, FAILURE and WAITING
+    unit text,
+    secure_hash text,
+    package_premium text, -- It consists of THREEMOTNHS and ONEYEAR
+    constraint TransactionPaymentPrimaryKey primary key(id),
+    constraint TransactionPaymentForeignKey foreign key(user_id) references users(id)
+);
+
 -- TRIGGER auto update time focus of user when update time passed of work
 -- DELIMITER $$
 -- create trigger after_update_works

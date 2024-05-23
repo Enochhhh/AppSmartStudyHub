@@ -11,18 +11,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @JsonInclude(value = Include.NON_NULL)
-public class AllResponseTypeDTO implements Serializable {
-	
+public class PaymentDTO implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	
-	private Boolean booleanType;
-	private Integer integerType;
-	private String stringType;
-	private Long longType;
-	private Integer transactionId;
-
+	private String vnpOrderInfo;
+	private Integer vnpAmount;
+	private String packagePremium;
 }

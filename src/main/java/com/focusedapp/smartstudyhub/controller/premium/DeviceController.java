@@ -1,4 +1,4 @@
-package com.focusedapp.smartstudyhub.controller.customer;
+package com.focusedapp.smartstudyhub.controller.premium;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @RestController
-@RequestMapping("/mobile/v1/user/customer/device")
+@RequestMapping("/mobile/v1/user/premium/device")
 @CrossOrigin(origins ="*", methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT})
 public class DeviceController extends BaseController {
 	

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.focusedapp.smartstudyhub.dao.ProjectDAO;
 import com.focusedapp.smartstudyhub.dao.WorkDAO;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
+import com.focusedapp.smartstudyhub.model.DeviceUser;
 import com.focusedapp.smartstudyhub.model.ExtraWork;
 import com.focusedapp.smartstudyhub.model.Project;
 import com.focusedapp.smartstudyhub.model.Tag;
@@ -34,6 +35,8 @@ import com.focusedapp.smartstudyhub.model.custom.WorkDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkGroupByDateDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkResponseDTO;
 import com.focusedapp.smartstudyhub.model.custom.WorkSortedResponseDTO;
+import com.focusedapp.smartstudyhub.model.fcm.NotificationMessage;
+import com.focusedapp.smartstudyhub.service.firebase.FirebaseMessagingService;
 import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.comparator.SortByPriorityComparator;
 import com.focusedapp.smartstudyhub.util.comparator.SortByProjectNameComparator;
@@ -69,6 +72,12 @@ public class WorkService {
 	
 	@Autowired 
 	ThreadService threadService;
+	
+	@Autowired
+	FirebaseMessagingService firebaseMessagingService;
+	
+	@Autowired
+	DeviceService deviceService;
 	
 	/**
 	 * Find Work By Id and Status
@@ -895,5 +904,43 @@ public class WorkService {
 		threadService.deleteAllWorksOfUser(userId);
 		return true;
 	}
+	
+	/**
+	 * Send Notification Work to device of User if come to time will announce
+	 * 
+	 */
+	public void sendNotificationWorkToDeviceUser() {
+		Date nowDate = new Date();
+		List<Work> works = workDAO.findByTimeWillAnnounceLessThanEqualAndStatusAndIsReminderedTrue(nowDate, 
+				EnumStatus.ACTIVE.getValue());
+		works.stream().forEach(w -> {
+			List<DeviceUser> deviceUsers = deviceService.findDeviceUserByUserId(w.getUser().getId());
+			if (CollectionUtils.isEmpty(deviceUsers)) {
+				return;
+			}
+			List<String> registrationTokens = deviceUsers.stream()
+					.map(d -> d.getDevice().getRegistrationToken())
+					.collect(Collectors.toList());
+			NotificationMessage notificationMessage = NotificationMessage.builder()
+					.registrationTokens(registrationTokens)
+					.title("Reminder")
+					.body(w.getWorkName())
+					.image("https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/java-simpledateformat.png")
+					.build();
+			firebaseMessagingService.sendNotification(notificationMessage);
+		});
+	}
+	
+	public void sendNotificationWorkToDeviceUserTest() {
+		Date nowDate = new Date();
 
+		List<String> registrationTokens = new ArrayList<>();
+		registrationTokens.add("f1QMpaA8RVmziAZ_2lLFEo:APA91bHI6Ts6Y1qul6DpyJnUY56PlhgbJUavgviRzi38HaU76z3M4BB0LhfO87xQyLKiO9BQHa8awZ4wigHTsaxbh6Iiqw8fHEeL1RDEYJ-YdJgScGE5ZcpxmEpgawnrgDgp_Wo0LHKW");
+		NotificationMessage notificationMessage = NotificationMessage.builder().registrationTokens(registrationTokens)
+				.title("Reminder").body("Hello Boy")
+				.image("https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/java-simpledateformat.png").build();
+		firebaseMessagingService.sendNotification(notificationMessage);
+
+	}
+	
 }

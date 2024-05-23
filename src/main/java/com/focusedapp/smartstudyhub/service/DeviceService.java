@@ -163,4 +163,8 @@ public class DeviceService {
 				.collect(Collectors.toList());
 	}
 	
+	public List<DeviceUser> findDeviceUserByUserId(Integer userId) {
+		return deviceUserDAO.findByUserId(userId);
+	}
+	
 }

@@ -93,7 +93,11 @@ public enum StatusCode {
 	REFRESH_REGISTRATION_TOKEN_DEVICE_FAILURE("16_2_f", "Refresh Registration Token Of Device Failure!"),
 	LOGOUT_DEVICES_FAILURE("16_3_f", "Logout Devices Failure!"),
 	DELETE_DEVICES_FAILURE("16_4_f", "Delete Devices Failure!"),
-	GET_DEVICES_FAILURE("16_5_f", "Get Devices Failure!");
+	GET_DEVICES_FAILURE("16_5_f", "Get Devices Failure!"),
+	
+	/* TRANSACTION PAYMENT */
+	GET_TRANSACTION_PAYMENTS_FAILURE("17_1_f", "Get transaction payments failure!"),
+	GET_DETAIL_TRANSACTION_PAYMENT_FAILURE("17_2_f", "Get detail transaction payment failure!");
 	
 	private final String code;
 	private final String message;

@@ -52,5 +52,7 @@ public interface WorkDAO extends JpaRepository<Work, Integer> {
 	
 	List<Work> findByUserIdAndStatusAndDateMarkCompletedGreaterThanEqualAndDateMarkCompletedLessThan(Integer userId, String status,
 			Date startDate, Date endDate);
+	
+	List<Work> findByTimeWillAnnounceLessThanEqualAndStatusAndIsReminderedTrue(Date nowDate, String status);
 
 }
