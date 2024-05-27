@@ -935,7 +935,7 @@ public class WorkService {
 		Date nowDate = new Date();
 
 		List<String> registrationTokens = new ArrayList<>();
-		registrationTokens.add("f1QMpaA8RVmziAZ_2lLFEo:APA91bHI6Ts6Y1qul6DpyJnUY56PlhgbJUavgviRzi38HaU76z3M4BB0LhfO87xQyLKiO9BQHa8awZ4wigHTsaxbh6Iiqw8fHEeL1RDEYJ-YdJgScGE5ZcpxmEpgawnrgDgp_Wo0LHKW");
+		registrationTokens.add("5cf5003014687530291859284fc5959d2ae9f52538c65cbd50f5a03a3ef3ee18");
 		NotificationMessage notificationMessage = NotificationMessage.builder().registrationTokens(registrationTokens)
 				.title("Reminder").body("Hello Boy")
 				.image("https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/java-simpledateformat.png").build();

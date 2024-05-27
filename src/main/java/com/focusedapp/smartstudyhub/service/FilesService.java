@@ -106,10 +106,15 @@ public class FilesService {
 	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
 	public void deleteAllFilesByTypeOfUser(User user, String type) throws IOException {
 		List<Files> files = filesDAO.findByUserIdAndType(user.getId(), type);
-		
+		if (type.equals(EnumTypeFile.USER.getValue())){
+			user.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
+		} else if (type.equals(EnumTypeFile.COVERIMAGE.getValue())) {
+			user.setCoverImage(null);
+		}
 		for (Files file : files) {
 			deleteCompletelyFilesById(user, file.getId());
 		}
+		userService.persistent(user);
 	}
 	
 	/**
