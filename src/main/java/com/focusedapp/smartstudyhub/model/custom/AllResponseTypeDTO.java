@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.focusedapp.smartstudyhub.model.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +25,6 @@ public class AllResponseTypeDTO implements Serializable {
 	private String stringType;
 	private Long longType;
 	private Integer transactionId;
+	private User user;
 
 }

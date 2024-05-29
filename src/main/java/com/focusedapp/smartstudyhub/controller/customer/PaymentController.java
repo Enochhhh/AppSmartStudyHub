@@ -15,6 +15,7 @@ import com.focusedapp.smartstudyhub.controller.BaseController;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.PaymentDTO;
+import com.focusedapp.smartstudyhub.service.UserService;
 import com.focusedapp.smartstudyhub.service.payment.VNPayService;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumPaymentStatus;
@@ -28,6 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class PaymentController extends BaseController {
 	
 	@Autowired VNPayService vnPayService;
+	@Autowired UserService userService;
 
 	/**
 	 * Payment with VNPay
@@ -58,7 +60,9 @@ public class PaymentController extends BaseController {
         			.concat("?status=")
         			.concat(EnumPaymentStatus.SUCCESS.getValue())
         			.concat("&transactionPaymentId=")
-        			.concat(data.getTransactionId().toString());
+        			.concat(data.getTransactionId().toString())
+        			.concat("&token=")
+        			.concat(userService.generateToken(data.getUser()));
         } else {
         	return "redirect:".concat(ConstantUrl.CLIENT_URL)
         			.concat("?status=")

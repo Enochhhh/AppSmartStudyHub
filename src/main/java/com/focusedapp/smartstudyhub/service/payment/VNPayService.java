@@ -214,6 +214,7 @@ public class VNPayService {
         }
         transactionPayment = transactionPaymentService.persistent(transactionPayment);
         data.setTransactionId(transactionPayment.getId());
+        data.setUser(transactionPayment.getUser());
         return data;
     }
 
