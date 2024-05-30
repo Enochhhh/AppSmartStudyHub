@@ -22,4 +22,7 @@ public class PaymentDTO implements Serializable {
 	private String vnpOrderInfo;
 	private Integer vnpAmount;
 	private String packagePremium;
+	
+	private String paypalOrderInfo;
+	private Double paypalAmount;
 }

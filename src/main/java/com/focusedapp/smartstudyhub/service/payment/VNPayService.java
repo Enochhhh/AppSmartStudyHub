@@ -57,7 +57,7 @@ public class VNPayService {
 	 * @param user
 	 * @return
 	 */
-	public String createOrder(PaymentDTO paymentDTO, HttpServletRequest request, User user){
+	public AllResponseTypeDTO createOrder(PaymentDTO paymentDTO, HttpServletRequest request, User user){
 		String urlReturn = request.getScheme()
 				.concat("://")
 				.concat(request.getServerName())
@@ -141,7 +141,11 @@ public class VNPayService {
         queryUrl = queryUrl.concat("&vnp_SecureHash=")
         		.concat(vnp_SecureHash);
         String paymentUrl = VNPayConfig.VNP_PAYURL + "?" + queryUrl;
-        return paymentUrl;
+        
+        AllResponseTypeDTO data = new AllResponseTypeDTO();
+        data.setBooleanType(true);
+        data.setStringType(paymentUrl);
+        return data;
     }
 	
 	public AllResponseTypeDTO orderReturn(HttpServletRequest request){

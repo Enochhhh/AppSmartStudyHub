@@ -48,9 +48,9 @@ public class HistoryDailyService {
 				HistoryDaily historyDaily = new HistoryDaily();
 				historyDaily.setUser(u);
 				historyDaily.setDates(startDate);
-				historyDaily.setTotalPomodorosDone(u.getTotalPomodorosToday());
-				historyDaily.setTotalWorksDone(u.getTotalWorksToday());
-				historyDaily.setTotalTimeFocus(u.getTotalTimeFocus());
+				historyDaily.setTotalPomodorosDone(0);
+				historyDaily.setTotalWorksDone(0);
+				historyDaily.setTotalTimeFocus(u.getTotalTimeFocusToday());
 				
 				List<Work> worksCompletedToday = workService
 						.findByUserIdAndStatusAndDateMarkCompletedGreaterThanEqualAndDateMarkCompletedLessThan(u.getId(), 
@@ -59,6 +59,7 @@ public class HistoryDailyService {
 					String workIds = worksCompletedToday.stream()
 							.map(w -> w.getId().toString()).collect(Collectors.joining(", "));
 					historyDaily.setWorkIds(workIds);
+					historyDaily.setTotalWorksDone(worksCompletedToday.size());
 				}
 				
 				List<Pomodoro> pomodorosCompletedToday = pomodoroService
@@ -67,6 +68,7 @@ public class HistoryDailyService {
 					String pomodoroIds = pomodorosCompletedToday.stream()
 							.map(w -> w.getId().toString()).collect(Collectors.joining(", "));
 					historyDaily.setPomodoroIds(pomodoroIds);
+					historyDaily.setTotalPomodorosDone(pomodorosCompletedToday.size());
 				}
 				historyList.add(historyDaily);
 			});

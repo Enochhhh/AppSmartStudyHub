@@ -61,4 +61,12 @@ public class TransactionPaymentService {
 		return new TransactionPaymentDTO(transactionPayment.get());
 	}
 	
+	public TransactionPayment findById(Integer id) {
+		Optional<TransactionPayment> transactionPayment = transactionPaymentDAO.findById(id);
+		if (transactionPayment.isEmpty()) {
+			return null;
+		}
+		return transactionPayment.get();
+	}
+	
 }
