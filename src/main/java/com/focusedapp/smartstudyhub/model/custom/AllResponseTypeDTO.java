@@ -28,5 +28,4 @@ public class AllResponseTypeDTO implements Serializable {
 	private Integer transactionId;
 	private User user;
 	private Payment payment;
-
 }

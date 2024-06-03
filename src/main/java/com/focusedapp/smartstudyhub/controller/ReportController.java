@@ -22,6 +22,8 @@ import com.focusedapp.smartstudyhub.service.ReportService;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
+import net.minidev.json.JSONObject;
+
 @RestController
 @RequestMapping("/mobile/v1/user/guest/report")
 @CrossOrigin(origins ="*", methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT})
@@ -80,6 +82,10 @@ public class ReportController extends BaseController {
 			result.getMeta().setMessage(StatusCode.GET_REPORTS_FAILURE.getMessage());
 		}
 		result.setData(reports);
+		Integer totalReports = reportService.getTotalReportsByUserId(userId);
+		JSONObject jSon = new JSONObject();
+		jSon.put("totalReports", totalReports);
+		result.setExtendProp(jSon);
 		return createResponseEntity(result);
 	}
 	

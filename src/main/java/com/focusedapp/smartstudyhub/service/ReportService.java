@@ -90,6 +90,20 @@ public class ReportService {
 	}
 	
 	/**
+	 * Get Total Reports by UserId
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Integer getTotalReportsByUserId(Integer userId) {
+		List<Report> reports = reportDAO.findByUserId(userId);
+		if (!CollectionUtils.isEmpty(reports)) {
+			return reports.size();
+		}
+		return 0;
+	}
+	
+	/**
 	 * Get Detail Report by id
 	 * 
 	 * @param id
@@ -116,6 +130,19 @@ public class ReportService {
 		return reports.stream()
 				.map(r -> new ReportDTO(r))
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Get Total Reports for Admin
+	 * 
+	 * @return
+	 */
+	public Integer getTotalReportsForAdmin() {
+		List<Report> reports = reportDAO.findAllReports();
+		if (CollectionUtils.isEmpty(reports)) {
+			return 0;
+		}
+		return reports.size();
 	}
 	
 	/**
