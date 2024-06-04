@@ -344,6 +344,16 @@ create table transaction_payment(
     constraint TransactionPaymentForeignKey foreign key(user_id) references users(id)
 );
 
+create table chat_message(
+	id int auto_increment,
+    user_id int,
+    content nvarchar(3000),
+    date_sent datetime,
+    type text,
+    constraint ChatMessagePrimaryKey primary key(id),
+    constraint ChatMessageUserIdForeignKey foreign key(user_id) references users(id)
+);
+
 -- TRIGGER auto update time focus of user when update time passed of work
 -- DELIMITER $$
 -- create trigger after_update_works

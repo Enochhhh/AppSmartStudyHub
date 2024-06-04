@@ -62,9 +62,10 @@ public class SecurityConfiguration {
 			.cors(cors -> cors
 	                .configurationSource(request -> {
 	                    CorsConfiguration configuration = new CorsConfiguration();
-	                    configuration.setAllowedOrigins(Arrays.asList("*"));
+	                    configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 	                    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 	                    configuration.setAllowedHeaders(Arrays.asList("*"));
+	                    configuration.setAllowCredentials(true);
 	                    return configuration;
 	                })
 	            )
@@ -75,6 +76,8 @@ public class SecurityConfiguration {
 					.requestMatchers("/mobile/v1/user/customer/**").hasAnyRole("CUSTOMER", "PREMIUM", "ADMIN")
 					.requestMatchers("/mobile/v1/user/premium/**").hasAnyRole("PREMIUM", "ADMIN")
 					.requestMatchers("/mobile/v1/admin/**").hasAnyRole("ADMIN")
+					.requestMatchers("/", "/**")
+					.permitAll()
 					.anyRequest()
 					.authenticated())
 			.formLogin(f -> f.disable())
