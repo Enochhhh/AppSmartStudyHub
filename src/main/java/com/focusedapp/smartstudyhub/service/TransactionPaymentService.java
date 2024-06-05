@@ -93,7 +93,7 @@ public class TransactionPaymentService {
 			LocalDateTime firstDateInYear = LocalDateTime.of(YearMonth.of(year, 1).atDay(1), LocalTime.MIDNIGHT); 
 			LocalDateTime lastDateInYear = LocalDateTime.of(YearMonth.of(year, 12).atEndOfMonth(), LocalTime.MAX); 
 			List<TransactionPayment> transactionPayments = transactionPaymentDAO
-					.findByStatusAndPayDateGreaterThanEqualAndPayDateLessThan(EnumPaymentStatus.SUCCESS.getValue(), 
+					.findByStatusAndPayDateGreaterThanEqualAndPayDateLessThanEqual(EnumPaymentStatus.SUCCESS.getValue(), 
 							Date.from(firstDateInYear.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()),
 							Date.from(lastDateInYear.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()));
 			if (!CollectionUtils.isEmpty(transactionPayments)) {
@@ -111,7 +111,7 @@ public class TransactionPaymentService {
 			LocalDateTime firstDateInMonth = LocalDateTime.of(YearMonth.of(year, month).atDay(1), LocalTime.MIDNIGHT); 
 			LocalDateTime lastDateInMonth = LocalDateTime.of(YearMonth.of(year, month).atEndOfMonth(), LocalTime.MAX); 
 			List<TransactionPayment> transactionPayments = transactionPaymentDAO
-					.findByStatusAndPayDateGreaterThanEqualAndPayDateLessThan(EnumPaymentStatus.SUCCESS.getValue(), 
+					.findByStatusAndPayDateGreaterThanEqualAndPayDateLessThanEqual(EnumPaymentStatus.SUCCESS.getValue(), 
 							Date.from(firstDateInMonth.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()),
 							Date.from(lastDateInMonth.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()));
 			if (!CollectionUtils.isEmpty(transactionPayments)) {
@@ -133,6 +133,15 @@ public class TransactionPaymentService {
 				.map(r -> new StatisticalRevenueDTO(r.getKey(), r.getValue()))
 				.sorted(Comparator.comparing(StatisticalRevenueDTO::getFirstDateOfMonthOrDateInMonth))
 				.collect(Collectors.toList());
+	}
+	
+	public List<TransactionPayment> findByStatusAndPayDateGreaterThanEqualAndPayDateLessThanEqual(String status, Date startDate, 
+			Date endDate) {
+		return transactionPaymentDAO.findByStatusAndPayDateGreaterThanEqualAndPayDateLessThanEqual(status, startDate, endDate);
+	}
+	
+	public List<TransactionPayment> findByStatus(String status) {
+		return transactionPaymentDAO.findByStatus(status);
 	}
 	
 }

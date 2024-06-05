@@ -276,4 +276,31 @@ public class AdminUserController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	
+	/**
+	 * Statistical User Register
+	 * 
+	 * @param type
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
+	@GetMapping("/statistical-register")
+	public ResponseEntity<Result<StatisticUsers>> statisticalUserRegister(@RequestParam String type, Integer year, Integer month,
+			Integer day) {
+		Result<StatisticUsers> result = new Result<>();
+		if (StringUtils.isBlank(type)) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		StatisticUsers data = userService.statisticalUserRegister(year, month, day, type);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		result.setData(data);
+		return createResponseEntity(result);
+	}
 }

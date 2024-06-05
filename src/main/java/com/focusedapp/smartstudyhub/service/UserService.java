@@ -3,6 +3,10 @@ package com.focusedapp.smartstudyhub.service;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +32,7 @@ import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.exception.OTPCodeInvalidException;
 import com.focusedapp.smartstudyhub.exception.ValueExistedException;
 import com.focusedapp.smartstudyhub.model.OtpCode;
+import com.focusedapp.smartstudyhub.model.TransactionPayment;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.AuthenticationDTO;
 import com.focusedapp.smartstudyhub.model.custom.OAuth2UserInfo;
@@ -37,9 +42,11 @@ import com.focusedapp.smartstudyhub.model.custom.UserDTO;
 import com.focusedapp.smartstudyhub.model.projectioninterface.RankUsersProjectionInterface;
 import com.focusedapp.smartstudyhub.util.DateUtils;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumPaymentStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumRole;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 import com.focusedapp.smartstudyhub.util.enumerate.Provider;
 
 @Service
@@ -89,6 +96,9 @@ public class UserService {
 	
 	@Autowired
 	ThreadService threadService;
+	
+	@Autowired
+	TransactionPaymentService transactionPaymentService;
 
 	/**
 	 * 
@@ -952,5 +962,62 @@ public class UserService {
 	
 	public List<User> findUsersToResetDataDaily() {
 		return userDAO.findUsersToResetDataDaily();
+	}
+	
+	/**
+	 * Statistical User
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param type
+	 * @return
+	 */
+	public StatisticUsers statisticalUserRegister(Integer year, Integer month, Integer day, String type) {
+		Integer totalUsersGuest = 0;
+		Integer totalUsersRegisterAccount = 0;
+		Integer totalUsersRegisterPremium = 0;
+		LocalDateTime startDate = null;
+		LocalDateTime endDate = null;
+		if (type.equals("ALL")) {
+			List<User> guests = userDAO.findByRole(EnumRole.GUEST.getValue());
+			totalUsersGuest = guests.size();
+			
+			List<User> users = userDAO.findByRole(EnumRole.CUSTOMER.getValue());
+			totalUsersRegisterAccount = users.size();
+			
+			List<TransactionPayment> transactionPayments = transactionPaymentService
+					.findByStatus(EnumPaymentStatus.SUCCESS.getValue());
+			totalUsersRegisterPremium = transactionPayments.size();
+			return new StatisticUsers(totalUsersGuest, totalUsersRegisterAccount, totalUsersRegisterPremium);
+		} else if (type.equals("DAY")) {
+			startDate = LocalDateTime.of(YearMonth.of(year, month).atDay(day), LocalTime.MIDNIGHT); 
+			endDate = startDate.with(LocalTime.MAX);
+		} else if (type.equals("MONTH")) {
+			startDate = LocalDateTime.of(YearMonth.of(year, month).atDay(1), LocalTime.MIDNIGHT); 
+			endDate = LocalDateTime.of(YearMonth.of(year, month).atEndOfMonth(), LocalTime.MAX);
+		} else {
+			startDate = LocalDateTime.of(YearMonth.of(year, Month.JANUARY.getValue()).atDay(1), LocalTime.MIDNIGHT); 
+			endDate = LocalDateTime.of(YearMonth.of(year, Month.DECEMBER.getValue()).atEndOfMonth(), LocalTime.MAX);
+		}
+		
+		List<User> guests = userDAO.statisticUserByDateRangeAndRoleForAdmin(
+				Date.from(startDate.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()), 
+				Date.from(endDate.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()), 
+				EnumRole.GUEST.getValue());
+		totalUsersGuest = guests.size();
+		
+		List<User> users = userDAO.statisticUserByDateRangeAndRoleForAdmin(
+				Date.from(startDate.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()), 
+				Date.from(endDate.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()), 
+				EnumRole.CUSTOMER.getValue());
+		totalUsersRegisterAccount = users.size();
+		
+		List<TransactionPayment> transactionPayments = transactionPaymentService
+				.findByStatusAndPayDateGreaterThanEqualAndPayDateLessThanEqual(EnumPaymentStatus.SUCCESS.getValue(), 
+						Date.from(startDate.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()), 
+						Date.from(endDate.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()));
+		totalUsersRegisterPremium = transactionPayments.size();
+		return new StatisticUsers(totalUsersGuest, totalUsersRegisterAccount, totalUsersRegisterPremium);
 	}
 }

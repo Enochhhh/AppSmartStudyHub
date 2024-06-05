@@ -15,5 +15,8 @@ public interface TransactionPaymentDAO extends JpaRepository<TransactionPayment,
 	
 	List<TransactionPayment> findByUserIdAndStatus(Integer userId, String status);
 	
-	List<TransactionPayment> findByStatusAndPayDateGreaterThanEqualAndPayDateLessThan(String status, Date startDate, Date endDate);
+	List<TransactionPayment> findByStatusAndPayDateGreaterThanEqualAndPayDateLessThanEqual(String status, 
+			Date startDate, Date endDate);
+	
+	List<TransactionPayment> findByStatus(String status);
 }

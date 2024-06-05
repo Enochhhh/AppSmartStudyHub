@@ -24,6 +24,10 @@ public class StatisticUsers implements Serializable {
 	private Long dateTo;
 	private Long totalUsers;
 	
+	private Integer totalUsersGuest;
+	private Integer totalUserRegisterAccount;
+	private Integer totalUserRegisterPremium;
+	
 	public StatisticUsers(Long date, Long totalUsers) {
 		this.date = date;
 		this.totalUsers = totalUsers;
@@ -33,5 +37,11 @@ public class StatisticUsers implements Serializable {
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;
 		this.totalUsers = totalUsers;
+	}
+	
+	public StatisticUsers(Integer totalUsersGuest, Integer totalUserRegisterAccount, Integer totalUserRegisterPremium) {
+		this.totalUsersGuest = totalUsersGuest;
+		this.totalUserRegisterAccount = totalUserRegisterAccount;
+		this.totalUserRegisterPremium = totalUserRegisterPremium;
 	}
 }

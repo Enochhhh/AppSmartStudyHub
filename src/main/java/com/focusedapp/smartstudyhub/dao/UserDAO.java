@@ -82,4 +82,10 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 			+ "or u.total_works_weekly != 0 "
 			+ "or u.total_works_weekly != 0 ", nativeQuery = true)
 	List<User> findUsersToResetDataWeekly();
+	
+	@Query(value = "select * from users u "
+			+ "where u.created_at >= :dateFrom and u.created_at <= :dateTo "
+			+ "and u.roles = :roles", nativeQuery = true)
+	List<User> statisticUserByDateRangeAndRoleForAdmin(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo,
+			@Param("roles") String roles);
 }
