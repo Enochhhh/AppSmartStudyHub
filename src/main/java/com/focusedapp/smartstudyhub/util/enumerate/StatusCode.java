@@ -97,7 +97,10 @@ public enum StatusCode {
 	
 	/* TRANSACTION PAYMENT */
 	GET_TRANSACTION_PAYMENTS_FAILURE("17_1_f", "Get transaction payments failure!"),
-	GET_DETAIL_TRANSACTION_PAYMENT_FAILURE("17_2_f", "Get detail transaction payment failure!");
+	GET_DETAIL_TRANSACTION_PAYMENT_FAILURE("17_2_f", "Get detail transaction payment failure!"),
+	
+	/* ADMIN STATISTICAL REVENUE */
+	REVENUE_NOT_HAVE_DATA("18_1_f", "Revenue not have data!");
 	
 	private final String code;
 	private final String message;

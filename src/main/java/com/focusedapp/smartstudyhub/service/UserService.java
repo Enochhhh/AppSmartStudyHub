@@ -489,9 +489,12 @@ public class UserService {
 	 * @param user
 	 * @return
 	 */
-	public UserDTO deleteCurrentAvatarUserCustomer(User user) {
-		
-		user.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
+	public UserDTO deleteCurrentImageUserCustomer(User user, String type) {
+		if (type.equals(EnumTypeFile.USER.getValue())) {
+			user.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
+		} else {
+			user.setCoverImage(null);
+		}
 		userDAO.save(user);
 		return new UserDTO(user);
 	}

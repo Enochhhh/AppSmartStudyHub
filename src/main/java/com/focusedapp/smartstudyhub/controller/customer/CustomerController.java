@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.focusedapp.smartstudyhub.controller.BaseController;
@@ -207,14 +208,14 @@ public class CustomerController extends BaseController {
 	 * @param userInfo
 	 * @return
 	 */
-	@DeleteMapping("/delete-current-avatar")
-	public ResponseEntity<Result<UserDTO>> deleteCurrentAvatarUserCustomer() {
+	@DeleteMapping("/delete-current-image")
+	public ResponseEntity<Result<UserDTO>> deleteCurrentAvatarUserCustomer(@RequestParam String type) {
 		
 		Result<UserDTO> result = new Result<>();
 		
 		User user = getAuthenticatedUser();
 		
-		UserDTO userUpdated = userService.deleteCurrentAvatarUserCustomer(user);	
+		UserDTO userUpdated = userService.deleteCurrentImageUserCustomer(user, type);	
 		
 		result.setData(userUpdated);		
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

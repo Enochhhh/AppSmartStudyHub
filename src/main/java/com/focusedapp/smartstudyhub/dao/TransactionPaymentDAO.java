@@ -1,5 +1,6 @@
 package com.focusedapp.smartstudyhub.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,6 @@ public interface TransactionPaymentDAO extends JpaRepository<TransactionPayment,
 	TransactionPayment findByOrderId(String orderId);
 	
 	List<TransactionPayment> findByUserIdAndStatus(Integer userId, String status);
+	
+	List<TransactionPayment> findByStatusAndPayDateGreaterThanEqualAndPayDateLessThan(String status, Date startDate, Date endDate);
 }
