@@ -1,8 +1,11 @@
 package com.focusedapp.smartstudyhub.service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,7 @@ import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 
 @Service
 public class CloudinaryService {
@@ -63,14 +67,17 @@ public class CloudinaryService {
 		// Transformation().width(300).height(300).crop("fill");
 
 		// Get Extension of file
-		String extension = file.getOriginalFilename().split("\\.")[1];
+		String extension = file.getOriginalFilename().split("\\.")[1].toLowerCase();
 
 		Files fileSave = Files.builder()
 				.user(user)
 				.build();
 		filesDAO.save(fileSave);
 		// Set the new file name in Cloudinary
-		String newFileName = "File_" + user.getId() + "_" + fileSave.getId() + "_" + extension;;
+		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+		formatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())));
+		String newFileName = "File_" + user.getId() + "_" + fileSave.getId() + "_" + formatter.format(new Date()) + 
+				"_" + extension;
 		
 		String publicId = newFileName;
 

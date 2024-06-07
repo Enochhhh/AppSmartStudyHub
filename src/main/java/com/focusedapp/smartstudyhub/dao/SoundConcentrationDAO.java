@@ -26,4 +26,6 @@ public interface SoundConcentrationDAO extends JpaRepository<SoundConcentration,
 	List<SoundConcentration> findByUserIdAndStatus(Integer userId, String status);
 	
 	void deleteByUser(User user);
+	
+	SoundConcentration findByUrl(String url);
 }

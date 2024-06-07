@@ -15,6 +15,7 @@ import com.focusedapp.smartstudyhub.dao.SoundConcentrationDAO;
 import com.focusedapp.smartstudyhub.exception.NoRightToPerformException;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.SoundConcentration;
+import com.focusedapp.smartstudyhub.model.SoundDone;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.SoundConcentrationDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
@@ -220,5 +221,15 @@ public class SoundConcentrationService {
 		filesService.deleteAllFilesByTypeOfUser(user, EnumTypeFile.SOUNDCONCENTRATION.getValue());
 		soundConcentrationDAO.deleteByUser(user);
 	}
+	
+	public SoundConcentration findByUrl(String url) {
+		return soundConcentrationDAO.findByUrl(url);
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	public void delete(SoundConcentration soundConcentration) {
+		soundConcentrationDAO.delete(soundConcentration);
+	}
+	
 	
 }

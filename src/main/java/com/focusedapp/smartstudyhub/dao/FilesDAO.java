@@ -1,8 +1,10 @@
 package com.focusedapp.smartstudyhub.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +20,20 @@ public interface FilesDAO extends JpaRepository<Files, Integer> {
 	List<Files> findByUserIdAndType(Integer userId, String type);
 	
 	List<Files> findByUserId(Integer userId);
+	
+	List<Files> findByUserIdNotNullAndCreatedAtBetween(Date startDate, Date endDate, Pageable pageable);
+	
+	List<Files> findByUserIdNotNullAndType(String type, Pageable pageable);
+	
+	List<Files> findByUserIdNotNullAndTypeAndCreatedAtBetween(String type, Date startDate, Date enDate, Pageable pageable);
+	
+	List<Files> findByUserIdNotNull(Pageable pageable);
+	
+	List<Files> findByUserIdAndType(Integer userId, String type, Pageable pageable);
+	
+	List<Files> findByUserIdAndTypeAndCreatedAtBetween(Integer userId, String type, Date startDate, Date enDate, Pageable pageable);
+
+	List<Files> findByUserId(Integer userId, Pageable pageable);
+	
+	List<Files> findByUserIdAndCreatedAtBetween(Integer userId, Date startDate, Date enDate, Pageable pageable);
 }

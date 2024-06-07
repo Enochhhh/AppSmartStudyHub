@@ -132,9 +132,6 @@ public class User implements Serializable {
 	private List<Report> reportsFromOtherUser;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<UsersJoiningStudyGroup> groupsUserJoining;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Theme> themes;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

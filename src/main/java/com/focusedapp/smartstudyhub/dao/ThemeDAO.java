@@ -25,4 +25,6 @@ public interface ThemeDAO extends JpaRepository<Theme, Integer> {
 	Optional<Theme> findByIdAndStatus(Integer themeId, String status);
 	
 	void deleteByUser(User user);
+	
+	Theme findByUrl(String url);
 }

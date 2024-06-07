@@ -223,4 +223,13 @@ public class SoundDoneService {
 		soundDoneDAO.deleteByUser(user);
 	}
 	
+	public SoundDone findByUrl(String url) {
+		return soundDoneDAO.findByUrl(url);
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	public void delete(SoundDone soundDone) {
+		soundDoneDAO.delete(soundDone);
+	}
+	
 }

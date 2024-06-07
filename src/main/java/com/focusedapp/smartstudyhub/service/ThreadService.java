@@ -6,8 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.focusedapp.smartstudyhub.exception.ISException;
+import com.focusedapp.smartstudyhub.model.Files;
+import com.focusedapp.smartstudyhub.model.SoundConcentration;
+import com.focusedapp.smartstudyhub.model.SoundDone;
+import com.focusedapp.smartstudyhub.model.Theme;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.UserDTO;
+import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 
 @Service
 public class ThreadService {
@@ -23,6 +29,7 @@ public class ThreadService {
 	@Autowired ProjectService projectService;
 	@Autowired WorkService workService;
 	@Autowired PomodoroService pomodoroService;
+	@Autowired CloudinaryService cloudinaryService;
 
 	/**
 	 * Thread send new account info to Email User
@@ -210,6 +217,42 @@ public class ThreadService {
 			}
 		};
 		thread.start();
+	}
+	
+	/**
+	 * Thread delete file of User by Admin with type
+	 * 
+	 * @param file
+	 */
+	public void deleteThemeOfUserByAdminWithFileType(Files file, String type) throws IOException {
+		if (type.equals(EnumTypeFile.THEME.getValue())) {
+			Theme theme = themeService.findByUrl(file.getSecureUrl());
+			themeService.delete(theme);
+		} else if (type.equals(EnumTypeFile.SOUNDDONE.getValue())) {
+			SoundDone soundDone = soundDoneService.findByUrl(file.getSecureUrl());
+			soundDoneService.delete(soundDone);
+		} else if (type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue())) {
+			SoundConcentration soundConcentration = soundConcentrationService.findByUrl(file.getSecureUrl());
+			soundConcentrationService.delete(soundConcentration);
+		} else if (type.equals(EnumTypeFile.USER.getValue())) {
+			User user = file.getUser();
+			if (user != null && file.getSecureUrl().equals(user.getImageUrl())) {
+				user.setImageUrl(ConstantUrl.DEFAULT_IMAGE);
+				file.setUser(user);
+				file = filesService.persistent(file);
+			}
+		} else if (type.equals(EnumTypeFile.REPORT.getValue())) {
+			
+		} else if (type.equals(EnumTypeFile.COVERIMAGE.getValue())) {
+			User user = file.getUser();
+			if (user != null && user.getCoverImage() != null && file.getSecureUrl().equals(user.getCoverImage())) {
+				user.setCoverImage(null);
+				file.setUser(user);
+				file = filesService.persistent(file);
+			}
+		}
+		cloudinaryService.deleteFileInCloudinary(file.getPublicId());
+		filesService.delete(file);
 	}
 	
 }

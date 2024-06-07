@@ -100,7 +100,10 @@ public enum StatusCode {
 	GET_DETAIL_TRANSACTION_PAYMENT_FAILURE("17_2_f", "Get detail transaction payment failure!"),
 	
 	/* ADMIN STATISTICAL REVENUE */
-	REVENUE_NOT_HAVE_DATA("18_1_f", "Revenue not have data!");
+	REVENUE_NOT_HAVE_DATA("18_1_f", "Revenue not have data!"),
+	
+	/* ADMIN MANAGE FILES */
+	DELETE_FILE_UPLOADED_OF_USER_FAILURE("19_1_f", "Delete file uploaded of User failure!");
 	
 	private final String code;
 	private final String message;

@@ -26,4 +26,6 @@ public interface SoundDoneDAO extends JpaRepository<SoundDone, Integer> {
 	
 	void deleteByUser(User user);
 	
+	SoundDone findByUrl(String url);
+	
 }

@@ -213,5 +213,14 @@ public class ThemeService {
 		filesService.deleteAllFilesByTypeOfUser(user, EnumTypeFile.THEME.getValue());
 		themeDAO.deleteByUser(user);
 	}
+	
+	public Theme findByUrl(String url) {
+		return themeDAO.findByUrl(url);
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
+	public void delete(Theme theme) {
+		themeDAO.delete(theme);
+	}
 
 }

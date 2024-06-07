@@ -70,30 +70,6 @@ create table report(
     constraint ReportUserWasReportedIdForeignKey foreign key(user_was_reported_id) references users(id)
 );
 
-create table study_group(
-	id int auto_increment,
-    codes text,
-    name_group nvarchar(50),
-    descriptions nvarchar(300),
-    total_member int,
-    total_time_focus int,
-    image_url text,
-    created_date datetime,
-    status_group text, -- It have 2 value: PRIVATE, PUBLIC
-    status text,
-	constraint StudyGroupPrimaryKey primary key(id)
-);
-
-create table users_join_study_group(
-	user_id int not null,
-    study_group_id int not null,
-    created_date datetime,
-    status text, -- JOINED, UNJOIN, BANNED
-    constraint UserJoinStudyGroupPrimaryKey primary key(user_id, study_group_id),
-    constraint UserJoinStudyGroupUserIdForeignKey foreign key(user_id) references users(id),
-    constraint UserJoinStudyGroupStudyGroupIdForeignKey foreign key(study_group_id) references study_group(id)
-);
-
 create table theme(
 	id int auto_increment,
     user_id int,
