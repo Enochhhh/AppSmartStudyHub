@@ -28,6 +28,8 @@ import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
+import net.minidev.json.JSONObject;
+
 @RestController
 @RequestMapping("/mobile/v1/admin/files")
 @CrossOrigin(origins ="*", methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT})
@@ -47,15 +49,19 @@ public class AdminFilesController extends BaseController {
 			String fileType, String fieldSort, String sortType, Integer page, Integer size) {
 		Result<List<FilesDTO>> result = new Result<>();
 		
-		List<FilesDTO> data = filesService.getFilesUploadedOfUser(userId, startDate, endDate, fileType, fieldSort, 
+		AllResponseTypeDTO data = filesService.getFilesUploadedOfUser(userId, startDate, endDate, fileType, fieldSort, 
 				sortType , page, size);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-		if (CollectionUtils.isEmpty(data)) {
+		if (CollectionUtils.isEmpty(data.getFiles())) {
 			result.getMeta().setStatusCode(StatusCode.ADMIN_GET_FILES_UPLOADED_OF_USER_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.ADMIN_GET_FILES_UPLOADED_OF_USER_FAILURE.getMessage());
 		}
-		result.setData(data);
+		result.setData(data.getFiles());
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("totalElements", data.getLongType());
+		jsonObject.put("totalPages", data.getIntegerType());
+		result.setExtendProp(jsonObject);
 		return createResponseEntity(result);
 	}
 	
@@ -102,15 +108,19 @@ public class AdminFilesController extends BaseController {
 			String fileType, String fieldSort, String sortType, Integer page, Integer size) {
 		Result<List<FilesDTO>> result = new Result<>();
 		
-		List<FilesDTO> data = filesService.getFilesInSystem(startDate, endDate, fileType, fieldSort, 
+		AllResponseTypeDTO data = filesService.getFilesInSystem(startDate, endDate, fileType, fieldSort, 
 				sortType , page, size);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-		if (CollectionUtils.isEmpty(data)) {
+		if (CollectionUtils.isEmpty(data.getFiles())) {
 			result.getMeta().setStatusCode(StatusCode.ADMIN_GET_FILES_IN_SYSTEM_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.ADMIN_GET_FILES_IN_SYSTEM_FAILURE.getMessage());
 		}
-		result.setData(data);
+		result.setData(data.getFiles());
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("totalElements", data.getLongType());
+		jsonObject.put("totalPages", data.getIntegerType());
+		result.setExtendProp(jsonObject);
 		return createResponseEntity(result);
 	}
 	
@@ -194,15 +204,19 @@ public class AdminFilesController extends BaseController {
 			Long startDate, Long endDate, String fieldSort, String sortType, Integer page, Integer size) {
 		Result<List<Object>> result = new Result<>();
 		
-		List<Object> data = filesService.getThemesAndSoundsInSystem(fileType, statusFile, startDate, endDate, fieldSort, 
+		AllResponseTypeDTO data = filesService.getThemesAndSoundsInSystem(fileType, statusFile, startDate, endDate, fieldSort, 
 				sortType , page, size);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
 		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
-		if (CollectionUtils.isEmpty(data)) {
+		if (CollectionUtils.isEmpty(data.getObjects())) {
 			result.getMeta().setStatusCode(StatusCode.ADMIN_GET_THEMES_AND_SOUNDS_IN_SYSTEM_FAILURE.getCode());
 			result.getMeta().setMessage(StatusCode.ADMIN_GET_THEMES_AND_SOUNDS_IN_SYSTEM_FAILURE.getMessage());
 		}
-		result.setData(data);
+		result.setData(data.getObjects());
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("totalElements", data.getLongType());
+		jsonObject.put("totalPages", data.getIntegerType());
+		result.setExtendProp(jsonObject);
 		return createResponseEntity(result);
 	}
 	

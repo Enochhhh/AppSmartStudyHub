@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -241,16 +242,16 @@ public class SoundConcentrationService {
 						"SoundConcentrationService -> findById"));
 	}
 	
-	public List<SoundConcentration> findByUserNullAndStatusSound(String statusSound, Pageable pageable) {
+	public Page<SoundConcentration> findByUserNullAndStatusSound(String statusSound, Pageable pageable) {
 		return soundConcentrationDAO.findByUserNullAndStatusSound(statusSound, pageable);
 	}
 	
-	public List<SoundConcentration> findByUserNullAndStatusSoundAndCreatedDateBetween(String statusSound, Date startDate, 
+	public Page<SoundConcentration> findByUserNullAndStatusSoundAndCreatedDateBetween(String statusSound, Date startDate, 
 			Date endDate, Pageable pageable) {
 		return soundConcentrationDAO.findByUserNullAndStatusSound(statusSound, pageable);
 	}
 	
-	public List<SoundConcentration> findByUserNull(Pageable pageable) {
+	public Page<SoundConcentration> findByUserNull(Pageable pageable) {
 		return soundConcentrationDAO.findByUserNull(pageable);
 	}
 	
@@ -258,7 +259,7 @@ public class SoundConcentrationService {
 		return soundConcentrationDAO.findByUserNull();
 	}
 	
-	public List<SoundConcentration> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable) {
+	public Page<SoundConcentration> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable) {
 		return soundConcentrationDAO.findByUserNullAndCreatedDateBetween(startDate, endDate, pageable);
 	}
 	

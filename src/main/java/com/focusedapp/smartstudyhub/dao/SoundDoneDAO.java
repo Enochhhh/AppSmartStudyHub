@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,14 +31,14 @@ public interface SoundDoneDAO extends JpaRepository<SoundDone, Integer> {
 	
 	SoundDone findByUrl(String url);
 	
-	List<SoundDone> findByUserNullAndStatusSound(String statusSound, Pageable pageable);
+	Page<SoundDone> findByUserNullAndStatusSound(String statusSound, Pageable pageable);
 	
-	List<SoundDone> findByUserNullAndStatusSoundAndCreatedDateBetween(String statusSound, Date startDate, 
+	Page<SoundDone> findByUserNullAndStatusSoundAndCreatedDateBetween(String statusSound, Date startDate, 
 			Date endDate, Pageable pageable);
 	
-	List<SoundDone> findByUserNull(Pageable pageable);
+	Page<SoundDone> findByUserNull(Pageable pageable);
 	
-	List<SoundDone> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable);
+	Page<SoundDone> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable);
 	
 	List<SoundDone> findByUserNull();
 	

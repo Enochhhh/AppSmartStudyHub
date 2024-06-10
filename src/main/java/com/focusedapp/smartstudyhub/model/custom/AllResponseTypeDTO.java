@@ -1,6 +1,7 @@
 package com.focusedapp.smartstudyhub.model.custom;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -28,4 +29,6 @@ public class AllResponseTypeDTO implements Serializable {
 	private Integer transactionId;
 	private User user;
 	private Payment payment;
+	private List<FilesDTO> files;
+	private List<Object> objects;
 }

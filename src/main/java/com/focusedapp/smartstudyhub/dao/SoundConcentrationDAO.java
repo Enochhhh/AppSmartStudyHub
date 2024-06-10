@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,11 +32,11 @@ public interface SoundConcentrationDAO extends JpaRepository<SoundConcentration,
 	
 	SoundConcentration findByUrl(String url);
 	
-	List<SoundConcentration> findByUserNullAndStatusSound(String statusSound, Pageable pageable);
+	Page<SoundConcentration> findByUserNullAndStatusSound(String statusSound, Pageable pageable);
 	
-	List<SoundConcentration> findByUserNull(Pageable pageable);
+	Page<SoundConcentration> findByUserNull(Pageable pageable);
 	
-	List<SoundConcentration> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable);
+	Page<SoundConcentration> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable);
 	
 	List<SoundConcentration> findByUserNull();
 }

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -233,20 +234,20 @@ public class ThemeService {
 				.orElseThrow(() -> new NotFoundValueException("Not Found Theme!", "ThemeService->findById"));
 	}
 
-	public List<Theme> findByUserNullAndStatusThemeAndCreatedDateBetween(String statusTheme, Date startDate, 
+	public Page<Theme> findByUserNullAndStatusThemeAndCreatedDateBetween(String statusTheme, Date startDate, 
 			Date endDate, Pageable pageable) {
 		return themeDAO.findByUserNullAndStatusThemeAndCreatedDateBetween(statusTheme, startDate, endDate, pageable);
 	}
 	
-	public List<Theme> findByUserNullAndStatusTheme(String statusTheme, Pageable pageable) {
+	public Page<Theme> findByUserNullAndStatusTheme(String statusTheme, Pageable pageable) {
 		return themeDAO.findByUserNullAndStatusTheme(statusTheme, pageable);
 	}
 	
-	public List<Theme> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable) {
+	public Page<Theme> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable) {
 		return themeDAO.findByUserNullAndCreatedDateBetween(startDate, endDate, pageable);
 	}
 	
-	public List<Theme> findByUserNull(Pageable pageable) {
+	public Page<Theme> findByUserNull(Pageable pageable) {
 		return themeDAO.findByUserNull(pageable);
 	}
 	

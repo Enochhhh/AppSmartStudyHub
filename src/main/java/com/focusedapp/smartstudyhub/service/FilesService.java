@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -181,8 +182,9 @@ public class FilesService {
 	 * @param size
 	 * @return
 	 */
-	public List<FilesDTO> getFilesUploadedOfUser(Integer userId, Long startDate, Long endDate, String type, 
+	public AllResponseTypeDTO getFilesUploadedOfUser(Integer userId, Long startDate, Long endDate, String type, 
 			String fieldSort, String sortType, Integer page, Integer size) {
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
 		Sort sort = Sort.by("createdAt").descending();
 		if (StringUtils.isNotBlank(fieldSort)) {
 			sort = Sort.by(fieldSort);
@@ -191,7 +193,7 @@ public class FilesService {
 			}
 		}
 		Pageable pageable = PageRequest.of(page, size, sort);
-		List<Files> files = new ArrayList<>();
+		Page<Files> files = null;
 		
 		if (userId == null || userId < 0) {
 			if (StringUtils.isNotBlank(type)) {
@@ -225,12 +227,18 @@ public class FilesService {
 			}
 		}
 		
-		if (CollectionUtils.isEmpty(files)) {
-			return new ArrayList<>();
+		if (CollectionUtils.isEmpty(files.getContent())) {
+			data.setFiles( new ArrayList<>());			
+			return data;
 		}
-		return files.stream()
+		
+		List<FilesDTO> filesRet = files.stream()
 				.map(f -> new FilesDTO(f))
 				.collect(Collectors.toList());
+		data.setFiles(filesRet);
+		data.setIntegerType(files.getTotalPages());
+		data.setLongType(files.getTotalElements());
+		return data;
 	}
 	
 	@Transactional(propagation=Propagation.REQUIRED, noRollbackFor=Exception.class)
@@ -264,8 +272,9 @@ public class FilesService {
 	 * @param size
 	 * @return
 	 */
-	public List<FilesDTO> getFilesInSystem(Long startDate, Long endDate, String type, 
+	public AllResponseTypeDTO getFilesInSystem(Long startDate, Long endDate, String type, 
 			String fieldSort, String sortType, Integer page, Integer size) {
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
 		Sort sort = Sort.by("createdAt").descending();
 		if (StringUtils.isNotBlank(fieldSort)) {
 			sort = Sort.by(fieldSort);
@@ -274,29 +283,35 @@ public class FilesService {
 			}
 		}
 		Pageable pageable = PageRequest.of(page, size, sort);
-		List<Files> files = new ArrayList<>();
-		
+		Page<Files> pageFiles = null;
 		if (StringUtils.isNotBlank(type)) {
 			if (startDate == null && endDate == null) {
-				files = filesDAO.findByUserNullAndType(type, pageable);
+				pageFiles = filesDAO.findByUserNullAndType(type, pageable);			
 			} else {
-				files = filesDAO.findByUserNullAndTypeAndCreatedAtBetween(type, new Date(startDate), new Date(endDate), 
+				pageFiles = filesDAO.findByUserNullAndTypeAndCreatedAtBetween(type, new Date(startDate), new Date(endDate), 
 						pageable);
 			}
 		} else {
 			if (startDate == null && endDate == null) {			
-				files = filesDAO.findByUserNull(pageable);
+				pageFiles = filesDAO.findByUserNull(pageable);
 			} else {
-				files = filesDAO.findByUserNullAndCreatedAtBetween(new Date(startDate), new Date(endDate), pageable);
+				pageFiles = filesDAO.findByUserNullAndCreatedAtBetween(new Date(startDate), new Date(endDate), pageable);
 			}
 		}
 		
+		List<Files> files = pageFiles.getContent();
 		if (CollectionUtils.isEmpty(files)) {
-			return new ArrayList<>();
+			data.setFiles(new ArrayList<>());;
+			return data;
 		}
-		return files.stream()
+		List<FilesDTO> filesRet = files.stream()
 				.map(f -> new FilesDTO(f))
 				.collect(Collectors.toList());
+		
+		data.setFiles(filesRet);
+		data.setIntegerType(pageFiles.getTotalPages());
+		data.setLongType(pageFiles.getTotalElements());
+		return data;
 	}
 	
 	/**
@@ -432,8 +447,9 @@ public class FilesService {
 	 * @param size
 	 * @return
 	 */
-	public List<Object> getThemesAndSoundsInSystem(String type, String statusFile, Long startDate, Long endDate, 
+	public AllResponseTypeDTO getThemesAndSoundsInSystem(String type, String statusFile, Long startDate, Long endDate, 
 			String fieldSort, String sortType, Integer page, Integer size) {
+		AllResponseTypeDTO data = new AllResponseTypeDTO();
 		Sort sort = Sort.by("createdAt").descending();
 		if (StringUtils.isNotBlank(fieldSort)) {
 			sort = Sort.by(fieldSort);
@@ -446,7 +462,7 @@ public class FilesService {
 		
 
 		if (type.equals(EnumTypeFile.THEME.getValue())) {
-			List<Theme> themes = new ArrayList<>();
+			Page<Theme> themes = null;
 			if (StringUtils.isNotBlank(statusFile)) {
 				if (startDate == null && endDate == null) {			
 					themes = themeService.findByUserNullAndStatusTheme(statusFile, pageable);
@@ -462,17 +478,16 @@ public class FilesService {
 				}
 			}
 			
-			if (CollectionUtils.isNotEmpty(themes)) {
+			if (CollectionUtils.isNotEmpty(themes.getContent())) {
 				files = themes.stream()
-						.map(t -> {
-							ThemeDTO themeDTO = new ThemeDTO(t);
-							Object object = themeDTO;
-							return object;
-						})
+						.map(t -> new ThemeDTO(t))
 						.collect(Collectors.toList());
+				data.setObjects(files);
+				data.setIntegerType(themes.getTotalPages());
+				data.setLongType(themes.getTotalElements());
 			}
 		} else if (type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue())) {
-			List<SoundConcentration> soundConcentrations = new ArrayList<>();
+			Page<SoundConcentration> soundConcentrations = null;
 			if (StringUtils.isNotBlank(statusFile)) {
 				if (startDate == null && endDate == null) {			
 					soundConcentrations = soundConcentrationService.findByUserNullAndStatusSound(statusFile, pageable);
@@ -490,17 +505,16 @@ public class FilesService {
 				}
 			}
 			
-			if (CollectionUtils.isNotEmpty(soundConcentrations)) {
+			if (CollectionUtils.isNotEmpty(soundConcentrations.getContent())) {
 				files = soundConcentrations.stream()
-						.map(s -> {
-							SoundConcentrationDTO soundConcentrationDTO = new SoundConcentrationDTO(s);
-							Object object = soundConcentrationDTO;
-							return object;
-						})
+						.map(s -> new SoundConcentrationDTO(s))
 						.collect(Collectors.toList());
+				data.setObjects(files);
+				data.setIntegerType(soundConcentrations.getTotalPages());
+				data.setLongType(soundConcentrations.getTotalElements());
 			}
 		} else {
-			List<SoundDone> soundDones = new ArrayList<>();
+			Page<SoundDone> soundDones = null;
 			if (StringUtils.isNotBlank(statusFile)) {
 				if (startDate == null && endDate == null) {			
 					soundDones = soundDoneService.findByUserNullAndStatusSound(statusFile, pageable);
@@ -518,7 +532,7 @@ public class FilesService {
 				}
 			}
 			
-			if (CollectionUtils.isNotEmpty(soundDones)) {
+			if (CollectionUtils.isNotEmpty(soundDones.getContent())) {
 				files = soundDones.stream()
 						.map(s -> {
 							SoundDoneDTO soundDoneDTO = new SoundDoneDTO(s);
@@ -526,10 +540,13 @@ public class FilesService {
 							return object;
 						})
 						.collect(Collectors.toList());
+				data.setObjects(files);
+				data.setIntegerType(soundDones.getTotalPages());
+				data.setLongType(soundDones.getTotalElements());
 			}
 		}
 		
-		return files;
+		return data;
 	}
 	
 	/**
@@ -619,5 +636,7 @@ public class FilesService {
 		}
 		return data;
 	}
+	
+	
 	
 }
