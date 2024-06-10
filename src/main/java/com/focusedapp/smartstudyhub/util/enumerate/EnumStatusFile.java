@@ -1,13 +1,13 @@
 package com.focusedapp.smartstudyhub.util.enumerate;
 
-public enum EnumStatusGroup {
+public enum EnumStatusFile {
 
-	PRIVATE("PRIVATE"),
-	PUBLIC("PUBLIC");
+	DEFAULT("DEFAULT"),
+	PREMIUM("PREMIUM");
 	
 	private final String value;
 	
-	EnumStatusGroup(String value) {	
+	EnumStatusFile(String value) {	
 		this.value = value;
 	}
 	

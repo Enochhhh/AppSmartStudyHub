@@ -162,7 +162,7 @@ public class SoundConcentrationController extends BaseController {
 
 		Result<SoundConcentrationDTO> result = new Result<>();	
 
-		SoundConcentrationDTO soundConcentrationDeleted = soundConcentrationService.deleteSoundConcentrationOfPremiumUser(soundConcentrationId);
+		SoundConcentrationDTO soundConcentrationDeleted = soundConcentrationService.deleteSoundConcentrationAndFileUploaded(soundConcentrationId);
 		
 		result.setData(soundConcentrationDeleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

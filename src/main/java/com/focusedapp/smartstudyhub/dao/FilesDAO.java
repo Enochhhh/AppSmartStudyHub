@@ -36,4 +36,13 @@ public interface FilesDAO extends JpaRepository<Files, Integer> {
 	List<Files> findByUserId(Integer userId, Pageable pageable);
 	
 	List<Files> findByUserIdAndCreatedAtBetween(Integer userId, Date startDate, Date enDate, Pageable pageable);
+	
+	List<Files> findByUserNullAndType(String type, Pageable pageable);
+	
+	List<Files> findByUserNullAndTypeAndCreatedAtBetween(String type, Date startDate, Date enDate, Pageable pageable);
+	
+	List<Files> findByUserNull(Pageable pageable);
+	
+	List<Files> findByUserNullAndCreatedAtBetween(Date startDate, Date endDate, Pageable pageable);
+	
 }

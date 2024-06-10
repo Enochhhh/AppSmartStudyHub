@@ -140,7 +140,7 @@ public class ThemeController extends BaseController {
 
 		Result<ThemeDTO> result = new Result<>();	
 
-		ThemeDTO themeDeleted = themeService.deleteThemeOfPremiumUser(themeId);
+		ThemeDTO themeDeleted = themeService.deleteThemeAndFileUploaded(themeId);
 		
 		result.setData(themeDeleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());

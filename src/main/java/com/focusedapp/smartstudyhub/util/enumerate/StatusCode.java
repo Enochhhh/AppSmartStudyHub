@@ -66,6 +66,14 @@ public enum StatusCode {
 	SEARCH_USER_FAILURE("11_2_f", "Search User Failure!"),
 	ADMIN_GET_REPORTS_FAILURE("11_3_f", "Get Reports Failure!"),
 	ADMIN_DELETE_REPORT_FAILURE("11_4_f", "Delete Report Failure!"),
+	ADMIN_UPLOAD_FILE_FAILURE("11_5_f", "Upload File Failure!"),
+	ADMIN_GET_SPECIFIC_FILE_FAILURE("11_6_f", "Get Specific File Failure!"),
+	ADMIN_GET_FILES_UPLOADED_OF_USER_FAILURE("11_7_f", "Get Files Uploaded of User Failure!"),
+	ADMIN_GET_FILES_IN_SYSTEM_FAILURE("11_8_f", "Get Files In System Failure!"),
+	ADMIN_GET_THEMES_AND_SOUNDS_IN_SYSTEM_FAILURE("11_9_f", "Get Themes And Sounds In System Failure!"),
+	ADMIN_GET_SPECIFIC_THEME_AND_SOUND_IN_SYSTEM_FAILURE("11_10_f", "Get Specific Theme And Sound In System Failure!"),
+	ADMIN_DELETE_THEME_AND_SOUND_IN_SYSTEM_FAILURE("11_11_f", "Delete Theme And Sound In System Failure!"),
+	ADMIN_SEARCH_THEME_AND_SOUND_IN_SYSTEM_FAILURE("11_12_f", "Search Theme And Sound In System Failure!"),
 	
 	/* REPORT */
 	GET_REPORTS_FAILURE("12_1_f", "Get Reports Failure!"),

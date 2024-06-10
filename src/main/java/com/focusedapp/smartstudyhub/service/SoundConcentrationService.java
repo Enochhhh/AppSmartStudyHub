@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,6 @@ import com.focusedapp.smartstudyhub.dao.SoundConcentrationDAO;
 import com.focusedapp.smartstudyhub.exception.NoRightToPerformException;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.SoundConcentration;
-import com.focusedapp.smartstudyhub.model.SoundDone;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.SoundConcentrationDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
@@ -170,14 +170,14 @@ public class SoundConcentrationService {
 	 * @param soundConcentrationId
 	 * @return
 	 */
-	public SoundConcentrationDTO deleteSoundConcentrationOfPremiumUser(Integer soundConcentrationId) throws IOException {
+	public SoundConcentrationDTO deleteSoundConcentrationAndFileUploaded(Integer soundConcentrationId) throws IOException {
 		
 		SoundConcentration soundConcentration = soundConcentrationDAO.findById(soundConcentrationId)
 				.orElseThrow(() -> new NotFoundValueException("Not Found the SoundConcentration to delete!", 
-						"SoundConcentrationService -> deleteSoundConcentrationOfPremiumUser"));
+						"SoundConcentrationService -> deleteSoundConcentrationAndFileUploaded"));
 		if (soundConcentration.getUser() == null || !soundConcentration.getStatusSound().equals(EnumStatusCustomContent.OWNED.getValue())) {
 			throw new NoRightToPerformException("No right to perform exception!", 
-					"SoundConcentrationService -> deleteSoundConcentrationOfPremiumUser");
+					"SoundConcentrationService -> deleteSoundConcentrationAndFileUploaded");
 		}
 		
 		String publicId = null;
@@ -231,5 +231,61 @@ public class SoundConcentrationService {
 		soundConcentrationDAO.delete(soundConcentration);
 	}
 	
+	public SoundConcentration persistent(SoundConcentration soundConcentration) {
+		return soundConcentrationDAO.save(soundConcentration);
+	}
 	
+	public SoundConcentration findById(Integer id) {
+		return soundConcentrationDAO.findById(id)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Sound Concentration!", 
+						"SoundConcentrationService -> findById"));
+	}
+	
+	public List<SoundConcentration> findByUserNullAndStatusSound(String statusSound, Pageable pageable) {
+		return soundConcentrationDAO.findByUserNullAndStatusSound(statusSound, pageable);
+	}
+	
+	public List<SoundConcentration> findByUserNullAndStatusSoundAndCreatedDateBetween(String statusSound, Date startDate, 
+			Date endDate, Pageable pageable) {
+		return soundConcentrationDAO.findByUserNullAndStatusSound(statusSound, pageable);
+	}
+	
+	public List<SoundConcentration> findByUserNull(Pageable pageable) {
+		return soundConcentrationDAO.findByUserNull(pageable);
+	}
+	
+	public List<SoundConcentration> findByUserNull() {
+		return soundConcentrationDAO.findByUserNull();
+	}
+	
+	public List<SoundConcentration> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable) {
+		return soundConcentrationDAO.findByUserNullAndCreatedDateBetween(startDate, endDate, pageable);
+	}
+	
+	/**
+	 * Delete Sound Concentration 
+	 * 
+	 * @param soundConcentrationId
+	 * @return
+	 */
+	public SoundConcentrationDTO adminDeleteSoundConcentrationAndFileUploaded(Integer soundConcentrationId) throws IOException {
+		
+		SoundConcentration soundConcentration = soundConcentrationDAO.findById(soundConcentrationId)
+				.orElseThrow(() -> new NotFoundValueException("Not Found the SoundConcentration to delete!", 
+						"SoundConcentrationService -> deleteSoundConcentrationAndFileUploaded"));
+		
+		String publicId = null;
+		if (StringUtils.isNotBlank(soundConcentration.getUrl())) {
+			Integer startingIndex = soundConcentration.getUrl().indexOf(ConstantUrl.URL_FOLDER);
+			publicId = soundConcentration.getUrl().substring(startingIndex + 1).split("\\.")[0];
+		}
+		
+		if (publicId != null) {
+			cloudinaryService.deleteFileInCloudinary(publicId);
+		}
+
+		soundConcentrationDAO.delete(soundConcentration);
+		
+		return new SoundConcentrationDTO(soundConcentration);
+	}
 }

@@ -43,7 +43,9 @@ public class FilesDTO implements Serializable {
 	
 	public FilesDTO(Files files) {
 		this.id = files.getId();
-		this.userId = files.getUser().getId();
+		if (files.getUser() != null) {
+			this.userId = files.getUser().getId();
+		}
 		this.folder = files.getFolder();
 		this.fileName = files.getFileName();
 		this.format = files.getFormat();

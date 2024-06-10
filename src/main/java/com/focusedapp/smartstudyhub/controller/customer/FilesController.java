@@ -28,6 +28,7 @@ import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.service.CloudinaryService;
 import com.focusedapp.smartstudyhub.service.FilesService;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusFile;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
@@ -225,4 +226,45 @@ public class FilesController extends BaseController {
 		return createResponseEntity(result);
 	}
 	
+	/**
+	 * Upload file user
+	 * 
+	 * @param files
+	 * @param type
+	 * @param userId
+	 * @return
+	 * @throws IOException
+	 */
+	@PostMapping("/admin/files/upload")
+	public ResponseEntity<Result<AllResponseTypeDTO>> uploadFileAdmin(@RequestParam("files") MultipartFile files,
+			@RequestParam String type, @RequestParam String statusFile) throws IOException {
+
+		Result<AllResponseTypeDTO> result = new Result<>();
+		
+		if (files == null || files.isEmpty()) {
+			result.getMeta().setStatusCode(StatusCode.MISSING_FILE.getCode());
+			result.getMeta().setMessage(StatusCode.MISSING_FILE.getMessage());
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+        }
+		
+		if ((StringUtils.isBlank(type) || (!type.equals(EnumTypeFile.THEME.getValue()) 
+				&& !type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue())
+				&& !type.equals(EnumTypeFile.SOUNDDONE.getValue()))) 
+				|| (StringUtils.isBlank(statusFile) || (!statusFile.equals(EnumStatusFile.DEFAULT.getValue())
+						&& !statusFile.equals(EnumStatusFile.PREMIUM.getValue())))) {
+			result.getMeta().setStatusCode(StatusCode.PARAMETER_INVALID.getCode());
+			result.getMeta().setMessage(StatusCode.PARAMETER_INVALID.getMessage());
+			result.getMeta().setDetails("Data Invalid!");
+			return createResponseEntity(result, HttpStatus.BAD_REQUEST);
+		}
+
+		String filesUploaded = cloudinaryService.uploadFileAdmin(files, statusFile, type);
+		AllResponseTypeDTO allResponseTypeDTO = new AllResponseTypeDTO();
+		allResponseTypeDTO.setStringType(filesUploaded);
+
+		result.setData(allResponseTypeDTO);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		return createResponseEntity(result);
+	}
 }

@@ -1,8 +1,10 @@
 package com.focusedapp.smartstudyhub.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,5 +29,16 @@ public interface SoundDoneDAO extends JpaRepository<SoundDone, Integer> {
 	void deleteByUser(User user);
 	
 	SoundDone findByUrl(String url);
+	
+	List<SoundDone> findByUserNullAndStatusSound(String statusSound, Pageable pageable);
+	
+	List<SoundDone> findByUserNullAndStatusSoundAndCreatedDateBetween(String statusSound, Date startDate, 
+			Date endDate, Pageable pageable);
+	
+	List<SoundDone> findByUserNull(Pageable pageable);
+	
+	List<SoundDone> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable);
+	
+	List<SoundDone> findByUserNull();
 	
 }

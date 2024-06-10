@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,14 +172,14 @@ public class SoundDoneService {
 	 * @param soundDoneId
 	 * @return
 	 */
-	public SoundDoneDTO deleteSoundDoneOfPremiumUser(Integer soundDoneId) throws IOException {
+	public SoundDoneDTO deleteSoundDoneAndFileUploaded(Integer soundDoneId) throws IOException {
 		
 		SoundDone soundDone = soundDoneDAO.findById(soundDoneId)
 				.orElseThrow(() -> new NotFoundValueException("Not Found the Sound Done to delete!", 
-						"SoundDoneService -> deleteSoundDoneOfPremiumUser"));
+						"SoundDoneService -> deleteSoundDoneAndFileUploaded"));
 		if (soundDone.getUser() == null || !soundDone.getStatusSound().equals(EnumStatusCustomContent.OWNED.getValue())) {
 			throw new NoRightToPerformException("No right to perform exception!", 
-					"SoundDoneService -> deleteSoundDoneOfPremiumUser");
+					"SoundDoneService -> deleteSoundDoneAndFileUploaded");
 		}
 		
 		String publicId = null;
@@ -232,4 +233,60 @@ public class SoundDoneService {
 		soundDoneDAO.delete(soundDone);
 	}
 	
+	public SoundDone persistent(SoundDone soundDone) {
+		return soundDoneDAO.save(soundDone);
+	}
+	
+	public SoundDone findById(Integer id) {
+		return soundDoneDAO.findById(id)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Sound Done!", "SoundDoneService -> findById"));
+	}
+	
+	public List<SoundDone> findByUserNullAndStatusSound(String statusSound, Pageable pageable) {
+		return soundDoneDAO.findByUserNullAndStatusSound(statusSound, pageable);
+	}
+	
+	public List<SoundDone> findByUserNullAndStatusSoundAndCreatedDateBetween(String statusSound, Date startDate, 
+			Date endDate, Pageable pageable) {
+		return soundDoneDAO.findByUserNullAndStatusSoundAndCreatedDateBetween(statusSound, startDate, endDate, pageable);
+	}
+	
+	public List<SoundDone> findByUserNull(Pageable pageable) {
+		return soundDoneDAO.findByUserNull(pageable);
+	}
+	
+	public List<SoundDone> findByUserNull() {
+		return soundDoneDAO.findByUserNull();
+	}
+	
+	public List<SoundDone> findByUserNullAndCreatedDateBetween(Date starDate, Date enDate, Pageable pageable) {
+		return soundDoneDAO.findByUserNullAndCreatedDateBetween(enDate, enDate, pageable);
+	}
+	
+	/**
+	 * Delete Sound Done 
+	 * 
+	 * @param soundDoneId
+	 * @return
+	 */
+	public SoundDoneDTO adminDeleteSoundDoneAndFileUploaded(Integer soundDoneId) throws IOException {
+		
+		SoundDone soundDone = soundDoneDAO.findById(soundDoneId)
+				.orElseThrow(() -> new NotFoundValueException("Not Found the Sound Done to delete!", 
+						"SoundDoneService -> deleteSoundDoneAndFileUploaded"));
+		
+		String publicId = null;
+		if (StringUtils.isNotBlank(soundDone.getUrl())) {
+			Integer startingIndex = soundDone.getUrl().indexOf(ConstantUrl.URL_FOLDER);
+			publicId = soundDone.getUrl().substring(startingIndex + 1).split("\\.")[0];
+		}
+		
+		if (publicId != null) {
+			cloudinaryService.deleteFileInCloudinary(publicId);
+		}
+
+		soundDoneDAO.delete(soundDone);
+		
+		return new SoundDoneDTO(soundDone);
+	}
 }

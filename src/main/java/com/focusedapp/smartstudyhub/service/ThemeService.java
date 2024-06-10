@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,12 +146,12 @@ public class ThemeService {
 	 * @param themeId
 	 * @return
 	 */
-	public ThemeDTO deleteThemeOfPremiumUser(Integer themeId) throws IOException {
+	public ThemeDTO deleteThemeAndFileUploaded(Integer themeId) throws IOException {
 		
 		Theme theme = themeDAO.findById(themeId)
-				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to delete!", "ThemeService -> deleteThemeOfPremiumUser"));
+				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to delete!", "ThemeService -> deleteThemeAndFileUploaded"));
 		if (theme.getUser() == null || !theme.getStatusTheme().equals(EnumStatusCustomContent.OWNED.getValue())) {
-			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> deleteThemeOfPremiumUser");
+			throw new NoRightToPerformException("No right to perform exception!", "ThemeService -> deleteThemeAndFileUploaded");
 		}
 		
 		String publicId = null;
@@ -222,5 +223,61 @@ public class ThemeService {
 	public void delete(Theme theme) {
 		themeDAO.delete(theme);
 	}
+	
+	public Theme persistent(Theme theme) {
+		return themeDAO.save(theme);
+	}
+	
+	public Theme findById(Integer id) {
+		return themeDAO.findById(id)
+				.orElseThrow(() -> new NotFoundValueException("Not Found Theme!", "ThemeService->findById"));
+	}
 
+	public List<Theme> findByUserNullAndStatusThemeAndCreatedDateBetween(String statusTheme, Date startDate, 
+			Date endDate, Pageable pageable) {
+		return themeDAO.findByUserNullAndStatusThemeAndCreatedDateBetween(statusTheme, startDate, endDate, pageable);
+	}
+	
+	public List<Theme> findByUserNullAndStatusTheme(String statusTheme, Pageable pageable) {
+		return themeDAO.findByUserNullAndStatusTheme(statusTheme, pageable);
+	}
+	
+	public List<Theme> findByUserNullAndCreatedDateBetween(Date startDate, Date endDate, Pageable pageable) {
+		return themeDAO.findByUserNullAndCreatedDateBetween(startDate, endDate, pageable);
+	}
+	
+	public List<Theme> findByUserNull(Pageable pageable) {
+		return themeDAO.findByUserNull(pageable);
+	}
+	
+	public List<Theme> findByUserNull() {
+		return themeDAO.findByUserNull();
+	}
+	
+	/**
+	 * Delete Theme 
+	 * 
+	 * @param themeId
+	 * @return
+	 */
+	public ThemeDTO adminDeleteThemeAndFileUploaded(Integer themeId) throws IOException {
+		
+		Theme theme = themeDAO.findById(themeId)
+				.orElseThrow(() -> new NotFoundValueException("Not Found the Theme to delete!", "ThemeService -> deleteThemeAndFileUploaded"));
+		
+		String publicId = null;
+		if (StringUtils.isNotBlank(theme.getUrl())) {
+			Integer startingIndex = theme.getUrl().indexOf(ConstantUrl.URL_FOLDER);
+			publicId = theme.getUrl().substring(startingIndex + 1).split("\\.")[0];
+		}
+		
+		if (publicId != null) {
+			cloudinaryService.deleteFileInCloudinary(publicId);
+		}
+
+		themeDAO.delete(theme);
+		
+		return new ThemeDTO(theme);
+	}
+	
 }

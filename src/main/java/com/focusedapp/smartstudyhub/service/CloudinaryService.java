@@ -15,11 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.focusedapp.smartstudyhub.dao.FilesDAO;
+import com.focusedapp.smartstudyhub.exception.ISException;
 import com.focusedapp.smartstudyhub.exception.NotFoundValueException;
 import com.focusedapp.smartstudyhub.model.Files;
 import com.focusedapp.smartstudyhub.model.User;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusFile;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 
@@ -74,7 +76,7 @@ public class CloudinaryService {
 				.build();
 		filesDAO.save(fileSave);
 		// Set the new file name in Cloudinary
-		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyyHHmmss");
 		formatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())));
 		String newFileName = "File_" + user.getId() + "_" + fileSave.getId() + "_" + formatter.format(new Date()) + 
 				"_" + extension;
@@ -149,6 +151,86 @@ public class CloudinaryService {
 		// Because User Account that is Deleted or Banned still can upload file to Report
 		User user = userService.findById(userId);
 		return uploadFile(file, type, user);
+	}
+	
+	/**
+	 * Upload file User
+	 * 
+	 * @param file
+	 * @param type
+	 * @param user
+	 * @return
+	 * @throws IOException
+	 */
+	public String uploadFileAdmin(MultipartFile file, String statusFile, String type) throws IOException {
+
+		Cloudinary cloudinary = new Cloudinary(
+				ObjectUtils.asMap("cloud_name", cloudName, "api_key", apiKey, "api_secret", apiSecret));
+
+		String folder = ConstantUrl.URL_FOLDER + "/" + type + "/" + statusFile + "/";
+		String resourceType = "image";
+		if (type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue()) 
+				|| type.equals(EnumTypeFile.SOUNDDONE.getValue())) {
+			resourceType = "video";
+		}
+
+		// Get Extension of file
+		String extension = file.getOriginalFilename().split("\\.")[1].toLowerCase();
+
+		Files fileSave = Files.builder()
+				.build();
+		filesDAO.save(fileSave);
+		// Set the new file name in Cloudinary
+		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyyHHmmss");
+		formatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())));
+		String newFileName = "File_ADMINUPDATED_" + fileSave.getId() + "_" + formatter.format(new Date()) + 
+				"_" + extension;
+		
+		String publicId = newFileName;
+
+		// Upload the image to Cloudinary
+		Map uploadResult;
+		try {
+			uploadResult = cloudinary.uploader().upload(file.getBytes(),
+					ObjectUtils.asMap("folder", folder, "public_id", publicId, "resource_type", resourceType));
+		} catch (Exception e) {
+			filesDAO.delete(fileSave);
+			throw e;
+		}
+
+		fileSave = Files.builder().folder(folder)
+				.id(fileSave.getId())
+				.type(type)
+				.fileName(newFileName).format((String) uploadResult.get("format"))
+				.resourceType((String) uploadResult.get("resource_type"))
+				.secureUrl((String) uploadResult.get("secure_url"))
+				.createdAt(new Date())
+				.publicId((String) uploadResult.get("public_id"))
+				.build();
+		fileSave = filesDAO.save(fileSave);
+		
+		return fileSave.getSecureUrl();
+	}
+	
+	public String moveFileToAnotherFolder(String currentPublicId, String newPublicId) {
+		Cloudinary cloudinary = new Cloudinary(
+				ObjectUtils.asMap("cloud_name", cloudName, "api_key", apiKey, "api_secret", apiSecret));
+		String resourceType = "image"; 
+		if (currentPublicId.split("/")[1].equals(EnumTypeFile.SOUNDCONCENTRATION.getValue()) 
+				|| currentPublicId.split("/")[1].equals(EnumTypeFile.SOUNDDONE.getValue())) {
+			resourceType = "video"; 
+		}
+		Map uploadResult;
+		try {
+			uploadResult = cloudinary.uploader().rename(currentPublicId, newPublicId, 
+					ObjectUtils.asMap("resource_type", resourceType));
+		} catch (Exception e) {
+			throw new ISException(e);
+		}
+		Files files = filesDAO.findByPublicId((String) uploadResult.get("public_id")).get();
+		files.setSecureUrl((String) uploadResult.get("secure_url"));
+		filesDAO.save(files);
+		return (String) uploadResult.get("secure_url");
 	}
 	
 }

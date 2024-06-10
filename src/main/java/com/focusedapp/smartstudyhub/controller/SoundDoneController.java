@@ -161,7 +161,7 @@ public class SoundDoneController extends BaseController {
 
 		Result<SoundDoneDTO> result = new Result<>();	
 
-		SoundDoneDTO soundConcentrationDeleted = soundDoneService.deleteSoundDoneOfPremiumUser(soundDoneId);
+		SoundDoneDTO soundConcentrationDeleted = soundDoneService.deleteSoundDoneAndFileUploaded(soundDoneId);
 		
 		result.setData(soundConcentrationDeleted);
 		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
