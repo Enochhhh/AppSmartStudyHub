@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.focusedapp.smartstudyhub.exception.ISException;
 import com.focusedapp.smartstudyhub.model.Files;
+import com.focusedapp.smartstudyhub.model.Report;
 import com.focusedapp.smartstudyhub.model.SoundConcentration;
 import com.focusedapp.smartstudyhub.model.SoundDone;
 import com.focusedapp.smartstudyhub.model.Theme;
@@ -30,6 +31,7 @@ public class ThreadService {
 	@Autowired WorkService workService;
 	@Autowired PomodoroService pomodoroService;
 	@Autowired CloudinaryService cloudinaryService;
+	@Autowired ReportService reportService;
 
 	/**
 	 * Thread send new account info to Email User
@@ -227,13 +229,19 @@ public class ThreadService {
 	public void deleteThemeOfUserByAdminWithFileType(Files file, String type) throws IOException {
 		if (type.equals(EnumTypeFile.THEME.getValue())) {
 			Theme theme = themeService.findByUrl(file.getSecureUrl());
-			themeService.delete(theme);
+			if (theme != null) {
+				themeService.delete(theme);
+			}
 		} else if (type.equals(EnumTypeFile.SOUNDDONE.getValue())) {
 			SoundDone soundDone = soundDoneService.findByUrl(file.getSecureUrl());
-			soundDoneService.delete(soundDone);
+			if (soundDone != null) {
+				soundDoneService.delete(soundDone);
+			}
 		} else if (type.equals(EnumTypeFile.SOUNDCONCENTRATION.getValue())) {
 			SoundConcentration soundConcentration = soundConcentrationService.findByUrl(file.getSecureUrl());
-			soundConcentrationService.delete(soundConcentration);
+			if (soundConcentration != null) {
+				soundConcentrationService.delete(soundConcentration);
+			}
 		} else if (type.equals(EnumTypeFile.USER.getValue())) {
 			User user = file.getUser();
 			if (user != null && file.getSecureUrl().equals(user.getImageUrl())) {
@@ -242,7 +250,9 @@ public class ThreadService {
 				file = filesService.persistent(file);
 			}
 		} else if (type.equals(EnumTypeFile.REPORT.getValue())) {
-			
+			Report report = reportService.findByUrlFile(file.getSecureUrl());
+			report.setUrlFile(null);
+			reportService.persistent(report);
 		} else if (type.equals(EnumTypeFile.COVERIMAGE.getValue())) {
 			User user = file.getUser();
 			if (user != null && user.getCoverImage() != null && file.getSecureUrl().equals(user.getCoverImage())) {

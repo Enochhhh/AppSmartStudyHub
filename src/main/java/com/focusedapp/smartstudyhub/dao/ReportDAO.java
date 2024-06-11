@@ -21,4 +21,6 @@ public interface ReportDAO extends JpaRepository<Report, Integer> {
 	
 	@Query(value = "select * from report r order by r.status_report desc, r.created_date desc", nativeQuery = true)
 	List<Report> findAllReports();
+	
+	Report findByUrlFile(String urlFile);
 }

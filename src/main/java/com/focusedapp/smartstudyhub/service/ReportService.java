@@ -175,4 +175,8 @@ public class ReportService {
 		reportDAO.save(report.get());
 		return true;
 	}
+	
+	public Report findByUrlFile(String urlFile) {
+		return reportDAO.findByUrlFile(urlFile);
+	}
 }
