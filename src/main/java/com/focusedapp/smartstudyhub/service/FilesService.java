@@ -1,9 +1,18 @@
 package com.focusedapp.smartstudyhub.service;
 
+import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
+
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,10 +38,12 @@ import com.focusedapp.smartstudyhub.model.custom.FilesAdminDTO;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.model.custom.SoundConcentrationDTO;
 import com.focusedapp.smartstudyhub.model.custom.SoundDoneDTO;
+import com.focusedapp.smartstudyhub.model.custom.StatisticalFileDTO;
 import com.focusedapp.smartstudyhub.model.custom.ThemeDTO;
 import com.focusedapp.smartstudyhub.util.constant.ConstantUrl;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatus;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
+import com.focusedapp.smartstudyhub.util.enumerate.EnumZoneId;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
 @Service
@@ -637,6 +648,97 @@ public class FilesService {
 		return data;
 	}
 	
-	
+	/**
+	 * Statistical Files Uploaded of Users
+	 * 
+	 * @param typeQuery
+	 * @param year
+	 * @param month
+	 * @return
+	 */
+	public List<StatisticalFileDTO> statisticalFilesUploadedOfAllUsers(Integer userId, String typeQuery, Integer year, 
+			Integer month) {
+		Map<Long, List<Files>> mapFiles = new LinkedHashMap<>();
+		LocalDateTime firstDay = null;
+		LocalDateTime lastDay = null;
+		if (typeQuery.equals("YEAR")) {
+			firstDay = LocalDateTime.of(YearMonth.of(year, 1).atDay(1), LocalTime.MIDNIGHT);
+			lastDay = LocalDateTime.of(YearMonth.of(year, 12).atEndOfMonth(), LocalTime.MAX);		
+			List<Files> files = new ArrayList<>();
+			if (userId == null || userId < 1) {
+				files = filesDAO.findByUserIdNotNullAndCreatedAtBetween(
+							Date.from(firstDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()),
+							Date.from(lastDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()));
+			} else {
+				files = filesDAO.findByUserIdAndCreatedAtBetween(userId,
+						Date.from(firstDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()),
+						Date.from(lastDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()));
+			}
+					
+			if (CollectionUtils.isNotEmpty(files)) {
+				mapFiles = files.stream()
+						.collect(Collectors.groupingBy(f -> {
+							LocalDateTime localDateCreatedAt = f.getCreatedAt().toInstant()
+									.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()))
+									.toLocalDateTime();
+							LocalDateTime firstDateInMonth = localDateCreatedAt.with(firstDayOfMonth()).with(LocalTime.MIDNIGHT);
+							return Date.from(firstDateInMonth.atZone(
+									ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()).getTime();
+						}, Collectors.toList()));
+			}
+		} else {
+			firstDay = LocalDateTime.of(YearMonth.of(year, month).atDay(1), LocalTime.MIDNIGHT);
+			lastDay = LocalDateTime.of(YearMonth.of(year, month).atEndOfMonth(), LocalTime.MAX);	
+			List<Files> files = null;
+			if (userId == null || userId < 1) {
+				files = filesDAO.findByUserIdNotNullAndCreatedAtBetween(
+							Date.from(firstDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()),
+							Date.from(lastDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()));
+			} else {
+				files = filesDAO.findByUserIdAndCreatedAtBetween(userId,
+						Date.from(firstDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()),
+						Date.from(lastDay.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()));
+			}
+			if (CollectionUtils.isNotEmpty(files)) {
+				mapFiles = files.stream()
+						.collect(Collectors.groupingBy(f -> {
+							LocalDateTime localDateCreatedAt = f.getCreatedAt().toInstant()
+									.atZone(ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()))
+									.toLocalDateTime();
+							Integer dayWillMinus = localDateCreatedAt.getDayOfMonth() % 3 - 1;
+							dayWillMinus = dayWillMinus < 0 ? 2 : dayWillMinus;
+							localDateCreatedAt = localDateCreatedAt.minusDays(dayWillMinus);
+							localDateCreatedAt = localDateCreatedAt.with(LocalTime.MIDNIGHT);
+							return Date.from(localDateCreatedAt.atZone(
+									ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())).toInstant()).getTime();
+						}, Collectors.toList()));
+			}
+		}
+		return mapFiles.entrySet().stream()
+				.map(f -> {
+					Integer totalThemes = f.getValue().stream()
+							.filter(file -> file.getType().equals(EnumTypeFile.THEME.getValue()))
+							.collect(Collectors.counting()).intValue();
+					Integer totalSoundDones = f.getValue().stream()
+							.filter(file -> file.getType().equals(EnumTypeFile.SOUNDDONE.getValue()))
+							.collect(Collectors.counting()).intValue();
+					Integer totalSoundConcentrations = f.getValue().stream()
+							.filter(file -> file.getType().equals(EnumTypeFile.SOUNDCONCENTRATION.getValue()))
+							.collect(Collectors.counting()).intValue();
+					Integer totalAvatars = f.getValue().stream()
+							.filter(file -> file.getType().equals(EnumTypeFile.USER.getValue()))
+							.collect(Collectors.counting()).intValue();
+					Integer totalCoverImages = f.getValue().stream()
+							.filter(file -> file.getType().equals(EnumTypeFile.COVERIMAGE.getValue()))
+							.collect(Collectors.counting()).intValue();
+					Integer totalReports = f.getValue().stream()
+							.filter(file -> file.getType().equals(EnumTypeFile.REPORT.getValue()))
+							.collect(Collectors.counting()).intValue();
+					return new StatisticalFileDTO(f.getKey(), totalThemes, totalSoundDones, totalSoundConcentrations, 
+							totalAvatars, totalCoverImages, totalReports);
+				})
+				.sorted(Comparator.comparing(StatisticalFileDTO::getFirstDateOfMonthOrDateInMonth))
+				.collect(Collectors.toList());
+	}
 	
 }

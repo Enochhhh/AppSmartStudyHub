@@ -74,6 +74,7 @@ public enum StatusCode {
 	ADMIN_GET_SPECIFIC_THEME_AND_SOUND_IN_SYSTEM_FAILURE("11_10_f", "Get Specific Theme And Sound In System Failure!"),
 	ADMIN_DELETE_THEME_AND_SOUND_IN_SYSTEM_FAILURE("11_11_f", "Delete Theme And Sound In System Failure!"),
 	ADMIN_SEARCH_THEME_AND_SOUND_IN_SYSTEM_FAILURE("11_12_f", "Search Theme And Sound In System Failure!"),
+	ADMIN_STATISTICAL_FILES_FAILURE("11_13_f", "Statistical Files Failure! Not Found Files!"),
 	
 	/* REPORT */
 	GET_REPORTS_FAILURE("12_1_f", "Get Reports Failure!"),

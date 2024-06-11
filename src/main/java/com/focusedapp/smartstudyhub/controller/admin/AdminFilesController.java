@@ -22,6 +22,7 @@ import com.focusedapp.smartstudyhub.model.custom.AllResponseTypeDTO;
 import com.focusedapp.smartstudyhub.model.custom.FilesAdminDTO;
 import com.focusedapp.smartstudyhub.model.custom.FilesDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
+import com.focusedapp.smartstudyhub.model.custom.StatisticalFileDTO;
 import com.focusedapp.smartstudyhub.service.FilesService;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumStatusFile;
 import com.focusedapp.smartstudyhub.util.enumerate.EnumTypeFile;
@@ -287,6 +288,31 @@ public class AdminFilesController extends BaseController {
 		}
 		result.setData(data);
 		return createResponseEntity(result);
+	}
+	
+	/**
+	 * Statistical Files of Users
+	 * 
+	 * @param userId
+	 * @param typeQuery (values will be YEAR or MONTH)
+	 * @param year
+	 * @param month
+	 * @return
+	 */
+	@GetMapping("/statistical")
+	public ResponseEntity<Result<List<StatisticalFileDTO>>> statisticalFile(Integer userId, @RequestParam String typeQuery,
+			Integer year, Integer month) {
+		Result<List<StatisticalFileDTO>> result = new Result<>();
+		List<StatisticalFileDTO> data = filesService.statisticalFilesUploadedOfAllUsers(userId, typeQuery, year, month);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		if (CollectionUtils.isEmpty(data)) {
+			result.getMeta().setStatusCode(StatusCode.ADMIN_STATISTICAL_FILES_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.ADMIN_STATISTICAL_FILES_FAILURE.getMessage());
+		}
+		result.setData(data);
+		return createResponseEntity(result);
+		
 	}
 	
 }

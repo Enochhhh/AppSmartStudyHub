@@ -23,5 +23,20 @@ private static final long serialVersionUID = 1L;
 	private Integer totalThemes;
 	private Integer totalSoundDones;
 	private Integer totalSoundConcentrations;
+	private Integer totalAvatars;
+	private Integer totalCoverImages;
+	private Integer totalFilesUploadedForReport;
 	private Integer totalFiles;
+	
+	public StatisticalFileDTO(Long firstDateOfMonthOrDateInMonth, Integer totalThemes, Integer totalSoundDones, 
+			Integer totalSoundConcentrations, Integer totalAvatars, Integer totalCoverImages, Integer totalFilesUploadedForReport) {
+		this.firstDateOfMonthOrDateInMonth = firstDateOfMonthOrDateInMonth;
+		this.totalThemes = totalThemes;
+		this.totalSoundDones = totalSoundDones;
+		this.totalSoundConcentrations = totalSoundConcentrations;
+		this.totalAvatars = totalAvatars;
+		this.totalCoverImages = totalCoverImages;
+		this.totalFilesUploadedForReport = totalFilesUploadedForReport;
+		this.totalFiles = totalThemes + totalSoundDones + totalSoundConcentrations + totalAvatars + totalCoverImages + totalFilesUploadedForReport;
+	}
 }
