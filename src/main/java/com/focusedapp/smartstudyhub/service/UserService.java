@@ -599,7 +599,7 @@ public class UserService {
 				.role(request.getRole())
 				.phoneNumber(request.getPhoneNumber())
 				.address(request.getAddress())
-				.dateOfBirth(request.getDateOfBirth() != null ? new Date() : new Date(request.getDateOfBirth()))
+				.dateOfBirth(request.getDateOfBirth() == null ? null : new Date(request.getDateOfBirth()))
 				.country(request.getCountry())
 				.provider(Provider.LOCAL.getValue())
 				.imageUrl(StringUtils.isBlank(request.getImageUrl()) ? ConstantUrl.DEFAULT_IMAGE : request.getImageUrl())
@@ -650,7 +650,7 @@ public class UserService {
 		user.setEmail(request.getEmail());
 		user.setPhoneNumber(request.getPhoneNumber());
 		user.setAddress(request.getAddress());
-		user.setDateOfBirth(request.getDateOfBirth() != null ? new Date() : new Date(request.getDateOfBirth()));
+		user.setDateOfBirth(request.getDateOfBirth() == null ? null : new Date(request.getDateOfBirth()));
 		user.setCountry(request.getCountry());
 		user.setImageUrl(request.getImageUrl());
 		user.setRole(request.getRole());
