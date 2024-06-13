@@ -325,16 +325,7 @@ public class FilesService {
 		return data;
 	}
 	
-	/**
-	 * Upload file Admin
-	 * 
-	 * @param file
-	 * @param filesAdminDTO
-	 * @return
-	 * @throws IOException
-	 */
-	public Object uploadFileAdmin(FilesAdminDTO filesAdminDTO) throws IOException {
-		Object object = null;
+	public void moveFileToAnotherFolder(FilesAdminDTO filesAdminDTO) {
 		String[] arrayUrlSplited = filesAdminDTO.getUrl().split("/");
 		if (!filesAdminDTO.getStatus().equals(arrayUrlSplited[9])) {
 			String publicId = ConstantUrl.URL_FOLDER.substring(1)
@@ -346,6 +337,18 @@ public class FilesService {
 			String url = cloudinaryService.moveFileToAnotherFolder(publicId, newPublicId);
 			filesAdminDTO.setUrl(url);
 		}
+	}
+	
+	/**
+	 * Upload file Admin
+	 * 
+	 * @param file
+	 * @param filesAdminDTO
+	 * @return
+	 * @throws IOException
+	 */
+	public Object uploadFileAdmin(FilesAdminDTO filesAdminDTO) throws IOException {
+		Object object = null;
 		if (filesAdminDTO.getType().equals(EnumTypeFile.THEME.getValue())) {
 			Theme theme = null;
 			if (filesAdminDTO.getId() != null) {
@@ -359,11 +362,13 @@ public class FilesService {
 					if (publicId != null) {
 						cloudinaryService.deleteFileInCloudinary(publicId);
 					}
-					theme.setUrl(filesAdminDTO.getUrl());
 				}
+				moveFileToAnotherFolder(filesAdminDTO);
+				theme.setUrl(filesAdminDTO.getUrl());
 				theme.setNameTheme(filesAdminDTO.getName());
 				theme.setStatusTheme(filesAdminDTO.getStatus());
 			} else {
+				moveFileToAnotherFolder(filesAdminDTO);
 				theme = Theme.builder()
 						.nameTheme(filesAdminDTO.getName())
 						.url(filesAdminDTO.getUrl())
@@ -387,11 +392,13 @@ public class FilesService {
 					if (publicId != null) {
 						cloudinaryService.deleteFileInCloudinary(publicId);
 					}
-					soundConcentration.setUrl(filesAdminDTO.getUrl());
 				}
+				moveFileToAnotherFolder(filesAdminDTO);
+				soundConcentration.setUrl(filesAdminDTO.getUrl());
 				soundConcentration.setNameSound(filesAdminDTO.getName());
 				soundConcentration.setStatusSound(filesAdminDTO.getStatus());
 			} else {
+				moveFileToAnotherFolder(filesAdminDTO);
 				soundConcentration = SoundConcentration.builder()
 						.nameSound(filesAdminDTO.getName())
 						.url(filesAdminDTO.getUrl())
@@ -415,11 +422,13 @@ public class FilesService {
 					if (publicId != null) {
 						cloudinaryService.deleteFileInCloudinary(publicId);
 					}
-					soundDone.setUrl(filesAdminDTO.getUrl());
 				}
+				moveFileToAnotherFolder(filesAdminDTO);
+				soundDone.setUrl(filesAdminDTO.getUrl());
 				soundDone.setNameSound(filesAdminDTO.getName());
 				soundDone.setStatusSound(filesAdminDTO.getStatus());
 			} else {
+				moveFileToAnotherFolder(filesAdminDTO);
 				soundDone = SoundDone.builder()
 						.nameSound(filesAdminDTO.getName())
 						.url(filesAdminDTO.getUrl())

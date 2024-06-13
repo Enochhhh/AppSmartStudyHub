@@ -118,13 +118,13 @@ insert into files values(24, null, 'SOUNDCONCENTRATION', '/SmartStudyHub/SOUNDCO
     '2024-03-14 00:00:00', 'SmartStudyHub/SOUNDCONCENTRATION/PREMIUM/File_ADMIN_24_04032024000000_mp3');
 
 -- Theme
-insert into theme values(1, null, N'Sunflower Garden', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1702954116/SmartStudyHub/THEME/DEFAULT/File_ADMIN_1_04032024000000_jpg.jpg',
+insert into theme values(1, null, N'Sunflower Garden', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1718255153/SmartStudyHub/THEME/DEFAULT/File_ADMIN_1_04032024000000_jpg.jpg',
 	'DEFAULT', 'ACTIVE', '2024-03-14 00:00:00');
 insert into theme values(2, null, N'Temple Under The Moon', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1702954116/SmartStudyHub/THEME/DEFAULT/File_ADMIN_2_04032024000000_jpg.jpg',
 	'DEFAULT', 'ACTIVE', '2024-03-14 00:00:00'); 
 insert into theme values(3, null, N'Valdivian Temperate Forests', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1702954115/SmartStudyHub/THEME/DEFAULT/File_ADMIN_3_04032024000000_jpg.jpg',
 	'DEFAULT', 'ACTIVE', '2024-03-14 00:00:00');
-insert into theme values(4, null, N'Desert', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1702954116/SmartStudyHub/THEME/DEFAULT/File_ADMIN_4_04032024000000_jpg.jpg',
+insert into theme values(4, null, N'Desert', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1718255357/SmartStudyHub/THEME/DEFAULT/File_ADMIN_4_04032024000000_jpg.jpg',
 	'DEFAULT', 'ACTIVE', '2024-03-14 00:00:00');
 insert into theme values(5, null, N'Chill With Code', 'https://res.cloudinary.com/dnj5purhu/image/upload/v1702954116/SmartStudyHub/THEME/DEFAULT/File_ADMIN_5_04032024000000_jpg.jpg',
 	'DEFAULT', 'ACTIVE', '2024-03-14 00:00:00');

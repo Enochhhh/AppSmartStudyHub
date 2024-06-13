@@ -227,8 +227,18 @@ public class CloudinaryService {
 		} catch (Exception e) {
 			throw new ISException(e);
 		}
-		Files files = filesDAO.findByPublicId((String) uploadResult.get("public_id")).get();
+		String[] tokensNewPublicId = newPublicId.split("/");
+		String folder = "/".concat(tokensNewPublicId[0])
+				.concat("/").concat(tokensNewPublicId[1])
+				.concat("/").concat(tokensNewPublicId[2])
+				.concat("/");
+		Files files = filesDAO.findByPublicId(currentPublicId).get();
+		files.setPublicId((String) uploadResult.get("public_id"));
 		files.setSecureUrl((String) uploadResult.get("secure_url"));
+		files.setFormat((String) uploadResult.get("format"));
+		files.setResourceType((String) uploadResult.get("resource_type"));
+		files.setFolder(folder);
+		files.setCreatedAt(new Date());
 		filesDAO.save(files);
 		return (String) uploadResult.get("secure_url");
 	}
