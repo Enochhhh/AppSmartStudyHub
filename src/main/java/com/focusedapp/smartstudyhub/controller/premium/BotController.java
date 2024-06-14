@@ -17,7 +17,6 @@ import com.focusedapp.smartstudyhub.controller.BaseController;
 import com.focusedapp.smartstudyhub.model.chatgpt.ChatGptRequestDTO;
 import com.focusedapp.smartstudyhub.model.chatgpt.ChatGptResponseDTO;
 import com.focusedapp.smartstudyhub.model.chatgpt.Message;
-import com.focusedapp.smartstudyhub.model.custom.DeviceDTO;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 

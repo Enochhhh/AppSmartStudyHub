@@ -26,7 +26,7 @@ public class FirebaseConfig {
 	FirebaseMessaging firebaseMessaging() throws IOException {
 		byte[] decodedBytes = Base64.getDecoder().decode(base64ServiceAccount);
         ByteArrayInputStream serviceAccountStream = new ByteArrayInputStream(decodedBytes);
-        
+
 		GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccountStream);
 		FirebaseOptions firebaseOptions = FirebaseOptions.builder()
 				.setCredentials(googleCredentials).build();
