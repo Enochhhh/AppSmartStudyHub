@@ -19,6 +19,7 @@ import com.focusedapp.smartstudyhub.model.ErrorLog;
 import com.focusedapp.smartstudyhub.model.custom.Result;
 import com.focusedapp.smartstudyhub.util.enumerate.StatusCode;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
@@ -269,5 +270,23 @@ public class ExceptionControllerAdvice {
 		
 		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(value = ExpiredJwtException.class)
+	public ResponseEntity<Result<JSONObject>> expiredJwtException(ExpiredJwtException exception) {
+		
+		Logger logger = LoggerFactory.getLogger(ExceptionControllerAdvice.class);
+		logger.error(exception.getMessage());
+		
+		Result<JSONObject> result = new Result<>();
+		result.getMeta().setStatusCode(StatusCode.TOKEN_EXPIRED.getCode());
+		result.getMeta().setMessage(StatusCode.TOKEN_EXPIRED.getMessage());
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("message", "Token Expired!");
+		result.setData(jsonObject);
+		result.setLogInfo(exception.getMessage());
+		
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
+	} 
 	
 }

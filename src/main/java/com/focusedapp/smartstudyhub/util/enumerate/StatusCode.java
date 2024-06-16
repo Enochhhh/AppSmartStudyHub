@@ -15,6 +15,7 @@ public enum StatusCode {
 	UNAUTHORIZED("0_10_f", "Unauthorized"),
 	TOKEN_INVALID("0_11_f", "Token Invalid"),
 	ENVIRONMENT_VARIABLE_NOT_FOUND("0_12_f", "Environment Variable Not Found"),
+	TOKEN_EXPIRED("0_12_f", "Token Expired"),
 	
 	// User - featureCode: 1
 	/* Register */

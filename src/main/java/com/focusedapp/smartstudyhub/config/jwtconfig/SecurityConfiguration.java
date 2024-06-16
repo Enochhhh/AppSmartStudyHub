@@ -140,4 +140,5 @@ public class SecurityConfiguration {
 	AuthenticationEntryPointException authenticationEntryPoint() {
 		return new AuthenticationEntryPointException();
 	}
+	
 }
