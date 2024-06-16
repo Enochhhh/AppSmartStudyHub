@@ -167,4 +167,17 @@ public class DeviceService {
 		return deviceUserDAO.findByUserId(userId);
 	}
 	
+	/**
+	 * Get Specific Device of User
+	 * 
+	 * @return
+	 */
+	public DeviceDTO getSpecificDeviceOfUser(String deviceId, User user) {
+		DeviceUser deviceUser = deviceUserDAO.findByDeviceIdAndUserId(deviceId, user.getId());
+		if (deviceUser == null) {
+			return null;
+		}
+		return new DeviceDTO(deviceUser.getDevice(), deviceUser.getUser());
+	}
+	
 }

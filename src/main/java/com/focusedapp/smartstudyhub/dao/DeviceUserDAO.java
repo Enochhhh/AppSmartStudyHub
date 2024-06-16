@@ -11,4 +11,5 @@ import com.focusedapp.smartstudyhub.model.DeviceUser;
 public interface DeviceUserDAO extends JpaRepository<DeviceUser, Integer> {
 	List<DeviceUser> findByDeviceIdInAndUserId(List<String> deviceIds, Integer userId);
 	List<DeviceUser> findByUserId(Integer userId);
+	DeviceUser findByDeviceIdAndUserId(String deviceId, Integer userId);
 }

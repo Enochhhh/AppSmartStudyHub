@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -136,7 +137,7 @@ public class DeviceController extends BaseController {
 	}
 	
 	/**
-	 * Delete devices selected
+	 * Get devices of User
 	 * 
 	 * @param deviceDTO
 	 * @return
@@ -157,4 +158,28 @@ public class DeviceController extends BaseController {
 		result.setData(data);
 		return createResponseEntity(result);
 	}
+	
+	/**
+	 * Get specific device of User
+	 * 
+	 * @param deviceDTO
+	 * @return
+	 */
+	@GetMapping("/get/{id}")
+	ResponseEntity<Result<DeviceDTO>> getSpecificDeviceOfUser(@PathVariable String id) {
+		Result<DeviceDTO> result = new Result<>();		
+		
+		User user = getAuthenticatedUser();
+		DeviceDTO data = deviceService.getSpecificDeviceOfUser(id, user);
+		result.getMeta().setStatusCode(StatusCode.SUCCESS.getCode());
+		result.getMeta().setMessage(StatusCode.SUCCESS.getMessage());
+		if (data == null) {
+			result.getMeta().setStatusCode(StatusCode.GET_DEVICES_FAILURE.getCode());
+			result.getMeta().setMessage(StatusCode.GET_DEVICES_FAILURE.getMessage());
+			result.getMeta().setDetails("Not found any devices of User!");
+		}
+		result.setData(data);
+		return createResponseEntity(result);
+	}
+	
 }
