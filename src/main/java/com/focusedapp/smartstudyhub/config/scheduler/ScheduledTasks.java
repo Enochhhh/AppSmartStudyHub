@@ -28,9 +28,4 @@ public class ScheduledTasks {
 		userService.resetDataOfUserWeekly();
 	}
 	
-//	@Scheduled(cron = "0 0/1 * * * ?", zone = "Asia/Ho_Chi_Minh")
-//	public void sendNotification() {
-//		//workService.sendNotificationWorkToDeviceUser();
-//		workService.sendNotificationWorkToDeviceUserTest();
-//	}
 }

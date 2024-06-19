@@ -931,16 +931,4 @@ public class WorkService {
 		});
 	}
 	
-	public void sendNotificationWorkToDeviceUserTest() {
-		Date nowDate = new Date();
-
-		List<String> registrationTokens = new ArrayList<>();
-		registrationTokens.add("cIOPUqWHSyuEfRR_5M8f9n:APA91bEfaiNVsaQ6odcsE0UJakOXHxV8hGeUfvbdC4d3XVbZUa3-OxNL_zjuCUjzCIqDyaRHPONWjSCkgNEqITjBSKUWbuEIg6zej-bPz6D86P4CnAjpq3cyyquf_Qn7dto8JqUcLbVH");
-		NotificationMessage notificationMessage = NotificationMessage.builder().registrationTokens(registrationTokens)
-				.title("Reminder").body("Hello Boy")
-				.image("https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/java-simpledateformat.png").build();
-		firebaseMessagingService.sendNotification(notificationMessage);
-
-	}
-	
 }
