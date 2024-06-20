@@ -94,9 +94,9 @@ public class SecurityConfiguration {
 
 							User user = userService.processOAuthPostLogin(oauthUser);
 							if (user.getStatus().equals(EnumStatus.DELETED.getValue())) {
-								response.sendRedirect(ConstantUrl.CLIENT_URL + "?status=DELETE");
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "?status=DELETE&userId=" + user.getId());
 							} else if (user.getStatus().equals(EnumStatus.BANNED.getValue())) {
-								response.sendRedirect(ConstantUrl.CLIENT_URL + "?status=BAN");
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "?status=BAN&userId=" + user.getId());
 							}
 							else {
 								response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));
