@@ -94,9 +94,9 @@ public class SecurityConfiguration {
 
 							User user = userService.processOAuthPostLogin(oauthUser);
 							if (user.getStatus().equals(EnumStatus.DELETED.getValue())) {
-								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-deleted");
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "?status=DELETE");
 							} else if (user.getStatus().equals(EnumStatus.BANNED.getValue())) {
-								response.sendRedirect(ConstantUrl.CLIENT_URL + "/account-banned");
+								response.sendRedirect(ConstantUrl.CLIENT_URL + "?status=BAN");
 							}
 							else {
 								response.sendRedirect(ConstantUrl.CLIENT_URL + "?token=" + userService.generateToken(user));
@@ -109,7 +109,7 @@ public class SecurityConfiguration {
 						public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 								AuthenticationException exception) throws IOException, ServletException {
 							// TODO Auto-generated method stub
-				            response.sendRedirect(ConstantUrl.CLIENT_URL + "/error");
+				            response.sendRedirect(ConstantUrl.CLIENT_URL + "?status=FAIL");
 						}
 					})) 
 			.logout(l -> l.permitAll())
