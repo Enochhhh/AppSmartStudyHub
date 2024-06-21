@@ -108,9 +108,21 @@ public class AuthenticationService {
 		User user = userService.findByUserName(request.getEmail());
 		if (user != null) {
 			if (user.getStatus().equals(EnumStatus.BANNED.getValue())) {
-				throw new AccountBannedException("Account was banned", "/login/local-account");
+				Long numberDates = 0L;
+				Date dateAdminModified = user.getTimeAdminModified();
+				if (dateAdminModified != null) {
+					numberDates = DateUtils.distanceDaysBetweenTwoDateNotLocalDateTime(dateAdminModified, new Date(), 
+							ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
+				}
+				throw new AccountBannedException("Account was banned", "/login/local-account", numberDates.intValue());
 			} else if (user.getStatus().equals(EnumStatus.DELETED.getValue())) {
-				throw new AccountDeletedException("Account was deleted", "/login/local-account");
+				Long numberDates = 0L;
+				Date dateAdminModified = user.getTimeAdminModified();
+				if (dateAdminModified != null) {
+					numberDates = DateUtils.distanceDaysBetweenTwoDateNotLocalDateTime(dateAdminModified, new Date(), 
+							ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone()));
+				}
+				throw new AccountDeletedException("Account was deleted", "/login/local-account", numberDates.intValue());
 			}
 		}
 			

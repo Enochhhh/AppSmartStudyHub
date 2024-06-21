@@ -1020,4 +1020,21 @@ public class UserService {
 		totalUsersRegisterPremium = transactionPayments.size();
 		return new StatisticUsers(totalUsersGuest, totalUsersRegisterAccount, totalUsersRegisterPremium);
 	}
+	
+	public void deleteAccountAfter30Days() {
+		List<User> users = userDAO.findByStatusAndProvider(EnumStatus.DELETED.getValue(), Provider.LOCAL.getValue());
+		
+		users = users.stream()
+				.filter(u -> {
+					Date timeAdminModified = u.getTimeAdminModified();
+					if (timeAdminModified != null 
+							&& DateUtils.distanceDaysBetweenTwoDateNotLocalDateTime(timeAdminModified, new Date(), 
+									ZoneId.of(EnumZoneId.ASIA_HOCHIMINH.getNameZone())) > 30) {
+						return true;
+					}
+					return false;
+				})
+				.collect(Collectors.toList());
+		userDAO.deleteAll(users);
+	}
 }

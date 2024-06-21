@@ -17,6 +17,7 @@ public class ScheduledTasks {
 	
 	@Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Ho_Chi_Minh")
 	public void taskRunOnMidnightEveryday() {
+		userService.deleteAccountAfter30Days();
 		historyDailyService.createHistoryDaily();
 		userService.resetDataOfUserDaily();
 		userService.resetDueDatePremium();

@@ -88,4 +88,6 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 			+ "and u.roles = :roles", nativeQuery = true)
 	List<User> statisticUserByDateRangeAndRoleForAdmin(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo,
 			@Param("roles") String roles);
+	
+	List<User> findByStatusAndProvider(String status, String provider);
 }

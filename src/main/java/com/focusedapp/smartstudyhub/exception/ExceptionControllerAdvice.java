@@ -155,6 +155,7 @@ public class ExceptionControllerAdvice {
 		
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("message", "Account was banned");
+		jsonObject.put("numberDatesBanned", exception.getNumberDateBanned());
 		result.setData(jsonObject);
 		result.setLogInfo(exception.getMessage());
 		result.setUrl(exception.getPath());
@@ -171,6 +172,7 @@ public class ExceptionControllerAdvice {
 		
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("message", "Account was deleted");
+		jsonObject.put("numberDatesDeleted", exception.getNumberDateDeleted());
 		result.setData(jsonObject);
 		result.setLogInfo(exception.getMessage());
 		result.setUrl(exception.getPath());
