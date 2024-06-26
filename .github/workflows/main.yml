@@ -9,6 +9,8 @@ jobs:
   build-deploy:
     name: Build and Deploy Spring Boot API for app SmartStudyHub
     runs-on: ubuntu-latest
+    env: 
+      SMARTSTUDYHUB_JWT_SECRET_KEY: ${{secrets.SMARTSTUDYHUB_JWT_SECRET_KEY}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
