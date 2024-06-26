@@ -47,7 +47,6 @@ public class JwtService {
 	}
 	
 	public String generateToken(Map<String, Object> extraClaims, JwtUser user) {
-		System.out.println(SECRET_KEY);
 		StringBuilder subject = new StringBuilder();
 		subject.append(user.getUser().getId().toString().concat("-"));
 		subject.append(user.getUser().getUserName().concat("-"));
