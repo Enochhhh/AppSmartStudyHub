@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,8 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
 	
 	// This Signing Key is used to create the signature of the token and is used to verify that the token sent by user is valid
-	private static final String SECRET_KEY = "bXVzaWNwb2xpY2VtYW5nZXRyZXN1bHRmaXJtb3JhbmdlcGxhbm5pbmdwaXBlc29ydG0=";
+	@Value("${spring-security.jwt.secret-key}")
+	private String SECRET_KEY;
 	
 	public String extractUserName(String token) {
 		return Stream.of(extractClaim(token, Claims::getSubject).split("-"))
@@ -45,6 +47,7 @@ public class JwtService {
 	}
 	
 	public String generateToken(Map<String, Object> extraClaims, JwtUser user) {
+		System.out.println(SECRET_KEY);
 		StringBuilder subject = new StringBuilder();
 		subject.append(user.getUser().getId().toString().concat("-"));
 		subject.append(user.getUser().getUserName().concat("-"));
