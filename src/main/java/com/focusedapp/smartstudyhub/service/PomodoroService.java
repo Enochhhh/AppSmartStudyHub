@@ -122,6 +122,9 @@ public class PomodoroService {
 		for (Map.Entry<Long, List<PomodoroDTO>> entry : mapPomodoro.entrySet()) {
 			pomodoros.add(new PomorodoGroupByDateDTO(entry.getKey(), entry.getValue()));
 		}
+		pomodoros = pomodoros.stream()
+				.sorted(Comparator.comparing(PomorodoGroupByDateDTO::getDate).reversed())
+				.collect(Collectors.toList());
 		return pomodoros;
 	}
 	
