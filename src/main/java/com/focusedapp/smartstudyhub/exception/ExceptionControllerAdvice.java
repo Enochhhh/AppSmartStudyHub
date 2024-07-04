@@ -288,7 +288,7 @@ public class ExceptionControllerAdvice {
 		result.setData(jsonObject);
 		result.setLogInfo(exception.getMessage());
 		
-		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.FORBIDDEN);
+		return new ResponseEntity<Result<JSONObject>>(result, HttpStatus.UNAUTHORIZED);
 	} 
 	
 }

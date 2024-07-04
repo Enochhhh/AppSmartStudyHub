@@ -14,12 +14,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class JwtService {
 	
 	// This Signing Key is used to create the signature of the token and is used to verify that the token sent by user is valid
@@ -89,5 +94,22 @@ public class JwtService {
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
+	
+	public boolean validateAccessToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException ex) {
+            log.error("JWT expired", ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            log.error("Token is null, empty or only whitespace", ex.getMessage());
+        } catch (MalformedJwtException ex) {
+        	log.error("JWT is invalid", ex);
+        } catch (UnsupportedJwtException ex) {
+        	log.error("JWT is not supported", ex);
+        } 
+         
+        return false;
+    }
 	
 }
