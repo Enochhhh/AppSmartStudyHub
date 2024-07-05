@@ -68,7 +68,7 @@ public class StatisticalService {
 			for (Map.Entry<Long, List<Pomodoro>> entry : mapPomodoro.entrySet()) {
 				Integer totalTimeFocus = entry.getValue().stream()
 						.collect(Collectors.summingInt(Pomodoro::getTimeOfPomodoro));
-				listDataStatistical.add(new StatisticalDTO(entry.getKey(), totalTimeFocus));
+				listDataStatistical.add(new StatisticalDTO(entry.getKey(), entry.getKey(), totalTimeFocus));
 			}
 		} else if (type.equals("MONTH")) {
 			do {
@@ -262,7 +262,7 @@ public class StatisticalService {
 					}, Collectors.toList()));
 
 			for (Map.Entry<Long, List<Work>> entry : mapWork.entrySet()) {
-				listDataStatistical.add(new StatisticalDTO(entry.getKey(), entry.getValue().size()));
+				listDataStatistical.add(new StatisticalDTO(entry.getKey(), entry.getKey(), entry.getValue().size()));
 			}
 		} else if (type.equals("MONTH")) {
 			do {
